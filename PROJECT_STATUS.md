@@ -5,7 +5,7 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: `860b4f8` (Add project setup: README, gitignore, project brief, status file)
+- Current verified commit / version: `4632f38` (Add GitHub repository link and clone instructions)
 - Lesson 3 result: _TBD (fill in)_
 - CHECK status: NOT RUN
 
@@ -24,5 +24,6 @@
 - Required revision, if any: None received yet. Before submitting, fill in sections 12–13 and make the one-sentence summary in section 1 more specific.
 
 ## Next step
-- Next concrete action: Build the data cleaning and time-based split (`src/preprocess.py`) and an EDA notebook.
+- Criteria checklist and daily plan: `docs/ROADMAP.md`
+- Next concrete action (Day 1): finish brief sections 12–13, then build the data cleaning and time-based split (`src/preprocess.py`) and an EDA notebook.
 - Last updated (date): 2026-09-23
