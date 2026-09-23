@@ -2,6 +2,8 @@
 
 Machine learning project that estimates the probability that a scheduled outpatient appointment will be a **no-show**, so that clinic staff can prioritise reminders, confirmations and follow-up calls for high-risk appointments.
 
+**Repository:** https://github.com/monfurkat-glitch/HealthProject
+
 The model only **informs** staff. It never cancels or rebooks appointments automatically.
 
 ## Dataset
@@ -12,6 +14,15 @@ The dataset is **not included** in this repository. To run the project:
 
 1. Download it from the Kaggle link above.
 2. Unzip it and place `KaggleV2-May-2016.csv` in the `Data/` folder.
+
+## Setup
+
+```bash
+git clone https://github.com/monfurkat-glitch/HealthProject.git
+cd HealthProject
+```
+
+Then download the dataset into `Data/` as described above.
 
 ## Approach
 
