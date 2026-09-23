@@ -5,25 +5,24 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: `4632f38` (Add GitHub repository link and clone instructions)
+- Current verified commit / version: see latest commit on `main` (Day 1 complete)
 - Lesson 3 result: _TBD (fill in)_
 - CHECK status: NOT RUN
 
 ## Limits and unfinished work
 - Current limitations:
   - Initial data profiling only: no cleaning code, features or models yet.
-  - Dataset (`Data/KaggleV2-May-2016.csv`) is not committed; it must be downloaded from Kaggle (see `README.md`).
+  - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
-  - Brief sections 12 (Questions You Must Resolve) and 13 (Optional Directions) are empty.
-  - Mentor approval of the brief is pending.
+  - Mentor approval of the brief is pending (sections 12–13 now filled in `docs/project_brief.md`; copy them into the .docx before submitting).
 
 ## Personal project
 - Brief: `docs/project_brief.md`
 - Brief status: PENDING
-- Required revision, if any: None received yet. Before submitting, fill in sections 12–13 and make the one-sentence summary in section 1 more specific.
+- Required revision, if any: None received yet.
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action (Day 1): finish brief sections 12–13, then build the data cleaning and time-based split (`src/preprocess.py`) and an EDA notebook.
+- Next concrete action (Day 2): EDA notebook `notebooks/01_eda.ipynb` with charts and written findings.
 - Last updated (date): 2026-09-23

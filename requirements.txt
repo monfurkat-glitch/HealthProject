@@ -1,0 +1,7 @@
+# Exact versions so saved models reload identically (locally and in Google Colab).
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn==1.7.2
+matplotlib==3.10.9
+joblib==1.6.0
+pytest==8.4.2

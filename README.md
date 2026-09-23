@@ -1,48 +1,104 @@
 # MED-01 | Hospital Appointment No-Show Prediction
 
-Machine learning project that estimates the probability that a scheduled outpatient appointment will be a **no-show**, so that clinic staff can prioritise reminders, confirmations and follow-up calls for high-risk appointments.
-
-**Repository:** https://github.com/monfurkat-glitch/HealthProject
+A machine learning model that predicts each outpatient appointment's **no-show risk** before it happens, so clinic staff can focus reminders, confirmations and follow-up calls on the appointments most likely to be missed.
 
 The model only **informs** staff. It never cancels or rebooks appointments automatically.
 
+| | |
+|---|---|
+| **Student** | Furkat Toshmatov |
+| **Project track** | _To confirm_ |
+| **Domain** | MedTech |
+| **ML task** | Supervised binary classification |
+| **Repository** | https://github.com/monfurkat-glitch/HealthProject |
+
+> 🚧 Work in progress. Progress against the capstone criteria is tracked in [docs/ROADMAP.md](docs/ROADMAP.md) and [PROJECT_STATUS.md](PROJECT_STATUS.md).
+
+## Problem statement
+
+Unannounced no-shows waste clinic capacity and lengthen waiting times for other patients. Without a risk estimate, staff spread reminder efforts evenly across all appointments instead of targeting the ones most likely to be missed. See the full [project brief](docs/project_brief.md).
+
+## ML task
+
+| | |
+|---|---|
+| **Input** | One scheduled appointment: patient age, gender, neighbourhood, welfare status, health conditions, booking date, appointment date, and reminder status |
+| **Target** | `No-show` (`Yes` = the patient did not attend) |
+| **Output** | Probability of a no-show, plus a Low / Medium / High risk band |
+| **Prediction moment** | Before the appointment, using only information known at that time |
+
+## Success criteria
+
+Measured on the held-out test period (the latest appointments, never used for training or tuning):
+
+1. The final model beats both baselines (always "shows up" and logistic regression) on ROC-AUC and PR-AUC.
+2. Among the 20% of appointments ranked riskiest, the model catches a larger share of real no-shows than the logistic regression baseline.
+3. No leakage: every feature is computable at prediction time, verified by an automated test.
+4. The Colab demo runs end to end in a fresh runtime from this repository alone.
+
 ## Dataset
 
-[Medical Appointment No Shows](https://www.kaggle.com/datasets/joniarroba/noshowappointments) (Kaggle): about 110k appointments from public health clinics in Vitória, Brazil (Apr–Jun 2016).
+[Medical Appointment No Shows](https://www.kaggle.com/datasets/joniarroba/noshowappointments) (Kaggle): 110,527 appointments from public health clinics in Vitória, Brazil (April–June 2016). The CSV is included in [`Data/`](Data/) under its CC BY-NC-SA 4.0 license; see [Data/README.md](Data/README.md) for the column dictionary, license, and known data issues.
 
-The dataset is **not included** in this repository. To run the project:
+### Key data findings so far
 
-1. Download it from the Kaggle link above.
-2. Unzip it and place `KaggleV2-May-2016.csv` in the `Data/` folder.
+- 62,299 patients, no missing values, no duplicate rows. 20.2% of appointments are no-shows.
+- Invalid records: 1 row with `Age = -1`, and 5 appointments booked after the appointment date.
+- `Handcap` is a 0–4 count, not a yes/no flag.
+- Appointment dates only span about 6 weeks (2016-04-29 to 2016-06-08).
+- Lead time (days between booking and appointment) is the strongest signal found so far: same-day bookings have a 4.6% no-show rate, against 28.5% for all other appointments.
+- SMS reminders are confounded with lead time (they were only sent for bookings made 3 or more days ahead), so their raw association with no-shows is misleading.
 
-## Setup
+## Approach
+
+- **Baselines:** majority class ("always shows up") and logistic regression.
+- **Models to compare:** Random Forest and gradient boosting (scikit-learn `HistGradientBoostingClassifier`).
+- **Validation:** time-based split (train on earlier appointments, validate and test on later ones).
+- **Metrics:** ROC-AUC, PR-AUC, and precision/recall on the no-show class (the classes are imbalanced, about 80/20).
+- **Leakage guard:** patient-history features only use past appointments dated before the current booking's `ScheduledDay`.
+
+## Repository structure
+
+```
+HealthProject/
+├── Data/            dataset (CSV) and data dictionary
+├── docs/            project brief and roadmap
+├── notebooks/       EDA and Colab demo notebooks
+├── src/             preprocessing, training, and prediction code
+├── models/          saved model and preprocessing artifacts
+├── experiments/     experiment log
+├── reports/         evaluation results, figures, and error analysis
+├── tests/           automated tests
+├── requirements.txt pinned dependencies
+└── PROJECT_STATUS.md
+```
+
+## Installation
+
+Requires Python 3.10 or newer.
 
 ```bash
 git clone https://github.com/monfurkat-glitch/HealthProject.git
 cd HealthProject
+pip install -r requirements.txt
 ```
 
-Then download the dataset into `Data/` as described above.
+## Training, demo, and inference
 
-## Approach
+_Coming in later milestones (see [ROADMAP](docs/ROADMAP.md))._
 
-- **Problem:** supervised binary classification (`No-show` = Yes/No).
-- **Baselines:** majority class ("always shows up") and logistic regression.
-- **Models:** Random Forest and gradient boosting.
-- **Validation:** time-based split (train on earlier appointments, test on later ones).
-- **Metrics:** ROC-AUC, plus precision/recall on the no-show class (the classes are imbalanced, about 80/20).
-- **Output:** a no-show probability and a Low / Medium / High risk band.
+## Results
 
-## Key data findings
+_No results yet. Every number reported here will come from runs recorded in this repository._
 
-- 110,527 appointments, 62,299 patients, no missing values.
-- Invalid records: 1 row with `Age = -1`, and 5 appointments scheduled after the appointment date.
-- `Handcap` is a 0–4 count, not a yes/no flag.
-- Appointment dates only span about 6 weeks (2016-04-29 to 2016-06-08).
-- Lead time (days between booking and appointment) is the strongest signal: same-day bookings have a 4.6% no-show rate, versus 28.5% for all other appointments.
-- SMS reminders are confounded with lead time (they were only sent for bookings made 3 or more days ahead), so their raw association with no-shows is misleading.
-- Leakage guard: patient-history features only use past appointments whose date is before the current booking's `ScheduledDay`.
+## Limitations and Responsible AI
 
-## Author
+_To be completed; initial concerns:_
+- The data comes from one Brazilian city's public health system in 2016 and may not generalise to other clinics or populations.
+- Patient IDs are de-identified, but combinations of age, neighbourhood, and health conditions could still act as quasi-identifiers.
+- A high risk score must never be used to deny, delay, or deprioritise care.
 
-Furkat Toshmatov
+## License and acknowledgements
+
+- **Dataset:** *Medical Appointment No Shows* by Joni Hoppen and Aquarela Analytics, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Redistributed unmodified for non-commercial educational use.
+- **AI assistance:** Parts of this project's code and documentation were drafted with the help of Claude (Anthropic), an AI coding assistant, as allowed by the course rules. All design decisions were reviewed, and the student is responsible for and can explain every component.

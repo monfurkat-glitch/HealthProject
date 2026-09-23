@@ -9,25 +9,25 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 
 | # | Criterion | Max | Status |
 |---|---|---|---|
-| 1 | Problem Definition and Project Alignment | 10 | 🟡 brief written, not yet approved |
-| 2 | Data and Preprocessing Pipeline | 15 | 🟡 data profiled, no pipeline yet |
+| 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
+| 2 | Data and Preprocessing Pipeline | 15 | 🟡 data documented, no pipeline yet |
 | 3 | Modeling and Experiments | 20 | ⬜ |
 | 4 | Evaluation and Error Analysis | 15 | ⬜ |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
-| 6 | Documentation and Reproducibility | 10 | 🟡 README started |
+| 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
 | 7 | Responsible AI and Limitations | 5 | ⬜ |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
 
 ## Detailed checklist
 
 ### 1. Problem Definition and Project Alignment (10)
-- [ ] (3) Problem statement and practical relevance: README explains who suffers from no-shows and why it matters
-- [ ] (3) ML task framing: task type, input, output, and target are stated explicitly
-- [ ] (2) Measurable success criteria: e.g. "beat logistic regression ROC-AUC", "recall ≥ X at a staff-capacity threshold"
+- [x] (3) Problem statement and practical relevance: README explains who suffers from no-shows and why it matters
+- [x] (3) ML task framing: task type, input, output, and target are stated explicitly
+- [x] (2) Measurable success criteria: e.g. "beat logistic regression ROC-AUC", "recall ≥ X at a staff-capacity threshold"
 - [ ] (2) Alignment with approved brief: brief approved, and the implementation matches it (any deviations explained)
 
 ### 2. Data and Preprocessing Pipeline (15)
-- [ ] (2) Dataset source, size, and structure documented, with column dictionary
+- [x] (2) Dataset source, size, and structure documented, with column dictionary
 - [ ] (3) EDA notebook: distributions, target rate, lead-time effect, SMS confounding, data issues
 - [ ] (4) Cleaning: Age = -1, negative lead time, Handcap to yes/no, neighbourhood encoding, scaling where needed
 - [ ] (2) Feature engineering: lead days, weekday, age groups, leakage-safe patient history
@@ -61,7 +61,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 ### 6. Documentation and Reproducibility (10)
 - [ ] (3) README has every required section (see list below)
 - [ ] (3) `requirements.txt`, setup, training, and demo instructions complete
-- [ ] (2) Logical repo layout (`src/`, `notebooks/`, `models/`, `reports/`, `tests/`)
+- [x] (2) Logical repo layout (`src/`, `notebooks/`, `models/`, `reports/`, `tests/`)
 - [ ] (2) Reproduced end to end from a fresh clone
 
 ### 7. Responsible AI and Limitations (5)
@@ -75,23 +75,23 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [ ] Q&A prep: be able to explain every design choice and every file
 
 ## README required sections
-- [ ] Project title
-- [ ] Problem statement
+- [x] Project title
+- [x] Problem statement
 - [ ] Selected project track
-- [ ] Dataset source
-- [ ] ML task type
+- [x] Dataset source
+- [x] ML task type
 - [ ] Pipeline / system architecture
 - [ ] Models or approaches tested
 - [ ] Final model and justification
 - [ ] Evaluation metrics and results
-- [ ] Installation instructions
+- [x] Installation instructions
 - [ ] Training instructions
 - [ ] Demo and inference run instructions (Colab first)
 - [ ] Example input and output
 - [ ] Known limitations
 - [ ] Responsible AI considerations
-- [ ] Student's full name
-- [ ] License information and source acknowledgements (including AI-assistant use)
+- [x] Student's full name
+- [x] License information and source acknowledgements (including AI-assistant use)
 
 ## Daily plan
 
