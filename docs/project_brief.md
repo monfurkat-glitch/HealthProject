@@ -12,7 +12,7 @@
 | Project title | MED-01 \| Hospital Appointment No-Show Prediction |
 | Industry / field | MedTech |
 | Intended client / user / stakeholder | Private Healthcare Network |
-| One-sentence project summary | Health appointment project |
+| One-sentence project summary | A machine learning model that predicts each outpatient appointment's no-show risk before it happens, so clinic staff can focus reminders and follow-up calls on the appointments most likely to be missed. |
 
 ## 2. Client / User Background
 
@@ -95,11 +95,17 @@ The project will leverage pre-appointment data (including scheduling timestamps,
 
 ## 12. Questions You Must Resolve
 
-*Not yet filled in.*
+1. **When is the prediction made, and is `SMS_received` known at that moment?** SMS reminders are sent after booking (only for appointments booked 3 or more days ahead). If the model scores appointments at booking time, SMS status is not yet known and must be excluded; if it scores them the day before the appointment, SMS status can be used. The prediction moment must be fixed first, because it decides which features are legal.
+2. **How can patient history be used without leakage, and what happens for new patients?** A patient's past no-shows are only known once those appointments have happened, so history features may only count appointments dated before the current booking's `ScheduledDay`. Patients with no history need a sensible default (e.g. "0 prior appointments") rather than a missing value.
+3. **How should the data be split in time?** Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08). The split must keep training, validation, and test periods in chronological order and still leave enough no-shows in each period to measure performance reliably.
+4. **What operating threshold matches staff capacity?** Staff can only call a limited number of patients per day. The threshold that turns probabilities into Low/Medium/High bands should be chosen from the precision/recall trade-off at a realistic follow-up capacity (e.g. the top 10–20% riskiest appointments), not left at the default 0.5.
+5. **Does the model perform equally well across patient groups?** Performance must be compared by gender, age group, neighbourhood, and welfare (`Scholarship`) status, so that the tool does not systematically miss or over-flag particular groups.
 
 ## 13. Optional Directions
 
-*Not yet filled in.*
+- A simple staff-facing web app (e.g. Gradio or Streamlit) that shows a day's appointments ranked by risk.
+- Per-prediction explanations (e.g. SHAP or feature contributions), so staff can see *why* an appointment was flagged.
+- A cost-based threshold that weighs the cost of an empty slot against the cost of a reminder call, plus probability calibration.
 
 ## 14. Mentor Review & Approval
 
