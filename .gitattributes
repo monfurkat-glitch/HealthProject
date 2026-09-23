@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Keep the dataset byte-for-byte identical to the Kaggle original
+*.csv -text

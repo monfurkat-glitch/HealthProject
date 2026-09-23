@@ -1,7 +1,3 @@
-# Data (download from Kaggle, see README)
-Data/*
-!Data/.gitkeep
-
 # Python
 __pycache__/
 *.py[cod]
