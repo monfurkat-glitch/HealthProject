@@ -4,7 +4,7 @@
 
 ## Current verified state
 - Current branch: `main`
-- Current verified commit / version: see `git log` (project setup commit in `HealthProject` repository)
+- Current verified commit / version: `860b4f8` (Add project setup: README, gitignore, project brief, status file)
 - Lesson 3 result: _TBD (fill in)_
 - CHECK status: NOT RUN
 
@@ -13,7 +13,7 @@
   - Initial data profiling only: no cleaning code, features or models yet.
   - Dataset (`Data/KaggleV2-May-2016.csv`) is not committed; it must be downloaded from Kaggle (see `README.md`).
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
-  - Repository is not yet pushed to GitHub (no remote configured).
+  - Repository is not yet published to GitHub (no remote configured).
 - Unfinished / blocked:
   - Brief sections 12 (Questions You Must Resolve) and 13 (Optional Directions) are empty.
   - Mentor approval of the brief is pending.
