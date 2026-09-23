@@ -1,0 +1,23 @@
+# Data (download from Kaggle, see README)
+Data/*
+!Data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Models / outputs
+models/*.pkl
+models/*.joblib
+
+# Office temp files
+~$*
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
