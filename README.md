@@ -40,6 +40,15 @@ Measured on the held-out test period (the latest appointments, never used for tr
 
 [Medical Appointment No Shows](https://www.kaggle.com/datasets/joniarroba/noshowappointments) (Kaggle): 110,527 appointments from public health clinics in Vitória, Brazil (April–June 2016). The CSV is included in [`Data/`](Data/) under its CC BY-NC-SA 4.0 license; see [Data/README.md](Data/README.md) for the column dictionary, license, and known data issues.
 
+### Exploratory data analysis
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/01_eda.ipynb)
+
+The full analysis, with charts, is in [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb). It runs in Google Colab with no setup. Charts are saved in [`reports/figures/`](reports/figures/).
+
+![No-show rate by lead time](reports/figures/02_lead_time.png)
+![SMS reminders are confounded with lead time](reports/figures/03_sms_confounding.png)
+
 ### Key data findings so far
 
 - 62,299 patients, no missing values, no duplicate rows. 20.2% of appointments are no-shows.
@@ -47,7 +56,9 @@ Measured on the held-out test period (the latest appointments, never used for tr
 - `Handcap` is a 0–4 count, not a yes/no flag.
 - Appointment dates only span about 6 weeks (2016-04-29 to 2016-06-08).
 - Lead time (days between booking and appointment) is the strongest signal found so far: same-day bookings have a 4.6% no-show rate, against 28.5% for all other appointments.
-- SMS reminders are confounded with lead time (they were only sent for bookings made 3 or more days ahead), so their raw association with no-shows is misleading.
+- SMS reminders are confounded with lead time (they were only sent for bookings made 3 or more days ahead). Raw, SMS looks linked to *more* no-shows (27.6% vs 16.7%); within the same lead-time group it is linked to 3–8 points *fewer*.
+- No-show rate peaks for ages 13–17 (27%) and is lowest for ages 66–80 (15%). Health flags, gender, and weekday each move it by less than 4 points.
+- Leakage-safe patient history is only a modest signal: just 28% of appointments have any known prior appointment.
 
 ## Approach
 

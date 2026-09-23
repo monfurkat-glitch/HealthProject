@@ -5,13 +5,13 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: see latest commit on `main` (Day 1 complete)
+- Current verified commit / version: see latest commit on `main` (Day 2 complete)
 - Lesson 3 result: _TBD (fill in)_
 - CHECK status: NOT RUN
 
 ## Limits and unfinished work
 - Current limitations:
-  - Initial data profiling only: no cleaning code, features or models yet.
+  - EDA done (`notebooks/01_eda.ipynb`, runs in Colab); no cleaning code, features or models yet.
   - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
@@ -24,5 +24,5 @@
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action (Day 2): EDA notebook `notebooks/01_eda.ipynb` with charts and written findings.
+- Next concrete action (Day 3): `src/preprocess.py` (cleaning, features, leakage-safe history, time split) with a leakage test.
 - Last updated (date): 2026-09-23
