@@ -37,3 +37,12 @@ def test_log_run_appends_rows(tmp_path):
     runs = load_runs(path)
     assert list(runs["run_name"]) == ["a", "b"]
     assert runs.loc[1, "roc_auc"] == 0.8
+
+
+def test_log_keeps_numeric_looking_commit_hash(tmp_path, monkeypatch):
+    import src.experiments as ex
+    monkeypatch.setattr(ex, "git_commit", lambda: "1913e50")
+    path = tmp_path / "runs.csv"
+    for name in ("a", "b"):
+        ex.log_run("exp", name, "Model", {}, False, {"roc_auc": 0.7}, path=path)
+    assert list(ex.load_runs(path)["git_commit"]) == ["1913e50", "1913e50"]

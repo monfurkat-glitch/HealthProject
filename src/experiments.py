@@ -16,6 +16,8 @@ import pandas as pd
 from src.preprocess import REPO_ROOT
 
 RUNS_PATH = REPO_ROOT / "experiments" / "runs.csv"
+# Read these as text: a commit hash like "1913e50" would otherwise be parsed as a number.
+TEXT_COLUMNS = {"git_commit": str, "run_name": str, "params": str, "notes": str}
 
 
 def git_commit() -> str:
@@ -49,10 +51,10 @@ def log_run(experiment: str, run_name: str, model: str, params: dict, include_sm
     path.parent.mkdir(parents=True, exist_ok=True)
     frame = pd.DataFrame([row])
     if path.exists():
-        frame = pd.concat([pd.read_csv(path), frame], ignore_index=True)
+        frame = pd.concat([load_runs(path), frame], ignore_index=True)
     frame.to_csv(path, index=False)
     return row
 
 
 def load_runs(path: Path = RUNS_PATH) -> pd.DataFrame:
-    return pd.read_csv(path) if path.exists() else pd.DataFrame()
+    return pd.read_csv(path, dtype=TEXT_COLUMNS, keep_default_na=False) if path.exists() else pd.DataFrame()
