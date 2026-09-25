@@ -5,9 +5,7 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
-# Models / outputs
-models/*.pkl
-models/*.joblib
+# Models: the final model (models/final_model.joblib) is committed so the demo can load it
 
 # Office temp files
 ~$*

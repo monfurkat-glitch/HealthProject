@@ -72,3 +72,17 @@ def paired_bootstrap(y_true, scores: dict[str, np.ndarray], reference: str, n_bo
         rows.append({"model": name, "metric": m, "mean_diff": d.mean(), "ci_low": np.percentile(d, 2.5),
                      "ci_high": np.percentile(d, 97.5), "share_better": (d > 0).mean()})
     return pd.DataFrame(rows)
+
+
+def bootstrap_ci(y_true, y_score, n_boot: int = 1000, seed: int = 0) -> pd.DataFrame:
+    """95% bootstrap interval for every metric of one model: how much the score could move
+    with a different sample of appointments."""
+    y_true, y_score = np.asarray(y_true), np.asarray(y_score, dtype=float)
+    rng = np.random.default_rng(seed)
+    samples = []
+    for _ in range(n_boot):
+        idx = rng.integers(0, len(y_true), len(y_true))
+        samples.append(evaluate(y_true[idx], y_score[idx]))
+    samples = pd.DataFrame(samples).drop(columns="no_show_rate")
+    point = pd.Series(evaluate(y_true, y_score)).drop("no_show_rate")
+    return pd.DataFrame({"estimate": point, "ci_low": samples.quantile(0.025), "ci_high": samples.quantile(0.975)})
