@@ -2,6 +2,9 @@
 
 Usage:
     python -m src.train baselines
+    python -m src.train logreg_tuning
+    python -m src.train random_forest
+    python -m src.train gradient_boosting
 
 The test set is NOT used here. It is kept untouched until the final model is chosen.
 """
@@ -14,7 +17,9 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.dummy import DummyClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
 from sklearn.pipeline import Pipeline
 
 from src.evaluate import evaluate
@@ -63,6 +68,29 @@ def logistic(include_sms: bool, **params) -> Pipeline:
                      ("model", LogisticRegression(max_iter=2000, **params))])
 
 
+def random_forest(include_sms: bool, **params) -> Pipeline:
+    return Pipeline([("pre", build_preprocessor(scale_numeric=False, include_sms=include_sms)),
+                     ("model", RandomForestClassifier(n_estimators=300, n_jobs=-1, random_state=RANDOM_STATE,
+                                                      **params))])
+
+
+def gradient_boosting(include_sms: bool, **params) -> Pipeline:
+    """Early stopping holds out 10% of the training rows internally, so validation stays unseen."""
+    return Pipeline([("pre", build_preprocessor(scale_numeric=False, include_sms=include_sms)),
+                     ("model", HistGradientBoostingClassifier(max_iter=1000, early_stopping=True,
+                                                              random_state=RANDOM_STATE, **params))])
+
+
+SHORT_NAMES = {"learning_rate": "lr", "max_leaf_nodes": "leaves", "min_samples_leaf": "leaf", "max_features": "feat"}
+
+
+def grid(prefix: str, builder, grid_params: list[dict], notes: str = "") -> list[Experiment]:
+    """One experiment per parameter combination, named e.g. 'hgb_lr0.1_leaves15_leaf20'."""
+    def name(p):
+        return prefix + "_" + ("_".join(f"{SHORT_NAMES.get(k, k)}{v}" for k, v in p.items()) or "default")
+    return [Experiment(name(p), lambda sms, p=p: builder(sms, **p), p, notes=notes) for p in grid_params]
+
+
 EXPERIMENTS: dict[str, list[Experiment]] = {
     "baselines": [
         Experiment("majority_class", lambda sms: DummyClassifier(strategy="prior"),
@@ -76,6 +104,19 @@ EXPERIMENTS: dict[str, list[Experiment]] = {
         Experiment("logreg_with_sms", lambda sms: logistic(sms, C=1.0), {"C": 1.0}, include_sms=True,
                    notes="Comparison only: SMS status is not known at booking time"),
     ],
+    # Regularisation strength: smaller C = simpler model
+    "logreg_tuning": grid("logreg", logistic, [{"C": c} for c in (0.001, 0.01, 0.1, 1.0, 10.0)]),
+    # Tree size: min_samples_leaf controls how specific each leaf can be (1 = fully grown trees)
+    "random_forest": grid("rf", random_forest, [
+        {"min_samples_leaf": 1, "max_features": "sqrt"},
+        {"min_samples_leaf": 20, "max_features": "sqrt"},
+        {"min_samples_leaf": 100, "max_features": "sqrt"},
+        {"min_samples_leaf": 20, "max_features": 0.5},
+    ]),
+    "gradient_boosting": grid("hgb", gradient_boosting, [{}] + [
+        {"learning_rate": lr, "max_leaf_nodes": leaves, "min_samples_leaf": leaf}
+        for lr in (0.03, 0.1) for leaves in (15, 63) for leaf in (20, 200)
+    ]),
 }
 
 
@@ -86,6 +127,10 @@ def run(experiment: str) -> pd.DataFrame:
         cols = feature_columns(include_sms=exp.include_sms)
         model = exp.build(exp.include_sms).fit(train[cols], train[TARGET])
         metrics = evaluate(val[TARGET], model.predict_proba(val[cols])[:, 1])
+        # Training score, to spot overfitting (a large gap to validation)
+        metrics["train_roc_auc"] = roc_auc_score(train[TARGET], model.predict_proba(train[cols])[:, 1])
+        if hasattr(model[-1] if isinstance(model, Pipeline) else model, "n_iter_"):
+            exp.params = {**exp.params, "n_iter_": int(model[-1].n_iter_)}
         log_run(experiment, exp.run_name, type(model[-1] if isinstance(model, Pipeline) else model).__name__,
                 exp.params, exp.include_sms, metrics, notes=exp.notes)
         results.append({"run": exp.run_name, **metrics})
