@@ -1,0 +1,175 @@
+{
+  "test_rows": 17676,
+  "test_no_show_rate": 0.18488345779588142,
+  "metrics": {
+    "final_logreg": {
+      "roc_auc": 0.7232,
+      "pr_auc": 0.3283,
+      "precision_top20": 0.3349,
+      "recall_top20": 0.3623,
+      "brier": 0.1376,
+      "no_show_rate": 0.1849
+    },
+    "comparison_hgb": {
+      "roc_auc": 0.7365,
+      "pr_auc": 0.3424,
+      "precision_top20": 0.3562,
+      "recall_top20": 0.3853,
+      "brier": 0.1356,
+      "no_show_rate": 0.1849
+    },
+    "baseline_majority": {
+      "roc_auc": 0.5,
+      "pr_auc": 0.1849,
+      "precision_top20": 0.1678,
+      "recall_top20": 0.1815,
+      "brier": 0.1511,
+      "no_show_rate": 0.1849
+    },
+    "baseline_lead_time_rule": {
+      "roc_auc": 0.6916,
+      "pr_auc": 0.2781,
+      "precision_top20": 0.2823,
+      "recall_top20": 0.3054,
+      "brier": 0.1398,
+      "no_show_rate": 0.1849
+    }
+  },
+  "final_logreg_95ci": {
+    "roc_auc": {
+      "estimate": 0.7232,
+      "ci_low": 0.7149,
+      "ci_high": 0.7319
+    },
+    "pr_auc": {
+      "estimate": 0.3283,
+      "ci_low": 0.3152,
+      "ci_high": 0.3428
+    },
+    "precision_top20": {
+      "estimate": 0.3349,
+      "ci_low": 0.3199,
+      "ci_high": 0.3513
+    },
+    "recall_top20": {
+      "estimate": 0.3623,
+      "ci_low": 0.3491,
+      "ci_high": 0.379
+    },
+    "brier": {
+      "estimate": 0.1376,
+      "ci_low": 0.1349,
+      "ci_high": 0.1404
+    }
+  },
+  "hgb_minus_logreg": [
+    {
+      "model": "comparison_hgb",
+      "metric": "roc_auc",
+      "mean_diff": 0.0134,
+      "ci_low": 0.0088,
+      "ci_high": 0.0179,
+      "share_better": 1.0
+    },
+    {
+      "model": "comparison_hgb",
+      "metric": "recall_top20",
+      "mean_diff": 0.0229,
+      "ci_low": 0.0098,
+      "ci_high": 0.0357,
+      "share_better": 1.0
+    }
+  ],
+  "band_cutoffs": [
+    0.2333,
+    0.3233
+  ],
+  "bands": [
+    {
+      "band": "Low",
+      "appointments": 8776,
+      "no_shows": 710,
+      "share_of_appointments": 0.4965,
+      "no_show_rate": 0.0809,
+      "share_of_all_no_shows": 0.2173
+    },
+    {
+      "band": "Medium",
+      "appointments": 4910,
+      "no_shows": 1234,
+      "share_of_appointments": 0.2778,
+      "no_show_rate": 0.2513,
+      "share_of_all_no_shows": 0.3776
+    },
+    {
+      "band": "High",
+      "appointments": 3990,
+      "no_shows": 1324,
+      "share_of_appointments": 0.2257,
+      "no_show_rate": 0.3318,
+      "share_of_all_no_shows": 0.4051
+    }
+  ],
+  "calibration": [
+    {
+      "decile": 1,
+      "mean_predicted": 0.0262,
+      "observed_rate": 0.0305,
+      "appointments": 1768
+    },
+    {
+      "decile": 2,
+      "mean_predicted": 0.0415,
+      "observed_rate": 0.0362,
+      "appointments": 1768
+    },
+    {
+      "decile": 3,
+      "mean_predicted": 0.0549,
+      "observed_rate": 0.0311,
+      "appointments": 1767
+    },
+    {
+      "decile": 4,
+      "mean_predicted": 0.13,
+      "observed_rate": 0.1114,
+      "appointments": 1768
+    },
+    {
+      "decile": 5,
+      "mean_predicted": 0.2151,
+      "observed_rate": 0.1992,
+      "appointments": 1767
+    },
+    {
+      "decile": 6,
+      "mean_predicted": 0.2517,
+      "observed_rate": 0.2172,
+      "appointments": 1768
+    },
+    {
+      "decile": 7,
+      "mean_predicted": 0.2836,
+      "observed_rate": 0.2513,
+      "appointments": 1767
+    },
+    {
+      "decile": 8,
+      "mean_predicted": 0.3152,
+      "observed_rate": 0.302,
+      "appointments": 1768
+    },
+    {
+      "decile": 9,
+      "mean_predicted": 0.3542,
+      "observed_rate": 0.3181,
+      "appointments": 1767
+    },
+    {
+      "decile": 10,
+      "mean_predicted": 0.445,
+      "observed_rate": 0.3518,
+      "appointments": 1768
+    }
+  ]
+}

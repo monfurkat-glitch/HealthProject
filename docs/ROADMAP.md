@@ -11,8 +11,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 |---|---|---|---|
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
-| 3 | Modeling and Experiments | 20 | 🟡 23 runs, 3 model families compared; final choice pending |
-| 4 | Evaluation and Error Analysis | 15 | 🟡 metrics defined |
+| 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
+| 4 | Evaluation and Error Analysis | 15 | 🟡 test results, bands, calibration; error analysis next |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
 | 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
 | 7 | Responsible AI and Limitations | 5 | ⬜ |
@@ -40,15 +40,15 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (4) At least two approaches compared on the same validation set
 - [x] (3) Several experiments / hyperparameter changes, analysed
 - [x] (2) Experiment tracking: every run logged (MLflow or `experiments/runs.csv`)
-- [ ] (3) Final model choice justified with evidence
+- [x] (3) Final model choice justified with evidence
 
 ### 4. Evaluation and Error Analysis (15)
 - [x] (3) Metrics explained: ROC-AUC, PR-AUC, precision/recall/F1 on no-show class
-- [ ] (3) Final results reported on the untouched test period
-- [ ] (2) Final model vs baseline comparison table
+- [x] (3) Final results reported on the untouched test period
+- [x] (2) Final model vs baseline comparison table
 - [ ] (3) Error analysis: false negatives / false positives by segment (lead time, age, neighbourhood, SMS)
 - [ ] (2) Threshold selection, calibration check, edge cases
-- [ ] (2) Honest conclusion, including what the model cannot do
+- [x] (2) Honest conclusion, including what the model cannot do
 
 ### 5. End-to-End Implementation and Delivery (20)
 - [ ] (5) `predict` pipeline: raw appointment → probability + Low/Medium/High band
@@ -82,8 +82,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] ML task type
 - [x] Pipeline / system architecture
 - [x] Models or approaches tested
-- [ ] Final model and justification
-- [ ] Evaluation metrics and results
+- [x] Final model and justification
+- [x] Evaluation metrics and results
 - [x] Installation instructions
 - [ ] Training instructions
 - [ ] Demo and inference run instructions (Colab first)

@@ -150,6 +150,7 @@ python -m src.preprocess     # builds the dataset and prints the split summary
 python -m src.train baselines  # trains the baselines, scores them on validation, logs the runs
 python -m src.train logreg_tuning       # also: random_forest, gradient_boosting
 python -m src.train compare    # paired bootstrap: best of each model family vs logistic regression
+python -m src.final           # trains the final model, saves it, and scores it once on the test set
 python -m pytest             # runs the automated tests
 ```
 
@@ -157,9 +158,33 @@ python -m pytest             # runs the automated tests
 
 _Coming in later milestones (see [ROADMAP](docs/ROADMAP.md))._
 
-## Results
+## Final model
 
-_No results yet. Every number reported here will come from runs recorded in this repository._
+**Logistic regression** (`C = 1.0`, 14 features, SMS excluded), refitted on train + validation and saved to [`models/final_model.joblib`](models/final_model.joblib) together with its risk-band cut-offs.
+
+It was chosen **on validation evidence only** and the choice was committed before the test set was used ([docs/final_model.md](docs/final_model.md)): it matched the best tree models within noise, it is simpler, and its coefficients can be explained to staff.
+
+## Results (test set, used once)
+
+Appointments 2016-06-03 to 2016-06-08 (17,676 rows, 18.5% no-shows). Full report: [reports/test_results.md](reports/test_results.md).
+
+| Model | ROC-AUC | PR-AUC | recall@top20 |
+|---|---|---|---|
+| Majority class | 0.500 | 0.185 | 0.182 |
+| Lead-time rule (no ML) | 0.692 | 0.278 | 0.305 |
+| **Logistic regression (final)** | **0.723** (95% CI 0.715–0.732) | **0.328** | **0.362** |
+| Gradient boosting (comparison) | 0.737 | 0.342 | 0.385 |
+
+| Risk band | Share of appointments | No-show rate | Share of all no-shows |
+|---|---|---|---|
+| Low | 49.7% | 8.1% | 21.7% |
+| Medium | 27.8% | 25.1% | 37.8% |
+| High | 22.6% | 33.2% | 40.5% |
+
+- The final model's test score matches its validation score (0.726), so it generalises as expected, and it clearly beats both baselines.
+- Following up only the **High** band (23% of appointments) reaches **41% of all no-shows**.
+- **Gradient boosting was reliably better on the test set** (+0.013 ROC-AUC, 95% CI +0.009 to +0.018), unlike on validation. The pre-registered choice is kept so the test score stays honest; gradient boosting is recommended for a future version.
+- Probabilities are slightly too high (21.2% predicted vs 18.5% observed), probably because the test period had fewer no-shows than the training period. Treat them as relative risk.
 
 ## Limitations and Responsible AI
 
