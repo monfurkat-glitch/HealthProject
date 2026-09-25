@@ -1,0 +1,6 @@
+timestamp,git_commit,experiment,run_name,model,params,include_sms,split,roc_auc,pr_auc,precision_top20,recall_top20,brier,no_show_rate,notes
+2026-09-25T13:42:10,a8ec4ae,baselines,majority_class,DummyClassifier,"{""strategy"": ""prior""}",False,validation,0.5,0.1861,0.1916,0.2059,0.152,0.1861,Always predicts the training no-show rate
+2026-09-25T13:42:10,a8ec4ae,baselines,lead_time_rule,LeadTimeRule,"{""bins"": ""0,1-2,3-7,8-14,15-30,31-60,61+""}",False,validation,0.6932,0.2835,0.3049,0.3276,0.141,0.1861,Training no-show rate of the lead-time group; no ML
+2026-09-25T13:42:11,a8ec4ae,baselines,logreg,LogisticRegression,"{""C"": 1.0}",False,validation,0.7257,0.3324,0.3399,0.3652,0.138,0.1861,"Logistic regression, all default features"
+2026-09-25T13:42:12,a8ec4ae,baselines,logreg_balanced,LogisticRegression,"{""C"": 1.0, ""class_weight"": ""balanced""}",False,validation,0.725,0.3317,0.3396,0.3649,0.2214,0.1861,Class weights for the 80/20 imbalance
+2026-09-25T13:42:13,a8ec4ae,baselines,logreg_with_sms,LogisticRegression,"{""C"": 1.0}",True,validation,0.7267,0.3339,0.341,0.3665,0.1375,0.1861,Comparison only: SMS status is not known at booking time

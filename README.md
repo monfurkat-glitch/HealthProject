@@ -94,9 +94,18 @@ The split is by time, not random, because the model will always predict *future*
 
 ## Approach
 
-- **Baselines:** majority class ("always shows up") and logistic regression.
+- **Baselines:** majority class, a lead-time rule (no ML), and logistic regression.
 - **Models to compare:** Random Forest and gradient boosting (scikit-learn `HistGradientBoostingClassifier`).
-- **Metrics:** ROC-AUC, PR-AUC, and precision/recall on the no-show class (the classes are imbalanced, about 80/20).
+- **Metrics** ([`src/evaluate.py`](src/evaluate.py)): ROC-AUC, PR-AUC, precision and recall among the 20% riskiest appointments (matching limited staff capacity), and the Brier score. Accuracy is not used because of the 80/20 imbalance.
+- **Experiment tracking:** every run is logged with its git commit to [`experiments/runs.csv`](experiments/runs.csv); results and analysis are in [`experiments/README.md`](experiments/README.md).
+
+### Baseline results (validation set)
+
+| Model | ROC-AUC | PR-AUC | recall@top20 |
+|---|---|---|---|
+| Majority class | 0.500 | 0.186 | 0.206 |
+| Lead-time rule (no ML) | 0.693 | 0.284 | 0.328 |
+| Logistic regression | **0.726** | **0.332** | **0.365** |
 
 ## Repository structure
 
@@ -107,7 +116,7 @@ HealthProject/
 ├── notebooks/       EDA and Colab demo notebooks
 ├── src/             preprocessing, training, and prediction code
 ├── models/          saved model and preprocessing artifacts
-├── experiments/     experiment log
+├── experiments/     experiment log (runs.csv) and analysis
 ├── reports/         evaluation results, figures, and error analysis
 ├── tests/           automated tests (pytest)
 ├── requirements.txt pinned dependencies
@@ -128,6 +137,7 @@ pip install -r requirements.txt
 
 ```bash
 python -m src.preprocess     # builds the dataset and prints the split summary
+python -m src.train baselines  # trains the baselines, scores them on validation, logs the runs
 python -m pytest             # runs the automated tests
 ```
 

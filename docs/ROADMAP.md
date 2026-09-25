@@ -11,8 +11,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 |---|---|---|---|
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
-| 3 | Modeling and Experiments | 20 | ⬜ |
-| 4 | Evaluation and Error Analysis | 15 | ⬜ |
+| 3 | Modeling and Experiments | 20 | 🟡 baselines + experiment log |
+| 4 | Evaluation and Error Analysis | 15 | 🟡 metrics defined |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
 | 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
 | 7 | Responsible AI and Limitations | 5 | ⬜ |
@@ -35,15 +35,15 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (2) Leakage prevention: history features use only outcomes known at `ScheduledDay`; encoders fitted on train only; a test proves it
 
 ### 3. Modeling and Experiments (20)
-- [ ] (3) Baselines: majority class and logistic regression
+- [x] (3) Baselines: majority class and logistic regression
 - [ ] (5) Main model trained (Random Forest / HistGradientBoosting)
 - [ ] (4) At least two approaches compared on the same validation set
 - [ ] (3) Several experiments / hyperparameter changes, analysed
-- [ ] (2) Experiment tracking: every run logged (MLflow or `experiments/runs.csv`)
+- [x] (2) Experiment tracking: every run logged (MLflow or `experiments/runs.csv`)
 - [ ] (3) Final model choice justified with evidence
 
 ### 4. Evaluation and Error Analysis (15)
-- [ ] (3) Metrics explained: ROC-AUC, PR-AUC, precision/recall/F1 on no-show class
+- [x] (3) Metrics explained: ROC-AUC, PR-AUC, precision/recall/F1 on no-show class
 - [ ] (3) Final results reported on the untouched test period
 - [ ] (2) Final model vs baseline comparison table
 - [ ] (3) Error analysis: false negatives / false positives by segment (lead time, age, neighbourhood, SMS)
