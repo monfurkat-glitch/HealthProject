@@ -12,6 +12,7 @@ The classes are imbalanced (about 20% no-shows), so accuracy is not used. Metric
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
 
 TOP_SHARE = 0.20
@@ -41,3 +42,33 @@ def evaluate(y_true, y_score, share: float = TOP_SHARE) -> dict[str, float]:
         "brier": brier_score_loss(y_true, y_score),
         "no_show_rate": y_true.mean(),
     }
+
+
+def paired_bootstrap(y_true, scores: dict[str, np.ndarray], reference: str, n_boot: int = 1000,
+                     seed: int = 0) -> pd.DataFrame:
+    """Is each model really better than `reference`, or is the gap just noise?
+
+    Resamples the evaluation rows with replacement `n_boot` times. In each resample every model is
+    scored on the SAME rows (a paired comparison), and the difference to the reference is recorded.
+    Returns the mean difference, its 95% interval, and how often the model beat the reference.
+    If the interval contains 0, the difference is not reliable.
+    """
+    y_true = np.asarray(y_true)
+    rng = np.random.default_rng(seed)
+    metrics = {"roc_auc": lambda y, s: roc_auc_score(y, s),
+               f"recall_top{int(TOP_SHARE * 100)}": lambda y, s: y[top_share_mask(s)].sum() / y.sum()}
+    diffs = {(name, m): [] for name in scores if name != reference for m in metrics}
+    for _ in range(n_boot):
+        idx = rng.integers(0, len(y_true), len(y_true))
+        y = y_true[idx]
+        for m, fn in metrics.items():
+            ref = fn(y, np.asarray(scores[reference])[idx])
+            for name in scores:
+                if name != reference:
+                    diffs[(name, m)].append(fn(y, np.asarray(scores[name])[idx]) - ref)
+    rows = []
+    for (name, m), d in diffs.items():
+        d = np.array(d)
+        rows.append({"model": name, "metric": m, "mean_diff": d.mean(), "ci_low": np.percentile(d, 2.5),
+                     "ci_high": np.percentile(d, 97.5), "share_better": (d > 0).mean()})
+    return pd.DataFrame(rows)

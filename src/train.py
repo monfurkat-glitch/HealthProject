@@ -5,6 +5,7 @@ Usage:
     python -m src.train logreg_tuning
     python -m src.train random_forest
     python -m src.train gradient_boosting
+    python -m src.train compare        # bootstrap test: are the best models really better than logreg?
 
 The test set is NOT used here. It is kept untouched until the final model is chosen.
 """
@@ -22,8 +23,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.pipeline import Pipeline
 
-from src.evaluate import evaluate
+from src.evaluate import evaluate, paired_bootstrap
 from src.experiments import log_run
+from src.preprocess import REPO_ROOT
 from src.preprocess import TARGET, build_dataset, build_preprocessor, feature_columns, time_split
 
 RANDOM_STATE = 42
@@ -138,10 +140,37 @@ def run(experiment: str) -> pd.DataFrame:
     return pd.DataFrame(results).set_index("run")
 
 
+# Best run of each model family (by validation ROC-AUC, see experiments/runs.csv), compared to logistic regression
+CANDIDATES = {
+    "logreg": ("baselines", "logreg"),
+    "random_forest": ("random_forest", "rf_leaf20_featsqrt"),
+    "gradient_boosting": ("gradient_boosting", "hgb_lr0.03_leaves15_leaf200"),
+}
+
+
+def compare(n_boot: int = 1000) -> pd.DataFrame:
+    """Refit the candidates and run a paired bootstrap on the validation set."""
+    train, val, _ = time_split(build_dataset())
+    cols = feature_columns()
+    by_name = {e.run_name: e for exps in EXPERIMENTS.values() for e in exps}
+    scores = {}
+    for label, (_, run_name) in CANDIDATES.items():
+        model = by_name[run_name].build(False).fit(train[cols], train[TARGET])
+        scores[label] = model.predict_proba(val[cols])[:, 1]
+    result = paired_bootstrap(val[TARGET], scores, reference="logreg", n_boot=n_boot)
+    result.round(4).to_csv(REPO_ROOT / "experiments" / "comparison.csv", index=False)
+    return result
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("experiment", choices=sorted(EXPERIMENTS))
+    parser.add_argument("experiment", choices=sorted(EXPERIMENTS) + ["compare"])
     args = parser.parse_args()
+    if args.experiment == "compare":
+        print("Paired bootstrap on validation (difference to logistic regression, 1000 resamples):")
+        print(compare().round(4).to_string(index=False))
+        print("\nSaved to experiments/comparison.csv")
+        raise SystemExit
     table = run(args.experiment)
     print(f"Validation results ({args.experiment}):")
     print(table.round(4).to_string())

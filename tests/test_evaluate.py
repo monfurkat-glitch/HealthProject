@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.evaluate import evaluate, top_share_mask
+from src.evaluate import evaluate, paired_bootstrap, top_share_mask
 from src.experiments import load_runs, log_run
 from src.train import LeadTimeRule
 
@@ -46,3 +46,13 @@ def test_log_keeps_numeric_looking_commit_hash(tmp_path, monkeypatch):
     for name in ("a", "b"):
         ex.log_run("exp", name, "Model", {}, False, {"roc_auc": 0.7}, path=path)
     assert list(ex.load_runs(path)["git_commit"]) == ["1913e50", "1913e50"]
+
+
+def test_paired_bootstrap_detects_clear_winner_and_ties():
+    rng = np.random.default_rng(1)
+    y = rng.integers(0, 2, 2000)
+    noise = rng.normal(size=2000)
+    scores = {"ref": noise, "same": noise.copy(), "better": y + noise}
+    out = paired_bootstrap(y, scores, reference="ref", n_boot=200).set_index(["model", "metric"])
+    assert out.loc[("better", "roc_auc"), "ci_low"] > 0
+    assert out.loc[("same", "roc_auc"), "mean_diff"] == 0
