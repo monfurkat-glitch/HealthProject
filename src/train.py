@@ -129,8 +129,9 @@ def run(experiment: str) -> pd.DataFrame:
         metrics = evaluate(val[TARGET], model.predict_proba(val[cols])[:, 1])
         # Training score, to spot overfitting (a large gap to validation)
         metrics["train_roc_auc"] = roc_auc_score(train[TARGET], model.predict_proba(train[cols])[:, 1])
-        if hasattr(model[-1] if isinstance(model, Pipeline) else model, "n_iter_"):
-            exp.params = {**exp.params, "n_iter_": int(model[-1].n_iter_)}
+        estimator = model[-1] if isinstance(model, Pipeline) else model
+        if isinstance(estimator, HistGradientBoostingClassifier):   # boosting rounds chosen by early stopping
+            exp.params = {**exp.params, "n_iter_": int(estimator.n_iter_)}
         log_run(experiment, exp.run_name, type(model[-1] if isinstance(model, Pipeline) else model).__name__,
                 exp.params, exp.include_sms, metrics, notes=exp.notes)
         results.append({"run": exp.run_name, **metrics})

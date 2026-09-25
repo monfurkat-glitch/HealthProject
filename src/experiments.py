@@ -25,7 +25,9 @@ def git_commit() -> str:
     try:
         commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT,
                                 capture_output=True, text=True, check=True).stdout.strip()
-        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=REPO_ROOT,
+        # The log itself changes with every run, so it does not count as a code change
+        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--",
+                                ".", ":!experiments/runs.csv"], cwd=REPO_ROOT,
                                capture_output=True, text=True, check=True).stdout.strip()
         return commit + ("+dirty" if dirty else "")
     except (OSError, subprocess.CalledProcessError):
