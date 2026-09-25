@@ -5,13 +5,13 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: see latest commit on `main` (Day 4 complete)
+- Current verified commit / version: see latest commit on `main` (Day 5 complete)
 - Lesson 3 result: _TBD (fill in)_
-- CHECK status: PASS (`python -m pytest`: 15 tests)
+- CHECK status: PASS (`python -m pytest`: 16 tests)
 
 ## Limits and unfinished work
 - Current limitations:
-  - EDA, preprocessing, and baselines done. Best so far: logistic regression, validation ROC-AUC 0.726 (`experiments/README.md`). No tree models, test evaluation, or demo yet.
+  - 23 experiment runs: logistic regression, random forest, and gradient boosting all reach ~0.73 validation ROC-AUC; no model is reliably better than logistic regression (paired bootstrap). No test evaluation or demo yet.
   - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
@@ -24,5 +24,5 @@
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action (Day 5): Random Forest and gradient boosting experiments and tuning, logged to `experiments/runs.csv`.
+- Next concrete action (Day 6): choose the final model on validation evidence, choose the risk threshold, then score it once on the test set.
 - Last updated (date): 2026-09-25

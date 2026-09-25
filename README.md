@@ -107,6 +107,16 @@ The split is by time, not random, because the model will always predict *future*
 | Lead-time rule (no ML) | 0.693 | 0.284 | 0.328 |
 | Logistic regression | **0.726** | **0.332** | **0.365** |
 
+### Model comparison (validation set)
+
+| Model (best settings) | ROC-AUC | PR-AUC | recall@top20 |
+|---|---|---|---|
+| Logistic regression | 0.726 | 0.332 | 0.365 |
+| Random forest (min 20 samples per leaf) | 0.726 | 0.323 | 0.363 |
+| Gradient boosting (learning rate 0.03, 15 leaves, min 200 samples per leaf) | 0.729 | 0.331 | 0.368 |
+
+23 runs in total. A paired bootstrap shows **no model is reliably better than logistic regression** (all 95% intervals for the difference include zero). See [`experiments/README.md`](experiments/README.md) for every run and the analysis.
+
 ## Repository structure
 
 ```
@@ -138,6 +148,8 @@ pip install -r requirements.txt
 ```bash
 python -m src.preprocess     # builds the dataset and prints the split summary
 python -m src.train baselines  # trains the baselines, scores them on validation, logs the runs
+python -m src.train logreg_tuning       # also: random_forest, gradient_boosting
+python -m src.train compare    # paired bootstrap: best of each model family vs logistic regression
 python -m pytest             # runs the automated tests
 ```
 

@@ -41,3 +41,67 @@ python -m src.train baselines
 5. **SMS status adds almost nothing** (+0.001 ROC-AUC). Excluding it, which is required because it is not known at booking time, costs practically no performance.
 
 **Model to beat:** `logreg`, validation ROC-AUC 0.726, recall@top20 0.365.
+
+## 2. Logistic regression tuning (commit `fcdbff4`)
+
+`C` controls regularisation (smaller `C` = simpler model).
+
+| Run | ROC-AUC | PR-AUC | recall@top20 | Train ROC-AUC |
+|---|---|---|---|---|
+| `logreg_C0.001` | 0.722 | 0.322 | 0.359 | 0.723 |
+| `logreg_C0.01` | 0.726 | 0.332 | 0.363 | 0.727 |
+| `logreg_C0.1` | 0.726 | 0.333 | 0.365 | 0.728 |
+| `logreg_C1.0` | 0.726 | 0.332 | 0.365 | 0.728 |
+| `logreg_C10.0` | 0.726 | 0.332 | 0.365 | 0.728 |
+
+**Finding:** results are flat from `C = 0.01` upwards, and train and validation scores are almost equal, so the model is not overfitting. Only very strong regularisation (`C = 0.001`) hurts. The default `C = 1.0` is kept.
+
+## 3. Random forest (commit `fcdbff4`)
+
+300 trees. `leaf` = minimum samples per leaf; `feat` = share of features tried at each split.
+
+| Run | ROC-AUC | PR-AUC | recall@top20 | Train ROC-AUC |
+|---|---|---|---|---|
+| `rf_leaf1_featsqrt` (fully grown trees) | 0.700 | 0.297 | 0.337 | **0.999** |
+| `rf_leaf20_featsqrt` | **0.726** | 0.323 | 0.363 | 0.773 |
+| `rf_leaf100_featsqrt` | 0.723 | 0.312 | 0.356 | 0.742 |
+| `rf_leaf20_feat0.5` | 0.722 | 0.320 | 0.357 | 0.817 |
+
+**Finding:** fully grown trees memorise the training data (train ROC-AUC 0.999) and do *worse* than logistic regression on validation. This is clear overfitting. Limiting leaf size to 20 fixes it and brings the forest level with logistic regression, but not above it.
+
+## 4. Gradient boosting (commit `fcdbff4`)
+
+scikit-learn `HistGradientBoostingClassifier` with early stopping on 10% of the training rows (the number of boosting rounds it chose is in `runs.csv`). `lr` = learning rate, `leaves` = maximum leaves per tree, `leaf` = minimum samples per leaf.
+
+| Run | ROC-AUC | PR-AUC | recall@top20 | Train ROC-AUC |
+|---|---|---|---|---|
+| `hgb_default` | 0.728 | 0.330 | 0.364 | 0.777 |
+| `hgb_lr0.03_leaves15_leaf20` | 0.728 | **0.335** | 0.365 | 0.755 |
+| `hgb_lr0.03_leaves15_leaf200` | **0.729** | 0.331 | 0.368 | 0.759 |
+| `hgb_lr0.03_leaves63_leaf20` | 0.725 | 0.328 | 0.357 | 0.800 |
+| `hgb_lr0.03_leaves63_leaf200` | 0.726 | 0.326 | 0.368 | 0.777 |
+| `hgb_lr0.1_leaves15_leaf20` | 0.728 | 0.334 | 0.360 | 0.758 |
+| `hgb_lr0.1_leaves15_leaf200` | 0.728 | 0.331 | **0.371** | 0.763 |
+| `hgb_lr0.1_leaves63_leaf20` | 0.726 | 0.330 | 0.363 | 0.787 |
+| `hgb_lr0.1_leaves63_leaf200` | 0.725 | 0.326 | 0.367 | 0.772 |
+
+**Finding:** small trees (15 leaves) work best; bigger trees (63 leaves) overfit slightly more and score lower. All nine settings fall between 0.725 and 0.729, so tuning makes little difference.
+
+## 5. Are the best models really better? (commit `4410d30`)
+
+The best run of each family was compared with logistic regression using a **paired bootstrap** on the validation set (`python -m src.train compare`): the validation rows are resampled 1,000 times, both models are scored on the same resample, and the difference is recorded. Full output: [`comparison.csv`](comparison.csv).
+
+| Model vs logistic regression | Metric | Mean difference | 95% interval | Better in |
+|---|---|---|---|---|
+| Random forest (`rf_leaf20_featsqrt`) | ROC-AUC | +0.0005 | −0.0042 to +0.0053 | 60% of resamples |
+| Random forest | recall@top20 | −0.0033 | −0.0181 to +0.0097 | 32% |
+| Gradient boosting (`hgb_lr0.03_leaves15_leaf200`) | ROC-AUC | +0.0031 | −0.0021 to +0.0083 | 87% |
+| Gradient boosting | recall@top20 | +0.0021 | −0.0119 to +0.0152 | 62% |
+
+**Finding:** every 95% interval contains zero, so **no model is reliably better than logistic regression.** Gradient boosting is slightly ahead most of the time, but by an amount smaller than the noise.
+
+## Conclusions so far
+
+1. **All reasonable models reach about 0.73 ROC-AUC on validation.** The limit comes from the information in the features, not from the choice of algorithm. With lead time dominating and the other features weak (see the EDA), there is little non-linear structure for trees to exploit.
+2. **Overfitting is real and visible** in unrestricted trees (random forest train ROC-AUC 0.999, validation 0.700), and regularisation fixes it.
+3. **Choice for the final model (Day 6):** logistic regression performs as well as the best tree model, is simpler, has an equally good Brier score, and its coefficients can be explained to clinic staff. Gradient boosting is the only close alternative. The choice is made on this validation evidence; only the chosen model is then scored **once** on the test set, so the test result stays an unbiased estimate.

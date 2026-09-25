@@ -11,7 +11,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 |---|---|---|---|
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
-| 3 | Modeling and Experiments | 20 | 🟡 baselines + experiment log |
+| 3 | Modeling and Experiments | 20 | 🟡 23 runs, 3 model families compared; final choice pending |
 | 4 | Evaluation and Error Analysis | 15 | 🟡 metrics defined |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
 | 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
@@ -36,9 +36,9 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 
 ### 3. Modeling and Experiments (20)
 - [x] (3) Baselines: majority class and logistic regression
-- [ ] (5) Main model trained (Random Forest / HistGradientBoosting)
-- [ ] (4) At least two approaches compared on the same validation set
-- [ ] (3) Several experiments / hyperparameter changes, analysed
+- [x] (5) Main model trained (Random Forest / HistGradientBoosting)
+- [x] (4) At least two approaches compared on the same validation set
+- [x] (3) Several experiments / hyperparameter changes, analysed
 - [x] (2) Experiment tracking: every run logged (MLflow or `experiments/runs.csv`)
 - [ ] (3) Final model choice justified with evidence
 
@@ -81,7 +81,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] Dataset source
 - [x] ML task type
 - [x] Pipeline / system architecture
-- [ ] Models or approaches tested
+- [x] Models or approaches tested
 - [ ] Final model and justification
 - [ ] Evaluation metrics and results
 - [x] Installation instructions

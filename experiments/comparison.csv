@@ -1,0 +1,5 @@
+model,metric,mean_diff,ci_low,ci_high,share_better
+random_forest,roc_auc,0.0005,-0.0042,0.0053,0.596
+random_forest,recall_top20,-0.0033,-0.0181,0.0097,0.323
+gradient_boosting,roc_auc,0.0031,-0.0021,0.0083,0.87
+gradient_boosting,recall_top20,0.0021,-0.0119,0.0152,0.618
