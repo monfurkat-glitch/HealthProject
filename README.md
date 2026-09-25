@@ -60,13 +60,43 @@ The full analysis, with charts, is in [`notebooks/01_eda.ipynb`](notebooks/01_ed
 - No-show rate peaks for ages 13–17 (27%) and is lowest for ages 66–80 (15%). Health flags, gender, and weekday each move it by less than 4 points.
 - Leakage-safe patient history is only a modest signal: just 28% of appointments have any known prior appointment.
 
+## Pipeline
+
+```
+raw appointment ─► clean() ─► add_history_features() ─► add_features() ─► encoder (fitted on train) ─► model ─► probability ─► risk band
+```
+
+All steps live in [`src/preprocess.py`](src/preprocess.py) and are shared by training and prediction.
+
+| Step | What it does |
+|---|---|
+| `clean` | Renames columns, parses dates, encodes the target, and drops impossible rows (6 rows: 1 with negative age, 5 booked after the appointment) |
+| `add_history_features` | `prior_appointments`, `prior_no_shows`, `prior_no_show_rate`: the patient's appointments dated **strictly before the booking day**, so only outcomes known at booking time are used |
+| `add_features` | `lead_days`, `same_day`, `appointment_weekday`, `male`, `disability` (from the 0–4 `Handcap` count) |
+| `build_preprocessor` | Standardises numeric features; one-hot encodes neighbourhood and weekday, grouping rare (< 50 training rows) and unseen neighbourhoods together |
+| `time_split` | Chronological split by appointment date (below) |
+
+### Data split
+
+| Split | Appointment dates | Rows | Share | No-show rate |
+|---|---|---|---|---|
+| Train | 2016-04-29 → 2016-05-25 | 75,278 | 68.1% | 21.0% |
+| Validation | 2016-05-30 → 2016-06-02 | 17,567 | 15.9% | 18.6% |
+| Test | 2016-06-03 → 2016-06-08 | 17,676 | 16.0% | 18.5% |
+
+The split is by time, not random, because the model will always predict *future* appointments from *past* data. The train/validation boundary falls in a 4-day gap with no appointments. The later periods have a slightly lower no-show rate, which the evaluation must take into account.
+
+### Design decisions
+
+- **Prediction moment: at booking time.** Every feature is known when the appointment is booked.
+- **`SMS_received` is excluded by default.** Reminders are sent *after* booking, and deciding who gets one is exactly what the model is for, so SMS status is not known at prediction time. The EDA also shows it is confounded with lead time. It can be switched on (`include_sms=True`) for a comparison experiment.
+- **Leakage is tested automatically.** [`tests/test_preprocess.py`](tests/test_preprocess.py) checks the history features against a brute-force recomputation on real data, and checks that changing future outcomes never changes a feature.
+
 ## Approach
 
 - **Baselines:** majority class ("always shows up") and logistic regression.
 - **Models to compare:** Random Forest and gradient boosting (scikit-learn `HistGradientBoostingClassifier`).
-- **Validation:** time-based split (train on earlier appointments, validate and test on later ones).
 - **Metrics:** ROC-AUC, PR-AUC, and precision/recall on the no-show class (the classes are imbalanced, about 80/20).
-- **Leakage guard:** patient-history features only use past appointments dated before the current booking's `ScheduledDay`.
 
 ## Repository structure
 
@@ -79,7 +109,7 @@ HealthProject/
 ├── models/          saved model and preprocessing artifacts
 ├── experiments/     experiment log
 ├── reports/         evaluation results, figures, and error analysis
-├── tests/           automated tests
+├── tests/           automated tests (pytest)
 ├── requirements.txt pinned dependencies
 └── PROJECT_STATUS.md
 ```
@@ -92,6 +122,13 @@ Requires Python 3.10 or newer.
 git clone https://github.com/monfurkat-glitch/HealthProject.git
 cd HealthProject
 pip install -r requirements.txt
+```
+
+## Running the pipeline and tests
+
+```bash
+python -m src.preprocess     # builds the dataset and prints the split summary
+python -m pytest             # runs the automated tests
 ```
 
 ## Training, demo, and inference

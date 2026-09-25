@@ -10,7 +10,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | # | Criterion | Max | Status |
 |---|---|---|---|
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
-| 2 | Data and Preprocessing Pipeline | 15 | 🟡 data documented, EDA done, no pipeline yet |
+| 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
 | 3 | Modeling and Experiments | 20 | ⬜ |
 | 4 | Evaluation and Error Analysis | 15 | ⬜ |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
@@ -29,10 +29,10 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 ### 2. Data and Preprocessing Pipeline (15)
 - [x] (2) Dataset source, size, and structure documented, with column dictionary
 - [x] (3) EDA notebook: distributions, target rate, lead-time effect, SMS confounding, data issues
-- [ ] (4) Cleaning: Age = -1, negative lead time, Handcap to yes/no, neighbourhood encoding, scaling where needed
-- [ ] (2) Feature engineering: lead days, weekday, age groups, leakage-safe patient history
-- [ ] (2) Time-based train / validation / test split, justified
-- [ ] (2) Leakage prevention: history features use only outcomes known at `ScheduledDay`; encoders fitted on train only; a test proves it
+- [x] (4) Cleaning: Age = -1, negative lead time, Handcap to yes/no, neighbourhood encoding, scaling where needed
+- [x] (2) Feature engineering: lead days, weekday, age groups, leakage-safe patient history
+- [x] (2) Time-based train / validation / test split, justified
+- [x] (2) Leakage prevention: history features use only outcomes known at `ScheduledDay`; encoders fitted on train only; a test proves it
 
 ### 3. Modeling and Experiments (20)
 - [ ] (3) Baselines: majority class and logistic regression
@@ -80,7 +80,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [ ] Selected project track
 - [x] Dataset source
 - [x] ML task type
-- [ ] Pipeline / system architecture
+- [x] Pipeline / system architecture
 - [ ] Models or approaches tested
 - [ ] Final model and justification
 - [ ] Evaluation metrics and results
