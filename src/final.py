@@ -43,6 +43,12 @@ def risk_band(probability, cutoffs) -> np.ndarray:
     return np.array(BANDS)[idx]
 
 
+def reference_means(model, X: pd.DataFrame) -> list[float]:
+    """Average of each encoded model input over the training rows. Predictions are explained
+    relative to this 'average appointment' (see src/predict.py)."""
+    return model[0].transform(X).mean(axis=0).round(6).tolist()
+
+
 def band_table(y_true, bands) -> pd.DataFrame:
     frame = pd.DataFrame({"band": bands, "y": np.asarray(y_true)})
     table = frame.groupby("band")["y"].agg(appointments="size", no_shows="sum").reindex(BANDS)
@@ -123,6 +129,7 @@ def main() -> dict:
         "features": cols,
         "band_cutoffs": cutoffs.tolist(),
         "band_percentiles": list(BAND_PERCENTILES),
+        "reference_means": reference_means(final, X_fit),
         "params": FINAL_PARAMS,
         "trained_on": f"{fit_data['appointment_day'].min().date()} to {fit_data['appointment_day'].max().date()}",
         "training_rows": len(fit_data),

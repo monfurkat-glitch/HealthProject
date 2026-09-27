@@ -1,0 +1,9 @@
+[
+  {"patient_id": "a", "age": 62, "gender": "M", "neighbourhood": "JARDIM DA PENHA",
+   "hypertension": 1, "diabetes": 1, "scheduled_day": "2016-06-06", "appointment_day": "2016-06-06"},
+  {"patient_id": "b", "age": 34, "gender": "F", "neighbourhood": "CENTRO",
+   "scheduled_day": "2016-06-01", "appointment_day": "2016-06-10"},
+  {"patient_id": "c", "age": 15, "gender": "F", "neighbourhood": "ITARARÉ", "scholarship": "yes",
+   "scheduled_day": "2016-05-02", "appointment_day": "2016-06-20",
+   "prior_appointments": 3, "prior_no_shows": 2}
+]

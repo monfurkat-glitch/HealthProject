@@ -1,0 +1,13 @@
+{
+  "patient_id": "new-patient-001",
+  "age": 19,
+  "gender": "F",
+  "neighbourhood": "JARDIM CAMBURI",
+  "scholarship": 1,
+  "hypertension": 0,
+  "diabetes": 0,
+  "alcoholism": 0,
+  "handicap": 0,
+  "scheduled_day": "2016-06-01T09:30:00",
+  "appointment_day": "2016-06-29"
+}
