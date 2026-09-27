@@ -14,8 +14,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
 | 4 | Evaluation and Error Analysis | 15 | ✅ test results, error analysis, fairness, edge cases |
 | 5 | End-to-End Implementation and Delivery | 20 | ✅ prediction pipeline, validation, Colab demo verified |
-| 6 | Documentation and Reproducibility | 10 | 🟡 run instructions + reproducibility verified; final README polish Day 10 |
-| 7 | Responsible AI and Limitations | 5 | 🟡 fairness analysed; write-up Day 10 |
+| 6 | Documentation and Reproducibility | 10 | ✅ final README, instructions, reproducibility verified |
+| 7 | Responsible AI and Limitations | 5 | ✅ model card: intended/prohibited uses, fairness, privacy, limitations |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
 
 ## Detailed checklist
@@ -59,15 +59,15 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (2) Edge-case tests pass
 
 ### 6. Documentation and Reproducibility (10)
-- [ ] (3) README has every required section (see list below)
+- [x] (3) README has every required section (see list below)
 - [x] (3) `requirements.txt`, setup, training, and demo instructions complete
 - [x] (2) Logical repo layout (`src/`, `notebooks/`, `models/`, `reports/`, `tests/`)
 - [x] (2) Reproduced end to end from a fresh clone
 
 ### 7. Responsible AI and Limitations (5)
 - [x] (2) Bias / fairness: performance by gender, age group, neighbourhood, and scholarship (welfare) status
-- [ ] (1) Privacy: quasi-identifiers, de-identification, misuse risk (e.g. denying care to "high-risk" patients)
-- [ ] (2) Limitations and inappropriate uses stated
+- [x] (1) Privacy: quasi-identifiers, de-identification, misuse risk (e.g. denying care to "high-risk" patients)
+- [x] (2) Limitations and inappropriate uses stated
 
 ### 8. Presentation, Demo, and Q&A (5)
 - [ ] Slides for the final defense
@@ -88,8 +88,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] Training instructions
 - [x] Demo and inference run instructions (Colab first)
 - [x] Example input and output
-- [ ] Known limitations
-- [ ] Responsible AI considerations
+- [x] Known limitations
+- [x] Responsible AI considerations
 - [x] Student's full name
 - [x] License information and source acknowledgements (including AI-assistant use)
 
