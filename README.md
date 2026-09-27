@@ -146,6 +146,8 @@ pip install -r requirements.txt
 
 ## Running the pipeline and tests
 
+Run from the repository root after `pip install -r requirements.txt`. Everything runs on a laptop CPU in a few minutes.
+
 ```bash
 python -m src.preprocess     # builds the dataset and prints the split summary
 python -m src.train baselines  # trains the baselines, scores them on validation, logs the runs
@@ -156,6 +158,33 @@ python -m src.error_analysis  # error analysis and fairness checks of the final 
 python -m src.predict examples/appointment.json  # scores an appointment with the saved model
 python -m pytest             # runs the automated tests
 ```
+
+## Demo (Google Colab)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb)
+
+Open [`notebooks/02_demo.ipynb`](notebooks/02_demo.ipynb) in Colab and choose **Runtime → Run all** (about 1–2 minutes; no uploads or setup needed). The notebook:
+
+1. clones this repository and installs the pinned scikit-learn version;
+2. loads the saved model and shows its settings and risk-band cut-offs;
+3. scores one appointment from an editable form, with its risk band and main factors;
+4. ranks a day's appointments by risk, as staff would see them;
+5. shows invalid inputs being rejected and unusual inputs being scored with warnings;
+6. looks up a real patient's history, counting only visits before the booking day;
+7. **retrains the model from the raw CSV** and confirms it gives the same predictions as the saved model;
+8. **re-scores the test set** and confirms the numbers in `reports/test_results.json`;
+9. runs the automated tests.
+
+### Reproducibility check
+
+Everything was re-run from a **fresh clone** in a **new, empty Python environment** that had only `requirements.txt` installed:
+
+| Check | Result |
+|---|---|
+| `notebooks/01_eda.ipynb` and `notebooks/02_demo.ipynb` | ran without errors |
+| `python -m pytest` | 55 passed |
+| `python -m src.train baselines` + `python -m src.final` + `python -m src.error_analysis` | all 9 logged runs gave identical metrics; `reports/test_results.json` and `reports/error_analysis.json` unchanged byte for byte |
+| Retrained model vs saved `models/final_model.joblib` | identical coefficients, cut-offs, and reference values (only the creation date and commit fields differ) |
 
 ## Prediction (inference)
 

@@ -13,8 +13,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
 | 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
 | 4 | Evaluation and Error Analysis | 15 | ✅ test results, error analysis, fairness, edge cases |
-| 5 | End-to-End Implementation and Delivery | 20 | 🟡 prediction pipeline + validation + tests; Colab demo next |
-| 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
+| 5 | End-to-End Implementation and Delivery | 20 | 🟡 demo notebook verified in a clean local environment; real Colab run after push |
+| 6 | Documentation and Reproducibility | 10 | 🟡 run instructions + reproducibility verified; final README polish Day 10 |
 | 7 | Responsible AI and Limitations | 5 | 🟡 fairness analysed; write-up Day 10 |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
 
@@ -60,9 +60,9 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 
 ### 6. Documentation and Reproducibility (10)
 - [ ] (3) README has every required section (see list below)
-- [ ] (3) `requirements.txt`, setup, training, and demo instructions complete
+- [x] (3) `requirements.txt`, setup, training, and demo instructions complete
 - [x] (2) Logical repo layout (`src/`, `notebooks/`, `models/`, `reports/`, `tests/`)
-- [ ] (2) Reproduced end to end from a fresh clone
+- [x] (2) Reproduced end to end from a fresh clone
 
 ### 7. Responsible AI and Limitations (5)
 - [x] (2) Bias / fairness: performance by gender, age group, neighbourhood, and scholarship (welfare) status
@@ -86,7 +86,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] Evaluation metrics and results
 - [x] Installation instructions
 - [x] Training instructions
-- [ ] Demo and inference run instructions (Colab first)
+- [x] Demo and inference run instructions (Colab first)
 - [x] Example input and output
 - [ ] Known limitations
 - [ ] Responsible AI considerations
