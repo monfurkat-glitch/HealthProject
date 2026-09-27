@@ -39,7 +39,7 @@ def add_segments(df: pd.DataFrame) -> pd.DataFrame:
     out["gender"] = out["male"].map({1: "male", 0: "female"})
     out["welfare"] = out["scholarship"].map({1: "welfare (Scholarship)", 0: "no welfare"})
     out["history"] = np.select([out["prior_appointments"] == 0, out["prior_no_shows"] == 0],
-                               ["no known history", "history, no prior no-show"], "history, 1+ prior no-show")
+                               ["no known history", "history, all attended"], "history, 1+ no-show")
     return out
 
 
@@ -92,15 +92,16 @@ def _style():
 
 def plot_coefficients(coef: pd.DataFrame, path) -> None:
     top = coef[~coef["feature"].str.startswith("neighbourhood_")].head(14).iloc[::-1]
-    fig, ax = plt.subplots(figsize=(7.5, 4.8))
+    fig, ax = plt.subplots(figsize=(8, 4.8))
     colors = [BLUE if c > 0 else GREY for c in top["coefficient"]]
-    bars = ax.barh(top["feature"], top["odds_ratio"] - 1, left=1, color=colors, height=0.65)
+    labels = top["feature"].str.replace("appointment_weekday_", "weekday: ", regex=False)
+    bars = ax.barh(labels, top["odds_ratio"] - 1, left=1, color=colors, height=0.65)
     ax.bar_label(bars, labels=[f"×{v:.2f}" for v in top["odds_ratio"]], padding=3, fontsize=8, color=INK2)
     ax.axvline(1, color=INK2, lw=1); ax.grid(axis="y", visible=False)
     lo, hi = top["odds_ratio"].min(), top["odds_ratio"].max()
     ax.set_xlim(min(lo, 1) - 0.15, max(hi, 1) + 0.25)
-    ax.set_xlabel("Odds ratio (blue = raises no-show odds; numeric features: per 1 standard deviation)")
-    ax.set_title("What the final model learned (excluding neighbourhoods)")
+    ax.set_xlabel("Odds ratio (numeric features: per 1 standard deviation)")
+    ax.set_title("What the model learned: blue raises no-show odds, grey lowers them")
     fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
 
 
@@ -112,7 +113,7 @@ def plot_slices(slices: dict[str, pd.DataFrame], overall_auc: float, path) -> No
         bars = ax.bar(range(len(t)), t["roc_auc"], color=BLUE, width=0.65)
         ax.bar_label(bars, labels=[f"{v:.2f}" for v in t["roc_auc"]], padding=2, fontsize=8, color=INK2)
         ax.axhline(overall_auc, color=INK2, ls="--", lw=1, label=f"Overall {overall_auc:.3f}")
-        ax.set_xticks(range(len(t)), [str(i).replace(", ", ",\n") for i in t.index], fontsize=8)
+        ax.set_xticks(range(len(t)), [str(i).replace(", ", "\n").replace("no known ", "no known\n") for i in t.index], fontsize=8)
         ax.set_title(g.replace("_", " ").capitalize()); ax.grid(axis="x", visible=False)
     axes[0].set_ylim(0.5, 0.8); axes[0].set_ylabel("ROC-AUC within the group"); axes[0].legend(loc="upper right")
     fig.suptitle("Ranking quality inside each segment (test set)", x=0.01, ha="left", fontweight="bold")
