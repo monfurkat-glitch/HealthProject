@@ -76,7 +76,7 @@ def error_profile(df: pd.DataFrame) -> pd.DataFrame:
     kind = np.select(
         [df["flagged"] & (df[TARGET] == 1), df["flagged"] & (df[TARGET] == 0),
          ~df["flagged"] & (df[TARGET] == 1), ~df["flagged"] & (df[TARGET] == 0)],
-        ["caught no-show (TP)", "false alarm (FP)", "missed no-show (FN)", "correctly not flagged (TN)"])
+        ["caught no-show (TP)", "false alarm (FP)", "missed no-show (FN)", "correctly not flagged (TN)"], default="")
     cols = {"appointments": ("age", "size"), "mean_age": ("age", "mean"), "median_lead_days": ("lead_days", "median"),
             "same_day_share": ("same_day", "mean"), "welfare_share": ("scholarship", "mean"),
             "has_history_share": ("prior_appointments", lambda s: (s > 0).mean()),
