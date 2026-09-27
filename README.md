@@ -184,6 +184,7 @@ Everything was re-run from a **fresh clone** in a **new, empty Python environmen
 | `notebooks/01_eda.ipynb` and `notebooks/02_demo.ipynb` | ran without errors |
 | `python -m pytest` | 55 passed |
 | `python -m src.train baselines` + `python -m src.final` + `python -m src.error_analysis` | all 9 logged runs gave identical metrics; `reports/test_results.json` and `reports/error_analysis.json` unchanged byte for byte |
+| Google Colab: `notebooks/02_demo.ipynb`, Runtime → Run all, straight from GitHub | ran cleanly |
 | Retrained model vs saved `models/final_model.joblib` | identical coefficients, cut-offs, and reference values (only the creation date and commit fields differ) |
 
 ## Prediction (inference)

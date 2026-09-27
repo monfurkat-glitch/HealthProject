@@ -13,7 +13,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
 | 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
 | 4 | Evaluation and Error Analysis | 15 | ✅ test results, error analysis, fairness, edge cases |
-| 5 | End-to-End Implementation and Delivery | 20 | 🟡 demo notebook verified in a clean local environment; real Colab run after push |
+| 5 | End-to-End Implementation and Delivery | 20 | ✅ prediction pipeline, validation, Colab demo verified |
 | 6 | Documentation and Reproducibility | 10 | 🟡 run instructions + reproducibility verified; final README polish Day 10 |
 | 7 | Responsible AI and Limitations | 5 | 🟡 fairness analysed; write-up Day 10 |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
@@ -52,10 +52,10 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 
 ### 5. End-to-End Implementation and Delivery (20)
 - [x] (5) `predict` pipeline: raw appointment → probability + Low/Medium/High band
-- [ ] (4) Google Colab demo notebook that runs from the GitHub repo
+- [x] (4) Google Colab demo notebook that runs from the GitHub repo
 - [x] (3) Input validation: missing/invalid age, unknown neighbourhood, bad dates → clear errors or safe defaults
 - [x] (2) Model and preprocessor saved (`joblib`) and reloaded in the demo
-- [ ] (4) Clean-runtime check: fresh Colab runs the demo with no hidden local files
+- [x] (4) Clean-runtime check: fresh Colab runs the demo with no hidden local files
 - [x] (2) Edge-case tests pass
 
 ### 6. Documentation and Reproducibility (10)

@@ -15,7 +15,7 @@
   - Probabilities slightly too high on test (base-rate shift).
   - Error analysis: weak ranking within a lead-time group; welfare patients and children over-flagged, elderly no-shows rarely caught (`reports/error_analysis.md`).
   - Prediction module (`src/predict.py`) and demo notebook (`notebooks/02_demo.ipynb`) done. Whole project reproduced from a fresh clone in a clean environment with identical results.
-  - Not yet run in real Google Colab: needs the local commits pushed to GitHub first.
+  - `02_demo.ipynb` confirmed running cleanly in Google Colab (Run all) from GitHub, 2026-09-27.
   - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
@@ -28,5 +28,5 @@
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action: push to GitHub, run `02_demo.ipynb` in Colab (Run all). Then Day 10: final README, Responsible AI section, limitations.
+- Next concrete action (Day 10): final README, Responsible AI section, limitations.
 - Last updated (date): 2026-09-27
