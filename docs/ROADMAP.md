@@ -16,7 +16,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 5 | End-to-End Implementation and Delivery | 20 | ✅ prediction pipeline, validation, Colab demo verified |
 | 6 | Documentation and Reproducibility | 10 | ✅ final README, instructions, reproducibility verified |
 | 7 | Responsible AI and Limitations | 5 | ✅ model card: intended/prohibited uses, fairness, privacy, limitations |
-| 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
+| 8 | Presentation, Demo, and Q&A | 5 | 🟡 slides + Q&A notes ready; rehearse the live demo |
 
 ## Detailed checklist
 
@@ -70,9 +70,9 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (2) Limitations and inappropriate uses stated
 
 ### 8. Presentation, Demo, and Q&A (5)
-- [ ] Slides for the final defense
+- [x] Slides for the final defense (`presentation/`)
 - [ ] Live demo rehearsed in Colab
-- [ ] Q&A prep: be able to explain every design choice and every file
+- [x] Q&A prep: be able to explain every design choice and every file (private notes, outside the repo)
 
 ## README required sections
 - [x] Project title

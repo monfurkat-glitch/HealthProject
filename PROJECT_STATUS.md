@@ -5,7 +5,7 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: see latest commit on `main` (Day 10 complete)
+- Current verified commit / version: see latest commit on `main` (Day 11 complete)
 - Lesson 3 result: _TBD (fill in)_
 - CHECK status: PASS (`python -m pytest`: 55 tests)
 
@@ -16,6 +16,7 @@
   - Error analysis: weak ranking within a lead-time group; welfare patients and children over-flagged, elderly no-shows rarely caught (`reports/error_analysis.md`).
   - Prediction module (`src/predict.py`) and demo notebook (`notebooks/02_demo.ipynb`) done. Whole project reproduced from a fresh clone in a clean environment with identical results.
   - README finalised; Responsible AI model card in `docs/responsible_ai.md`.
+  - Defense slides in `presentation/` (16 slides, speaker notes). LMS submission file prepared outside the repo.
   - `02_demo.ipynb` confirmed running cleanly in Google Colab (Run all) from GitHub, 2026-09-27.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
@@ -28,5 +29,5 @@
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action (Day 11): presentation slides, demo rehearsal, Q&A preparation, LMS submission file with the repository link.
+- Next concrete action: rehearse the presentation and live demo; get brief approval; push; upload the submission file to the LMS before the deadline.
 - Last updated (date): 2026-09-27
