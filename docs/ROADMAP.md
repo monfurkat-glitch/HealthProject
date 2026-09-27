@@ -12,10 +12,10 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
 | 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
-| 4 | Evaluation and Error Analysis | 15 | 🟡 test results, bands, calibration; error analysis next |
+| 4 | Evaluation and Error Analysis | 15 | 🟡 test results, error analysis, fairness; input edge cases (Day 8) |
 | 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
 | 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
-| 7 | Responsible AI and Limitations | 5 | ⬜ |
+| 7 | Responsible AI and Limitations | 5 | 🟡 fairness analysed; write-up Day 10 |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
 
 ## Detailed checklist
@@ -46,7 +46,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (3) Metrics explained: ROC-AUC, PR-AUC, precision/recall/F1 on no-show class
 - [x] (3) Final results reported on the untouched test period
 - [x] (2) Final model vs baseline comparison table
-- [ ] (3) Error analysis: false negatives / false positives by segment (lead time, age, neighbourhood, SMS)
+- [x] (3) Error analysis: false negatives / false positives by segment (lead time, age, neighbourhood, SMS)
 - [ ] (2) Threshold selection, calibration check, edge cases
 - [x] (2) Honest conclusion, including what the model cannot do
 
@@ -65,7 +65,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [ ] (2) Reproduced end to end from a fresh clone
 
 ### 7. Responsible AI and Limitations (5)
-- [ ] (2) Bias / fairness: performance by gender, age group, neighbourhood, and scholarship (welfare) status
+- [x] (2) Bias / fairness: performance by gender, age group, neighbourhood, and scholarship (welfare) status
 - [ ] (1) Privacy: quasi-identifiers, de-identification, misuse risk (e.g. denying care to "high-risk" patients)
 - [ ] (2) Limitations and inappropriate uses stated
 

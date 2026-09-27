@@ -151,6 +151,7 @@ python -m src.train baselines  # trains the baselines, scores them on validation
 python -m src.train logreg_tuning       # also: random_forest, gradient_boosting
 python -m src.train compare    # paired bootstrap: best of each model family vs logistic regression
 python -m src.final           # trains the final model, saves it, and scores it once on the test set
+python -m src.error_analysis  # error analysis and fairness checks of the final model
 python -m pytest             # runs the automated tests
 ```
 
@@ -186,12 +187,23 @@ Appointments 2016-06-03 to 2016-06-08 (17,676 rows, 18.5% no-shows). Full report
 - **Gradient boosting was reliably better on the test set** (+0.013 ROC-AUC, 95% CI +0.009 to +0.018), unlike on validation. The pre-registered choice is kept so the test score stays honest; gradient boosting is recommended for a future version.
 - Probabilities are slightly too high (21.2% predicted vs 18.5% observed), probably because the test period had fewer no-shows than the training period. Treat them as relative risk.
 
+## Error analysis and fairness
+
+Full report: [reports/error_analysis.md](reports/error_analysis.md) (`python -m src.error_analysis`).
+
+- **Main limitation:** within a single lead-time group, the model ranks only a little better than chance (ROC-AUC 0.57–0.62). Most of its power comes from separating short from long lead times.
+- **Errors:** caught no-shows and false alarms have almost identical profiles (young, booked weeks ahead), so the available features cannot separate them. Missed no-shows look like typical attenders (older, short lead time).
+- **New patients** without history are ranked as well as everyone else (ROC-AUC 0.717).
+- **Fairness:** no material gender gap. **Welfare patients are flagged twice as often** (42% vs 20%) with twice the false-alarm rate, because their no-show rate dropped in the test week. **Children are over-flagged and elderly no-shows are rarely caught** (7% recall for 66+), partly because the model treats age as a straight line.
+
 ## Limitations and Responsible AI
 
-_To be completed; initial concerns:_
+_To be completed (Day 10); current points:_
 - The data comes from one Brazilian city's public health system in 2016 and may not generalise to other clinics or populations.
 - Patient IDs are de-identified, but combinations of age, neighbourhood, and health conditions could still act as quasi-identifiers.
-- A high risk score must never be used to deny, delay, or deprioritise care.
+- A high risk score must never be used to deny, delay, or deprioritise care. It is meant only for **supportive** follow-up (reminders, confirmation calls).
+- Welfare patients and children receive more false alarms, and elderly no-shows are rarely flagged (see the error analysis). Error rates by group should be monitored if the tool is used.
+- Probabilities are slightly too high on recent data; treat them as relative risk.
 
 ## License and acknowledgements
 

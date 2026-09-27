@@ -1,0 +1,955 @@
+{
+  "overall_roc_auc": 0.7232,
+  "confusion_high_band": {
+    "caught_no_shows_TP": 1324,
+    "false_alarms_FP": 2666,
+    "missed_no_shows_FN": 1944,
+    "correct_not_flagged_TN": 11742
+  },
+  "coefficients": [
+    {
+      "index": 0,
+      "feature": "same_day",
+      "coefficient": -2.0641,
+      "odds_ratio": 0.1269
+    },
+    {
+      "index": 1,
+      "feature": "neighbourhood_SOLON BORGES",
+      "coefficient": -0.4846,
+      "odds_ratio": 0.6159
+    },
+    {
+      "index": 2,
+      "feature": "neighbourhood_SANTOS DUMONT",
+      "coefficient": 0.4282,
+      "odds_ratio": 1.5345
+    },
+    {
+      "index": 3,
+      "feature": "neighbourhood_ITARAR\u00c9",
+      "coefficient": 0.3802,
+      "odds_ratio": 1.4626
+    },
+    {
+      "index": 4,
+      "feature": "alcoholism",
+      "coefficient": 0.358,
+      "odds_ratio": 1.4305
+    },
+    {
+      "index": 5,
+      "feature": "neighbourhood_DE LOURDES",
+      "coefficient": -0.3288,
+      "odds_ratio": 0.7198
+    },
+    {
+      "index": 6,
+      "feature": "neighbourhood_VILA RUBIM",
+      "coefficient": -0.3284,
+      "odds_ratio": 0.7201
+    },
+    {
+      "index": 7,
+      "feature": "neighbourhood_DO CABRAL",
+      "coefficient": -0.3241,
+      "odds_ratio": 0.7232
+    },
+    {
+      "index": 8,
+      "feature": "neighbourhood_COMDUSA",
+      "coefficient": -0.316,
+      "odds_ratio": 0.7291
+    },
+    {
+      "index": 9,
+      "feature": "neighbourhood_DO QUADRO",
+      "coefficient": -0.3089,
+      "odds_ratio": 0.7343
+    },
+    {
+      "index": 10,
+      "feature": "neighbourhood_JESUS DE NAZARETH",
+      "coefficient": 0.2699,
+      "odds_ratio": 1.3098
+    },
+    {
+      "index": 11,
+      "feature": "prior_appointments",
+      "coefficient": -0.2685,
+      "odds_ratio": 0.7645
+    },
+    {
+      "index": 12,
+      "feature": "prior_no_shows",
+      "coefficient": 0.2635,
+      "odds_ratio": 1.3015
+    },
+    {
+      "index": 13,
+      "feature": "appointment_weekday_Thursday",
+      "coefficient": -0.2456,
+      "odds_ratio": 0.7823
+    },
+    {
+      "index": 14,
+      "feature": "scholarship",
+      "coefficient": 0.2402,
+      "odds_ratio": 1.2716
+    },
+    {
+      "index": 15,
+      "feature": "neighbourhood_GURIGICA",
+      "coefficient": 0.2315,
+      "odds_ratio": 1.2604
+    },
+    {
+      "index": 16,
+      "feature": "neighbourhood_SANTA CLARA",
+      "coefficient": 0.2308,
+      "odds_ratio": 1.2597
+    },
+    {
+      "index": 17,
+      "feature": "neighbourhood_HORTO",
+      "coefficient": 0.22,
+      "odds_ratio": 1.2461
+    },
+    {
+      "index": 18,
+      "feature": "neighbourhood_CARATO\u00cdRA",
+      "coefficient": 0.2129,
+      "odds_ratio": 1.2373
+    },
+    {
+      "index": 19,
+      "feature": "neighbourhood_JABOUR",
+      "coefficient": -0.2062,
+      "odds_ratio": 0.8137
+    },
+    {
+      "index": 20,
+      "feature": "age",
+      "coefficient": -0.2029,
+      "odds_ratio": 0.8164
+    },
+    {
+      "index": 21,
+      "feature": "neighbourhood_FORTE S\u00c3O JO\u00c3O",
+      "coefficient": -0.2024,
+      "odds_ratio": 0.8168
+    },
+    {
+      "index": 22,
+      "feature": "neighbourhood_MATA DA PRAIA",
+      "coefficient": -0.2017,
+      "odds_ratio": 0.8174
+    },
+    {
+      "index": 23,
+      "feature": "neighbourhood_SANTA CEC\u00cdLIA",
+      "coefficient": 0.2009,
+      "odds_ratio": 1.2225
+    },
+    {
+      "index": 24,
+      "feature": "appointment_weekday_Wednesday",
+      "coefficient": -0.1984,
+      "odds_ratio": 0.8201
+    },
+    {
+      "index": 25,
+      "feature": "neighbourhood_JARDIM DA PENHA",
+      "coefficient": -0.197,
+      "odds_ratio": 0.8212
+    },
+    {
+      "index": 26,
+      "feature": "neighbourhood_PARQUE MOSCOSO",
+      "coefficient": 0.1798,
+      "odds_ratio": 1.197
+    },
+    {
+      "index": 27,
+      "feature": "neighbourhood_ILHA DO PR\u00cdNCIPE",
+      "coefficient": 0.1703,
+      "odds_ratio": 1.1856
+    },
+    {
+      "index": 28,
+      "feature": "neighbourhood_DA PENHA",
+      "coefficient": 0.1684,
+      "odds_ratio": 1.1834
+    },
+    {
+      "index": 29,
+      "feature": "neighbourhood_JUCUTUQUARA",
+      "coefficient": -0.1654,
+      "odds_ratio": 0.8475
+    },
+    {
+      "index": 30,
+      "feature": "appointment_weekday_Tuesday",
+      "coefficient": -0.1516,
+      "odds_ratio": 0.8593
+    },
+    {
+      "index": 31,
+      "feature": "neighbourhood_BELA VISTA",
+      "coefficient": 0.151,
+      "odds_ratio": 1.163
+    },
+    {
+      "index": 32,
+      "feature": "neighbourhood_MONTE BELO",
+      "coefficient": -0.1446,
+      "odds_ratio": 0.8654
+    },
+    {
+      "index": 33,
+      "feature": "neighbourhood_JARDIM CAMBURI",
+      "coefficient": -0.1442,
+      "odds_ratio": 0.8657
+    },
+    {
+      "index": 34,
+      "feature": "neighbourhood_BARRO VERMELHO",
+      "coefficient": 0.1411,
+      "odds_ratio": 1.1515
+    },
+    {
+      "index": 35,
+      "feature": "neighbourhood_FRADINHOS",
+      "coefficient": -0.1391,
+      "odds_ratio": 0.8701
+    },
+    {
+      "index": 36,
+      "feature": "neighbourhood_SANTA MARTHA",
+      "coefficient": -0.135,
+      "odds_ratio": 0.8737
+    },
+    {
+      "index": 37,
+      "feature": "lead_days",
+      "coefficient": 0.1343,
+      "odds_ratio": 1.1438
+    },
+    {
+      "index": 38,
+      "feature": "neighbourhood_ENSEADA DO SU\u00c1",
+      "coefficient": 0.1333,
+      "odds_ratio": 1.1426
+    },
+    {
+      "index": 39,
+      "feature": "neighbourhood_JOANA D\u00b4ARC",
+      "coefficient": -0.1295,
+      "odds_ratio": 0.8785
+    },
+    {
+      "index": 40,
+      "feature": "neighbourhood_ILHA DAS CAIEIRAS",
+      "coefficient": 0.1259,
+      "odds_ratio": 1.1341
+    },
+    {
+      "index": 41,
+      "feature": "neighbourhood_BENTO FERREIRA",
+      "coefficient": 0.1235,
+      "odds_ratio": 1.1314
+    },
+    {
+      "index": 42,
+      "feature": "neighbourhood_SANTA LU\u00cdZA",
+      "coefficient": -0.1195,
+      "odds_ratio": 0.8873
+    },
+    {
+      "index": 43,
+      "feature": "disability",
+      "coefficient": 0.119,
+      "odds_ratio": 1.1264
+    },
+    {
+      "index": 44,
+      "feature": "neighbourhood_ANDORINHAS",
+      "coefficient": 0.1183,
+      "odds_ratio": 1.1255
+    },
+    {
+      "index": 45,
+      "feature": "neighbourhood_TABUAZEIRO",
+      "coefficient": -0.1102,
+      "odds_ratio": 0.8957
+    },
+    {
+      "index": 46,
+      "feature": "appointment_weekday_Monday",
+      "coefficient": -0.1036,
+      "odds_ratio": 0.9016
+    },
+    {
+      "index": 47,
+      "feature": "hypertension",
+      "coefficient": -0.103,
+      "odds_ratio": 0.9021
+    },
+    {
+      "index": 48,
+      "feature": "neighbourhood_REP\u00daBLICA",
+      "coefficient": -0.0995,
+      "odds_ratio": 0.9053
+    },
+    {
+      "index": 49,
+      "feature": "neighbourhood_PONTAL DE CAMBURI",
+      "coefficient": -0.0991,
+      "odds_ratio": 0.9057
+    },
+    {
+      "index": 50,
+      "feature": "appointment_weekday_Friday",
+      "coefficient": -0.099,
+      "odds_ratio": 0.9057
+    },
+    {
+      "index": 51,
+      "feature": "diabetes",
+      "coefficient": 0.0983,
+      "odds_ratio": 1.1032
+    },
+    {
+      "index": 52,
+      "feature": "neighbourhood_GOIABEIRAS",
+      "coefficient": -0.0973,
+      "odds_ratio": 0.9073
+    },
+    {
+      "index": 53,
+      "feature": "neighbourhood_CENTRO",
+      "coefficient": 0.0956,
+      "odds_ratio": 1.1004
+    },
+    {
+      "index": 54,
+      "feature": "neighbourhood_S\u00c3O PEDRO",
+      "coefficient": 0.095,
+      "odds_ratio": 1.0997
+    },
+    {
+      "index": 55,
+      "feature": "neighbourhood_PIEDADE",
+      "coefficient": -0.0938,
+      "odds_ratio": 0.9105
+    },
+    {
+      "index": 56,
+      "feature": "neighbourhood_BONFIM",
+      "coefficient": 0.0934,
+      "odds_ratio": 1.0979
+    },
+    {
+      "index": 57,
+      "feature": "neighbourhood_ILHA DE SANTA MARIA",
+      "coefficient": -0.0902,
+      "odds_ratio": 0.9138
+    },
+    {
+      "index": 58,
+      "feature": "neighbourhood_INHANGUET\u00c1",
+      "coefficient": -0.0887,
+      "odds_ratio": 0.9151
+    },
+    {
+      "index": 59,
+      "feature": "neighbourhood_MORADA DE CAMBURI",
+      "coefficient": -0.0865,
+      "odds_ratio": 0.9171
+    },
+    {
+      "index": 60,
+      "feature": "neighbourhood_ROM\u00c3O",
+      "coefficient": 0.08,
+      "odds_ratio": 1.0833
+    },
+    {
+      "index": 61,
+      "feature": "neighbourhood_infrequent_sklearn",
+      "coefficient": -0.0788,
+      "odds_ratio": 0.9243
+    },
+    {
+      "index": 62,
+      "feature": "neighbourhood_ANT\u00d4NIO HON\u00d3RIO",
+      "coefficient": -0.0773,
+      "odds_ratio": 0.9256
+    },
+    {
+      "index": 63,
+      "feature": "neighbourhood_SANTOS REIS",
+      "coefficient": -0.0691,
+      "odds_ratio": 0.9333
+    },
+    {
+      "index": 64,
+      "feature": "neighbourhood_ESTRELINHA",
+      "coefficient": 0.0664,
+      "odds_ratio": 1.0686
+    },
+    {
+      "index": 65,
+      "feature": "neighbourhood_SANTA TEREZA",
+      "coefficient": -0.0654,
+      "odds_ratio": 0.9367
+    },
+    {
+      "index": 66,
+      "feature": "neighbourhood_GRANDE VIT\u00d3RIA",
+      "coefficient": 0.0627,
+      "odds_ratio": 1.0647
+    },
+    {
+      "index": 67,
+      "feature": "neighbourhood_MARIA ORTIZ",
+      "coefficient": 0.0589,
+      "odds_ratio": 1.0607
+    },
+    {
+      "index": 68,
+      "feature": "neighbourhood_NOVA PALESTINA",
+      "coefficient": 0.0578,
+      "odds_ratio": 1.0595
+    },
+    {
+      "index": 69,
+      "feature": "neighbourhood_M\u00c1RIO CYPRESTE",
+      "coefficient": 0.0563,
+      "odds_ratio": 1.0579
+    },
+    {
+      "index": 70,
+      "feature": "neighbourhood_SEGURAN\u00c7A DO LAR",
+      "coefficient": -0.0535,
+      "odds_ratio": 0.9479
+    },
+    {
+      "index": 71,
+      "feature": "neighbourhood_DO MOSCOSO",
+      "coefficient": -0.0501,
+      "odds_ratio": 0.9511
+    },
+    {
+      "index": 72,
+      "feature": "neighbourhood_BOA VISTA",
+      "coefficient": -0.0496,
+      "odds_ratio": 0.9516
+    },
+    {
+      "index": 73,
+      "feature": "neighbourhood_CONQUISTA",
+      "coefficient": 0.0472,
+      "odds_ratio": 1.0483
+    },
+    {
+      "index": 74,
+      "feature": "neighbourhood_S\u00c3O BENEDITO",
+      "coefficient": 0.0462,
+      "odds_ratio": 1.0473
+    },
+    {
+      "index": 75,
+      "feature": "prior_no_show_rate",
+      "coefficient": -0.0416,
+      "odds_ratio": 0.9592
+    },
+    {
+      "index": 76,
+      "feature": "neighbourhood_PRAIA DO CANTO",
+      "coefficient": 0.0416,
+      "odds_ratio": 1.0425
+    },
+    {
+      "index": 77,
+      "feature": "neighbourhood_PRAIA DO SU\u00c1",
+      "coefficient": 0.0392,
+      "odds_ratio": 1.04
+    },
+    {
+      "index": 78,
+      "feature": "neighbourhood_CONSOLA\u00c7\u00c3O",
+      "coefficient": -0.0391,
+      "odds_ratio": 0.9617
+    },
+    {
+      "index": 79,
+      "feature": "neighbourhood_ARIOVALDO FAVALESSA",
+      "coefficient": -0.0349,
+      "odds_ratio": 0.9657
+    },
+    {
+      "index": 80,
+      "feature": "neighbourhood_SANTA L\u00daCIA",
+      "coefficient": 0.0249,
+      "odds_ratio": 1.0252
+    },
+    {
+      "index": 81,
+      "feature": "neighbourhood_CRUZAMENTO",
+      "coefficient": -0.0245,
+      "odds_ratio": 0.9758
+    },
+    {
+      "index": 82,
+      "feature": "neighbourhood_S\u00c3O CRIST\u00d3V\u00c3O",
+      "coefficient": -0.0222,
+      "odds_ratio": 0.9781
+    },
+    {
+      "index": 83,
+      "feature": "neighbourhood_REDEN\u00c7\u00c3O",
+      "coefficient": -0.0212,
+      "odds_ratio": 0.9791
+    },
+    {
+      "index": 84,
+      "feature": "neighbourhood_SANTO ANT\u00d4NIO",
+      "coefficient": -0.0199,
+      "odds_ratio": 0.9803
+    },
+    {
+      "index": 85,
+      "feature": "neighbourhood_S\u00c3O JOS\u00c9",
+      "coefficient": 0.0186,
+      "odds_ratio": 1.0188
+    },
+    {
+      "index": 86,
+      "feature": "appointment_weekday_infrequent_sklearn",
+      "coefficient": -0.0179,
+      "odds_ratio": 0.9823
+    },
+    {
+      "index": 87,
+      "feature": "neighbourhood_UNIVERSIT\u00c1RIO",
+      "coefficient": 0.0174,
+      "odds_ratio": 1.0176
+    },
+    {
+      "index": 88,
+      "feature": "neighbourhood_FONTE GRANDE",
+      "coefficient": 0.0156,
+      "odds_ratio": 1.0157
+    },
+    {
+      "index": 89,
+      "feature": "neighbourhood_SANTA HELENA",
+      "coefficient": 0.0127,
+      "odds_ratio": 1.0128
+    },
+    {
+      "index": 90,
+      "feature": "neighbourhood_SANTO ANDR\u00c9",
+      "coefficient": 0.0096,
+      "odds_ratio": 1.0097
+    },
+    {
+      "index": 91,
+      "feature": "male",
+      "coefficient": 0.0094,
+      "odds_ratio": 1.0095
+    },
+    {
+      "index": 92,
+      "feature": "neighbourhood_MARU\u00cdPE",
+      "coefficient": 0.0067,
+      "odds_ratio": 1.0068
+    },
+    {
+      "index": 93,
+      "feature": "neighbourhood_NAZARETH",
+      "coefficient": -0.0035,
+      "odds_ratio": 0.9965
+    },
+    {
+      "index": 94,
+      "feature": "neighbourhood_RESIST\u00caNCIA",
+      "coefficient": 0.0017,
+      "odds_ratio": 1.0017
+    }
+  ],
+  "error_profile": [
+    {
+      "outcome": "caught no-show (TP)",
+      "appointments": 1324,
+      "mean_age": 22.6042,
+      "median_lead_days": 20.0,
+      "same_day_share": 0.0174,
+      "welfare_share": 0.1949,
+      "has_history_share": 0.3935,
+      "mean_probability": 0.4008
+    },
+    {
+      "outcome": "correctly not flagged (TN)",
+      "appointments": 11742,
+      "mean_age": 41.5187,
+      "median_lead_days": 1.0,
+      "same_day_share": 0.4975,
+      "welfare_share": 0.077,
+      "has_history_share": 0.4937,
+      "mean_probability": 0.1467
+    },
+    {
+      "outcome": "false alarm (FP)",
+      "appointments": 2666,
+      "mean_age": 22.5263,
+      "median_lead_days": 18.0,
+      "same_day_share": 0.006,
+      "welfare_share": 0.177,
+      "has_history_share": 0.38,
+      "mean_probability": 0.3868
+    },
+    {
+      "outcome": "missed no-show (FN)",
+      "appointments": 1944,
+      "mean_age": 42.1291,
+      "median_lead_days": 7.0,
+      "same_day_share": 0.1183,
+      "welfare_share": 0.0494,
+      "has_history_share": 0.4588,
+      "mean_probability": 0.2354
+    }
+  ],
+  "slices": {
+    "lead_time": [
+      {
+        "lead_time": "same day",
+        "appointments": 6111,
+        "no_show_rate": 0.0414,
+        "mean_predicted": 0.0512,
+        "roc_auc": 0.6238,
+        "flag_rate": 0.0064,
+        "recall_in_high": 0.0909,
+        "false_alarm_rate": 0.0027,
+        "precision_in_high": 0.5897
+      },
+      {
+        "lead_time": "1-2 days",
+        "appointments": 1737,
+        "no_show_rate": 0.2176,
+        "mean_predicted": 0.2593,
+        "roc_auc": 0.5875,
+        "flag_rate": 0.1819,
+        "recall_in_high": 0.2698,
+        "false_alarm_rate": 0.1575,
+        "precision_in_high": 0.3228
+      },
+      {
+        "lead_time": "3-7 days",
+        "appointments": 3607,
+        "no_show_rate": 0.2246,
+        "mean_predicted": 0.2759,
+        "roc_auc": 0.5814,
+        "flag_rate": 0.2393,
+        "recall_in_high": 0.3049,
+        "false_alarm_rate": 0.2202,
+        "precision_in_high": 0.2862
+      },
+      {
+        "lead_time": "8-14 days",
+        "appointments": 1271,
+        "no_show_rate": 0.2966,
+        "mean_predicted": 0.2958,
+        "roc_auc": 0.5776,
+        "flag_rate": 0.3116,
+        "recall_in_high": 0.3767,
+        "false_alarm_rate": 0.2841,
+        "precision_in_high": 0.3586
+      },
+      {
+        "lead_time": "15-30 days",
+        "appointments": 3231,
+        "no_show_rate": 0.2813,
+        "mean_predicted": 0.313,
+        "roc_auc": 0.5829,
+        "flag_rate": 0.4178,
+        "recall_in_high": 0.4917,
+        "false_alarm_rate": 0.3889,
+        "precision_in_high": 0.3311
+      },
+      {
+        "lead_time": "31+ days",
+        "appointments": 1719,
+        "no_show_rate": 0.3147,
+        "mean_predicted": 0.3471,
+        "roc_auc": 0.5741,
+        "flag_rate": 0.5969,
+        "recall_in_high": 0.671,
+        "false_alarm_rate": 0.5628,
+        "precision_in_high": 0.3538
+      }
+    ],
+    "age_group": [
+      {
+        "age_group": "0-12",
+        "appointments": 3465,
+        "no_show_rate": 0.1841,
+        "mean_predicted": 0.245,
+        "roc_auc": 0.7273,
+        "flag_rate": 0.4315,
+        "recall_in_high": 0.7022,
+        "false_alarm_rate": 0.3704,
+        "precision_in_high": 0.2997
+      },
+      {
+        "age_group": "13-17",
+        "appointments": 979,
+        "no_show_rate": 0.2554,
+        "mean_predicted": 0.2425,
+        "roc_auc": 0.6943,
+        "flag_rate": 0.3994,
+        "recall_in_high": 0.608,
+        "false_alarm_rate": 0.3278,
+        "precision_in_high": 0.3887
+      },
+      {
+        "age_group": "18-25",
+        "appointments": 1729,
+        "no_show_rate": 0.2423,
+        "mean_predicted": 0.2385,
+        "roc_auc": 0.7275,
+        "flag_rate": 0.3436,
+        "recall_in_high": 0.5537,
+        "false_alarm_rate": 0.2763,
+        "precision_in_high": 0.3906
+      },
+      {
+        "age_group": "26-45",
+        "appointments": 4457,
+        "no_show_rate": 0.2039,
+        "mean_predicted": 0.2138,
+        "roc_auc": 0.7205,
+        "flag_rate": 0.2194,
+        "recall_in_high": 0.3586,
+        "false_alarm_rate": 0.1838,
+        "precision_in_high": 0.3333
+      },
+      {
+        "age_group": "46-65",
+        "appointments": 4845,
+        "no_show_rate": 0.1531,
+        "mean_predicted": 0.1902,
+        "roc_auc": 0.6998,
+        "flag_rate": 0.0894,
+        "recall_in_high": 0.1941,
+        "false_alarm_rate": 0.0704,
+        "precision_in_high": 0.3326
+      },
+      {
+        "age_group": "66+",
+        "appointments": 2201,
+        "no_show_rate": 0.1408,
+        "mean_predicted": 0.1678,
+        "roc_auc": 0.6699,
+        "flag_rate": 0.045,
+        "recall_in_high": 0.071,
+        "false_alarm_rate": 0.0407,
+        "precision_in_high": 0.2222
+      }
+    ],
+    "gender": [
+      {
+        "gender": "female",
+        "appointments": 11664,
+        "no_show_rate": 0.1832,
+        "mean_predicted": 0.2118,
+        "roc_auc": 0.7264,
+        "flag_rate": 0.2134,
+        "recall_in_high": 0.3959,
+        "false_alarm_rate": 0.1725,
+        "precision_in_high": 0.3399
+      },
+      {
+        "gender": "male",
+        "appointments": 6012,
+        "no_show_rate": 0.1881,
+        "mean_predicted": 0.2115,
+        "roc_auc": 0.7168,
+        "flag_rate": 0.2497,
+        "recall_in_high": 0.4226,
+        "false_alarm_rate": 0.2096,
+        "precision_in_high": 0.3185
+      }
+    ],
+    "welfare": [
+      {
+        "welfare": "no welfare",
+        "appointments": 15946,
+        "no_show_rate": 0.1827,
+        "mean_predicted": 0.2074,
+        "roc_auc": 0.72,
+        "flag_rate": 0.2044,
+        "recall_in_high": 0.3658,
+        "false_alarm_rate": 0.1684,
+        "precision_in_high": 0.327
+      },
+      {
+        "welfare": "welfare (Scholarship)",
+        "appointments": 1730,
+        "no_show_rate": 0.2046,
+        "mean_predicted": 0.2519,
+        "roc_auc": 0.7456,
+        "flag_rate": 0.422,
+        "recall_in_high": 0.7288,
+        "false_alarm_rate": 0.343,
+        "precision_in_high": 0.3534
+      }
+    ],
+    "history": [
+      {
+        "history": "history, 1+ no-show",
+        "appointments": 2828,
+        "no_show_rate": 0.215,
+        "mean_predicted": 0.2586,
+        "roc_auc": 0.7071,
+        "flag_rate": 0.3967,
+        "recall_in_high": 0.6382,
+        "false_alarm_rate": 0.3306,
+        "precision_in_high": 0.3458
+      },
+      {
+        "history": "history, all attended",
+        "appointments": 5395,
+        "no_show_rate": 0.1492,
+        "mean_predicted": 0.1618,
+        "roc_auc": 0.7306,
+        "flag_rate": 0.0764,
+        "recall_in_high": 0.1652,
+        "false_alarm_rate": 0.0608,
+        "precision_in_high": 0.3228
+      },
+      {
+        "history": "no known history",
+        "appointments": 9453,
+        "no_show_rate": 0.1962,
+        "mean_predicted": 0.2262,
+        "roc_auc": 0.717,
+        "flag_rate": 0.2598,
+        "recall_in_high": 0.4329,
+        "false_alarm_rate": 0.2176,
+        "precision_in_high": 0.327
+      }
+    ],
+    "appointment_weekday": [
+      {
+        "appointment_weekday": "Friday",
+        "appointments": 4090,
+        "no_show_rate": 0.1968,
+        "mean_predicted": 0.2165,
+        "roc_auc": 0.7082,
+        "flag_rate": 0.2403,
+        "recall_in_high": 0.405,
+        "false_alarm_rate": 0.2,
+        "precision_in_high": 0.3316
+      },
+      {
+        "appointment_weekday": "Monday",
+        "appointments": 4691,
+        "no_show_rate": 0.1861,
+        "mean_predicted": 0.2176,
+        "roc_auc": 0.7286,
+        "flag_rate": 0.259,
+        "recall_in_high": 0.4479,
+        "false_alarm_rate": 0.2158,
+        "precision_in_high": 0.3218
+      },
+      {
+        "appointment_weekday": "Tuesday",
+        "appointments": 4416,
+        "no_show_rate": 0.1848,
+        "mean_predicted": 0.2088,
+        "roc_auc": 0.7224,
+        "flag_rate": 0.2156,
+        "recall_in_high": 0.4032,
+        "false_alarm_rate": 0.1731,
+        "precision_in_high": 0.3456
+      },
+      {
+        "appointment_weekday": "Wednesday",
+        "appointments": 4479,
+        "no_show_rate": 0.1728,
+        "mean_predicted": 0.2042,
+        "roc_auc": 0.7307,
+        "flag_rate": 0.1875,
+        "recall_in_high": 0.3592,
+        "false_alarm_rate": 0.1517,
+        "precision_in_high": 0.331
+      }
+    ]
+  },
+  "neighbourhoods": {
+    "groups": 79,
+    "roc_auc_range_min_300": [
+      0.6346,
+      0.8155
+    ],
+    "top_by_no_show_rate": [
+      {
+        "neighbourhood": "SANTOS DUMONT",
+        "appointments": 203,
+        "no_show_rate": 0.2808,
+        "mean_predicted": 0.3293,
+        "roc_auc": 0.72,
+        "flag_rate": 0.6207,
+        "recall_in_high": 0.8947,
+        "false_alarm_rate": 0.5137,
+        "precision_in_high": 0.4048
+      },
+      {
+        "neighbourhood": "ILHA DAS CAIEIRAS",
+        "appointments": 108,
+        "no_show_rate": 0.2778,
+        "mean_predicted": 0.2732,
+        "roc_auc": 0.6318,
+        "flag_rate": 0.4259,
+        "recall_in_high": 0.5333,
+        "false_alarm_rate": 0.3846,
+        "precision_in_high": 0.3478
+      },
+      {
+        "neighbourhood": "ANDORINHAS",
+        "appointments": 312,
+        "no_show_rate": 0.2628,
+        "mean_predicted": 0.2586,
+        "roc_auc": 0.7277,
+        "flag_rate": 0.3462,
+        "recall_in_high": 0.5732,
+        "false_alarm_rate": 0.2652,
+        "precision_in_high": 0.4352
+      },
+      {
+        "neighbourhood": "GURIGICA",
+        "appointments": 301,
+        "no_show_rate": 0.2625,
+        "mean_predicted": 0.2412,
+        "roc_auc": 0.7708,
+        "flag_rate": 0.4252,
+        "recall_in_high": 0.6962,
+        "false_alarm_rate": 0.3288,
+        "precision_in_high": 0.4297
+      },
+      {
+        "neighbourhood": "ILHA DO PR\u00cdNCIPE",
+        "appointments": 394,
+        "no_show_rate": 0.2513,
+        "mean_predicted": 0.2602,
+        "roc_auc": 0.7186,
+        "flag_rate": 0.401,
+        "recall_in_high": 0.6061,
+        "false_alarm_rate": 0.3322,
+        "precision_in_high": 0.3797
+      }
+    ],
+    "unseen_in_training": []
+  }
+}
