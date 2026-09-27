@@ -122,7 +122,8 @@ The split is by time, not random, because the model will always predict *future*
 ```
 HealthProject/
 ├── Data/            dataset (CSV) and data dictionary
-├── docs/            project brief and roadmap
+├── docs/            project brief, roadmap, and final-model decision
+├── examples/        example inputs for prediction
 ├── notebooks/       EDA and Colab demo notebooks
 ├── src/             preprocessing, training, and prediction code
 ├── models/          saved model and preprocessing artifacts
@@ -152,12 +153,96 @@ python -m src.train logreg_tuning       # also: random_forest, gradient_boosting
 python -m src.train compare    # paired bootstrap: best of each model family vs logistic regression
 python -m src.final           # trains the final model, saves it, and scores it once on the test set
 python -m src.error_analysis  # error analysis and fairness checks of the final model
+python -m src.predict examples/appointment.json  # scores an appointment with the saved model
 python -m pytest             # runs the automated tests
 ```
 
-## Training, demo, and inference
+## Prediction (inference)
 
-_Coming in later milestones (see [ROADMAP](docs/ROADMAP.md))._
+[`src/predict.py`](src/predict.py) loads the saved model and scores new appointments. Every input is validated first.
+
+```bash
+python -m src.predict examples/appointment.json              # one appointment
+python -m src.predict examples/appointments.json             # a list of appointments
+python -m src.predict examples/appointments.json --history   # also look up each patient's past visits
+python -m src.predict examples/invalid_appointment.json      # shows the validation errors
+```
+
+From Python:
+
+```python
+from src.predict import NoShowPredictor
+predictor = NoShowPredictor()
+predictor.predict({"age": 25, "gender": "F", "neighbourhood": "CENTRO",
+                   "scheduled_day": "2016-06-01", "appointment_day": "2016-06-20"})
+```
+
+### Example input and output
+
+Input ([`examples/appointment.json`](examples/appointment.json)):
+
+```json
+{
+  "patient_id": "new-patient-001",
+  "age": 19,
+  "gender": "F",
+  "neighbourhood": "JARDIM CAMBURI",
+  "scholarship": 1,
+  "hypertension": 0,
+  "diabetes": 0,
+  "alcoholism": 0,
+  "handicap": 0,
+  "scheduled_day": "2016-06-01T09:30:00",
+  "appointment_day": "2016-06-29"
+}
+```
+
+Output:
+
+```json
+{
+  "no_show_probability": 0.3509,
+  "risk_band": "High",
+  "main_factors": [
+    "not booked for the same day raises risk",
+    "welfare (Scholarship) raises risk",
+    "age 19 raises risk"
+  ],
+  "lead_days": 28,
+  "prior_appointments": 0,
+  "prior_no_shows": 0,
+  "warnings": []
+}
+```
+
+- `no_show_probability`: the model's estimated chance of a no-show; treat it as relative risk (see Results).
+- `risk_band`: **Low** < 0.233 ≤ **Medium** < 0.323 ≤ **High**. The cut-offs are the 50th and 80th percentiles of the training predictions.
+- `main_factors`: the inputs that move this appointment's risk most, compared with an average appointment.
+
+### Input rules
+
+| Field | Required | Accepted values |
+|---|---|---|
+| `age` | yes | whole number 0–115 (over 100: warning) |
+| `gender` | yes | `F`/`M` (or `female`/`male`) |
+| `scheduled_day`, `appointment_day` | yes | dates such as `2016-06-01`; the appointment cannot be before the booking. More than 179 days ahead or on a Sunday: warning |
+| `neighbourhood` | no | name from the dataset; unknown or missing → treated as a rare neighbourhood, with a warning |
+| `scholarship`, `hypertension`, `diabetes`, `alcoholism` | no | `0`/`1`, `yes`/`no`, `true`/`false`; missing → 0, with a warning |
+| `handicap` | no | 0–4; missing → 0, with a warning |
+| `prior_appointments`, `prior_no_shows` | no (both or neither) | whole numbers ≥ 0; otherwise looked up with `--history`, or 0 for a new patient |
+| `patient_id` | no | used with `--history` |
+
+Invalid inputs are rejected with **every** problem listed, e.g. for [`examples/invalid_appointment.json`](examples/invalid_appointment.json):
+
+```
+Cannot score this input:
+ - 'age' must be between 0 and 115, got -4
+ - 'gender' must be F or M, got 'X'
+ - 'appointment_day' (2016-06-01) is before 'scheduled_day' (2016-06-10): an appointment cannot be booked after it happens
+ - 'diabetes' must be 0 or 1 (or yes/no), got 'maybe'
+```
+
+55 automated tests ([`tests/`](tests/)) cover the saved model reloading, 15 kinds of invalid input, 6 kinds of unusual input, and a check that `predict()` gives exactly the same probabilities as the training pipeline for real appointments.
 
 ## Final model
 

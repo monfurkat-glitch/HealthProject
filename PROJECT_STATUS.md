@@ -5,16 +5,16 @@
 ## Current verified state
 - Repository: https://github.com/monfurkat-glitch/HealthProject
 - Current branch: `main`
-- Current verified commit / version: see latest commit on `main` (Day 7 complete)
+- Current verified commit / version: see latest commit on `main` (Day 8 complete)
 - Lesson 3 result: _TBD (fill in)_
-- CHECK status: PASS (`python -m pytest`: 21 tests)
+- CHECK status: PASS (`python -m pytest`: 55 tests)
 
 ## Limits and unfinished work
 - Current limitations:
   - Final model: logistic regression, test ROC-AUC 0.723 (95% CI 0.715–0.732); High band captures 41% of no-shows. Gradient boosting was reliably better on test (+0.013) but the pre-registered choice was kept (`reports/test_results.md`).
   - Probabilities slightly too high on test (base-rate shift).
   - Error analysis: weak ranking within a lead-time group; welfare patients and children over-flagged, elderly no-shows rarely caught (`reports/error_analysis.md`).
-  - No prediction API or demo yet.
+  - Prediction module done (`src/predict.py`, validation, explanations, 34 tests). No Colab demo yet.
   - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
@@ -27,5 +27,5 @@
 
 ## Next step
 - Criteria checklist and daily plan: `docs/ROADMAP.md`
-- Next concrete action (Day 8): `src/predict.py` (single-appointment prediction with input validation), reload of saved model, edge-case tests.
+- Next concrete action (Day 9): Colab demo notebook `notebooks/02_demo.ipynb`; verify it in a fresh runtime from a clean clone.
 - Last updated (date): 2026-09-27

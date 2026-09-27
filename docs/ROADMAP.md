@@ -12,8 +12,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 | 1 | Problem Definition and Project Alignment | 10 | 🟡 brief complete, awaiting approval |
 | 2 | Data and Preprocessing Pipeline | 15 | ✅ EDA, pipeline, split, leakage tests |
 | 3 | Modeling and Experiments | 20 | ✅ 23 runs, 3 families, justified final choice |
-| 4 | Evaluation and Error Analysis | 15 | 🟡 test results, error analysis, fairness; input edge cases (Day 8) |
-| 5 | End-to-End Implementation and Delivery | 20 | ⬜ |
+| 4 | Evaluation and Error Analysis | 15 | ✅ test results, error analysis, fairness, edge cases |
+| 5 | End-to-End Implementation and Delivery | 20 | 🟡 prediction pipeline + validation + tests; Colab demo next |
 | 6 | Documentation and Reproducibility | 10 | 🟡 README skeleton, structure, requirements |
 | 7 | Responsible AI and Limitations | 5 | 🟡 fairness analysed; write-up Day 10 |
 | 8 | Presentation, Demo, and Q&A | 5 | ⬜ |
@@ -47,16 +47,16 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] (3) Final results reported on the untouched test period
 - [x] (2) Final model vs baseline comparison table
 - [x] (3) Error analysis: false negatives / false positives by segment (lead time, age, neighbourhood, SMS)
-- [ ] (2) Threshold selection, calibration check, edge cases
+- [x] (2) Threshold selection, calibration check, edge cases
 - [x] (2) Honest conclusion, including what the model cannot do
 
 ### 5. End-to-End Implementation and Delivery (20)
-- [ ] (5) `predict` pipeline: raw appointment → probability + Low/Medium/High band
+- [x] (5) `predict` pipeline: raw appointment → probability + Low/Medium/High band
 - [ ] (4) Google Colab demo notebook that runs from the GitHub repo
-- [ ] (3) Input validation: missing/invalid age, unknown neighbourhood, bad dates → clear errors or safe defaults
-- [ ] (2) Model and preprocessor saved (`joblib`) and reloaded in the demo
+- [x] (3) Input validation: missing/invalid age, unknown neighbourhood, bad dates → clear errors or safe defaults
+- [x] (2) Model and preprocessor saved (`joblib`) and reloaded in the demo
 - [ ] (4) Clean-runtime check: fresh Colab runs the demo with no hidden local files
-- [ ] (2) Edge-case tests pass
+- [x] (2) Edge-case tests pass
 
 ### 6. Documentation and Reproducibility (10)
 - [ ] (3) README has every required section (see list below)
@@ -85,9 +85,9 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - [x] Final model and justification
 - [x] Evaluation metrics and results
 - [x] Installation instructions
-- [ ] Training instructions
+- [x] Training instructions
 - [ ] Demo and inference run instructions (Colab first)
-- [ ] Example input and output
+- [x] Example input and output
 - [ ] Known limitations
 - [ ] Responsible AI considerations
 - [x] Student's full name
