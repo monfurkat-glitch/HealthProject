@@ -77,7 +77,7 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 ## README required sections
 - [x] Project title
 - [x] Problem statement
-- [ ] Selected project track
+- [x] Selected project track
 - [x] Dataset source
 - [x] ML task type
 - [x] Pipeline / system architecture

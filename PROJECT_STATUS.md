@@ -17,7 +17,6 @@
   - Prediction module (`src/predict.py`) and demo notebook (`notebooks/02_demo.ipynb`) done. Whole project reproduced from a fresh clone in a clean environment with identical results.
   - README finalised; Responsible AI model card in `docs/responsible_ai.md`.
   - `02_demo.ipynb` confirmed running cleanly in Google Colab (Run all) from GitHub, 2026-09-27.
-  - Project track in README still to confirm.
   - Appointment dates only cover about 6 weeks (2016-04-29 to 2016-06-08), which limits the time-based split.
 - Unfinished / blocked:
   - Mentor approval of the brief is pending (sections 12–13 now filled in `docs/project_brief.md`; copy them into the .docx before submitting).

@@ -7,7 +7,7 @@ The model only **informs** staff. It never cancels, rebooks, or refuses an appoi
 | | |
 |---|---|
 | **Student** | Furkat Toshmatov |
-| **Project track** | _To confirm_ |
+| **Project track** | Track 1: Individual Project (own proposal, see the [Project Brief](docs/project_brief.md)) |
 | **Domain** | MedTech |
 | **ML task** | Supervised binary classification (tabular data) |
 | **Final model** | Logistic regression, test ROC-AUC **0.723** |
