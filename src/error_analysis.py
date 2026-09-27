@@ -100,8 +100,8 @@ def plot_coefficients(coef: pd.DataFrame, path) -> None:
     ax.axvline(1, color=INK2, lw=1); ax.grid(axis="y", visible=False)
     lo, hi = top["odds_ratio"].min(), top["odds_ratio"].max()
     ax.set_xlim(min(lo, 1) - 0.15, max(hi, 1) + 0.25)
-    ax.set_xlabel("Odds ratio (numeric features: per 1 standard deviation)")
-    ax.set_title("What the model learned: blue raises no-show odds, grey lowers them")
+    ax.set_xlabel("Odds ratio: blue raises no-show odds, grey lowers them\n(numeric features: per 1 standard deviation)")
+    ax.set_title("What the final model learned")
     fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
 
 
