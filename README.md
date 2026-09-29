@@ -17,6 +17,7 @@ The model only **informs** staff. It never cancels, rebooks, or refuses an appoi
 
 | | |
 |---|---|
+| **Whole project in one notebook** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/00_full_project.ipynb) → Runtime → Run all (5–10 min: data → experiments → test → fairness → predictions) |
 | **Run the demo** (no setup) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb) → Runtime → Run all |
 | **Explore the data** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/01_eda.ipynb) |
 | **Run locally** | `pip install -r requirements.txt` then `python -m src.predict examples/appointment.json` |
@@ -291,6 +292,7 @@ Everything was re-run from a **fresh clone** in a **new, empty Python environmen
 | Check | Result |
 |---|---|
 | `notebooks/01_eda.ipynb` and `notebooks/02_demo.ipynb` | ran without errors |
+| `notebooks/00_full_project.ipynb`: re-runs all experiments, the final evaluation, and the error analysis | ran without errors; retrained model and result files identical to the committed ones |
 | Google Colab: `notebooks/02_demo.ipynb`, Runtime → Run all, straight from GitHub | ran cleanly |
 | `python -m pytest` | 55 passed |
 | `python -m src.train baselines` + `python -m src.final` + `python -m src.error_analysis` | all 9 logged runs gave identical metrics; `reports/test_results.json` and `reports/error_analysis.json` unchanged byte for byte |
@@ -307,7 +309,7 @@ HealthProject/
 ├── examples/             example inputs for prediction
 ├── experiments/          experiment log (runs.csv), bootstrap comparison, analysis
 ├── models/               saved final model with its risk-band cut-offs
-├── notebooks/            01_eda.ipynb (data analysis), 02_demo.ipynb (Colab demo)
+├── notebooks/            00_full_project.ipynb (everything end to end), 01_eda.ipynb (data analysis), 02_demo.ipynb (Colab demo)
 ├── reports/              test results, error analysis, figures
 ├── src/
 │   ├── preprocess.py     cleaning, features, leakage-safe history, split, encoder
