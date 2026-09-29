@@ -37,7 +37,7 @@ The project will leverage pre-appointment data (including scheduling timestamps,
 | Selected dataset and source | Medical Appointment No Shows: <https://www.kaggle.com/datasets/joniarroba/noshowappointments> |
 | What does one record / sample represent? | One scheduled outpatient appointment for one patient |
 | Proposed target or ML objective | Binary classification predicting whether the appointment will be a no-show, using the `No-show` column as the label |
-| Key information available at prediction / inference time | Patient demographics (age, gender, neighbourhood, scholarship status, health conditions), scheduling dates and days of advance notice, and SMS reminder status |
+| Key information available at prediction / inference time | Patient demographics (age, gender, neighbourhood, scholarship status, health conditions), scheduling dates and days of advance notice, and the patient's attendance history known at booking time. SMS reminder status is excluded: reminders are sent after booking, so it is not known when the prediction is made |
 | Main data quality issues | Invalid values (e.g. Age = -1), a few ScheduledDay timestamps after AppointmentDay, a miscoded Handcap field, high-cardinality neighbourhoods, and class imbalance (~80/20) |
 | Potential leakage risks | Building a patient's "prior no-show rate" feature without strict time-ordering would leak future outcomes into past predictions |
 | Privacy / fairness / licensing concerns | Patient IDs are de-identified but quasi-identifiers remain; the data reflects one city's public health population |
@@ -51,9 +51,9 @@ The project will leverage pre-appointment data (including scheduling timestamps,
 | Main modeling approach(es) to investigate | Logistic regression as the interpretable baseline model, then tree-based models like Random Forest or Gradient Boosting since they handle mixed categorical/numeric health data well |
 | Data splitting / validation strategy | Split by time (train on earlier appointments, validate/test on later ones) rather than random shuffling, since in real use, you're always predicting future appointments from past data |
 | Primary evaluation metric(s) and why | ROC-AUC and recall/precision on the no-show class, because the classes are imbalanced (~80/20) and accuracy alone would look good even if the model just predicted "shows up" every time |
-| Expected inference input | The details of one new scheduled appointment (patient demographics, health flags, scheduling/appointment dates, reminder status) before it happens |
+| Expected inference input | The details of one new scheduled appointment (patient demographics, health flags, scheduling/appointment dates, and past attendance known at booking time) before it happens; SMS reminder status is not used |
 | Expected inference output | A probability or risk score (e.g. 0–100%) that the appointment will be a no-show, possibly grouped into risk levels like Low/Medium/High |
-| Main technical risks / assumptions | Assumes the historical Brazilian clinic data generalizes to the client's own patients, and that features like SMS timing and patient history stay truly "before the appointment" with no accidental leakage |
+| Main technical risks / assumptions | Assumes the historical Brazilian clinic data generalizes to the client's own patients, and that every feature, especially patient history, is truly known at booking time, with no accidental leakage |
 
 ## 8. Functional Requirements
 
