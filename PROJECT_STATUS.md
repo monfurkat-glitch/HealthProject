@@ -28,6 +28,5 @@
 - Required revision, if any: None received yet.
 
 ## Next step
-- Criteria checklist and daily plan: `docs/ROADMAP.md`
 - Next concrete action: rehearse the presentation and live demo; get brief approval; push; upload the submission file to the LMS before the deadline.
 - Last updated (date): 2026-09-27

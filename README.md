@@ -305,7 +305,7 @@ Library versions are pinned in [`requirements.txt`](requirements.txt), and all r
 ```
 HealthProject/
 ├── Data/                 dataset (CSV), data dictionary, license
-├── docs/                 project brief, final-model decision, Responsible AI / model card, roadmap
+├── docs/                 project brief, final-model decision, Responsible AI / model card
 ├── examples/             example inputs for prediction
 ├── experiments/          experiment log (runs.csv), bootstrap comparison, analysis
 ├── models/               saved final model with its risk-band cut-offs
