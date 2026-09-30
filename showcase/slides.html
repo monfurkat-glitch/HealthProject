@@ -211,6 +211,42 @@ table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
   .mc-panel{padding:18px 14px}
 }
 @media (prefers-reduced-motion:reduce){.mc-dot,.mc-train,.mc-gap{transition:none}}
+/* live prediction slide */
+.s-live{padding-top:40px}
+.s-live h2{font-size:34px;margin:6px 0 16px;padding-bottom:10px}
+.live{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:start}
+.live-form{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;font-size:15px}
+.live-form label{display:grid;gap:4px;font-weight:600;color:var(--ink-2);font-size:14px}
+.live-form label.wide{grid-column:1/3}
+.live-form input,.live-form select{font:16px var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);border-radius:4px;padding:7px 9px;min-height:38px;width:100%}
+.live-form input:focus,.live-form select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.flags{grid-column:1/3;border:1px solid var(--rule);padding:8px 12px 10px;margin:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+.flags legend{font-size:14px;font-weight:600;color:var(--ink-2);padding:0 4px}
+.live-form label.chk{display:inline-flex;align-items:center;gap:7px;font-weight:500;color:var(--ink);font-size:15px}
+.live-form label.chk input{width:18px;height:18px;min-height:0;accent-color:var(--accent)}
+.presets{grid-column:1/3;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:4px}
+.presets span{font-size:13px;font-weight:700;color:var(--ink-2);margin-right:2px}
+.presets button{font:600 13px var(--sans);padding:6px 10px;border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:4px;cursor:pointer}
+.presets button:hover{background:var(--accent-soft)}
+.lo-card{border:1px solid var(--rule-strong);background:var(--surface);padding:18px 22px}
+.lo-top{display:flex;justify-content:space-between;align-items:center}
+.lo-label{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.lo-band{font:800 14px var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;color:#fff;background:var(--ink-2)}
+.lo-band.Low{background:var(--low)}.lo-band.Medium{background:var(--medium)}.lo-band.High{background:var(--high)}
+@media (prefers-color-scheme:dark){.lo-band{color:#15181b}}
+.lo-prob{font-family:var(--serif);font-size:64px;line-height:1.1;margin:6px 0 10px;font-variant-numeric:tabular-nums}
+.lo-meter{position:relative;display:grid;grid-template-columns:50fr 30fr 20fr;gap:3px;height:12px}
+.lo-meter i{display:block}.m-low{background:var(--low)}.m-med{background:var(--medium)}.m-high{background:var(--high)}
+.lo-meter b{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);transition:left .3s ease}
+.lo-legend{display:grid;grid-template-columns:50fr 30fr 20fr;gap:3px;font-size:12px;color:var(--ink-2);margin-top:6px}
+.lo-card h3{font-size:18px;margin:16px 0 6px}
+.lo-card ul{margin:0;padding-left:20px;font-size:16px}
+.lo-card li{margin:3px 0}
+.lo-warn{margin-top:10px!important;color:var(--medium);font-size:14px!important}
+.lo-warn:empty{display:none}
+.lo-card.invalid .lo-prob{color:var(--ink-2)}
+.live-out .small{margin-top:10px;font-size:13px}
+@media (prefers-reduced-motion:reduce){.lo-meter b{transition:none}}
 
 /* interactive comparison, compacted for a slide */
 .fam-baseline{--fam:#7a8084}.fam-lr{--fam:#1f4e79}.fam-rf{--fam:#b0602a}.fam-gb{--fam:#6b4bb8}
@@ -397,8 +433,48 @@ table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
   </figure>
   <p class="lede">Caught no-shows and false alarms look almost identical in the data (young, booked weeks ahead), which limits any model. Within a single lead-time group, ranking is only a little better than chance (ROC-AUC 0.57–0.62).</p>
 </section>
+<section class="slide s-live" aria-label="Try the model live">
+  <div class="kicker">8 · Try the model live</div>
+  <h2>Score an appointment right here</h2>
+  <div class="live">
+    <form class="live-form" id="lp-form" autocomplete="off" onsubmit="return false">
+      <div class="presets" role="group" aria-label="Examples">
+        <span>Examples:</span>
+        <button type="button" data-preset="0">19 y, welfare, 28 days ahead</button>
+        <button type="button" data-preset="1">62 y, same-day booking</button>
+        <button type="button" data-preset="2">15 y, missed 2 of 3 before</button>
+      </div>
+      <label>Age<input type="number" id="lp-age" min="0" max="115" step="1" value="19"></label>
+      <label>Gender<select id="lp-gender"><option value="F">Female</option><option value="M">Male</option></select></label>
+      <label class="wide">Neighbourhood<select id="lp-nb"><option value="AEROPORTO">Aeroporto</option><option value="ANDORINHAS">Andorinhas</option><option value="ANTÔNIO HONÓRIO">Antônio Honório</option><option value="ARIOVALDO FAVALESSA">Ariovaldo Favalessa</option><option value="BARRO VERMELHO">Barro Vermelho</option><option value="BELA VISTA">Bela Vista</option><option value="BENTO FERREIRA">Bento Ferreira</option><option value="BOA VISTA">Boa Vista</option><option value="BONFIM">Bonfim</option><option value="CARATOÍRA">Caratoíra</option><option value="CENTRO">Centro</option><option value="COMDUSA">Comdusa</option><option value="CONQUISTA">Conquista</option><option value="CONSOLAÇÃO">Consolação</option><option value="CRUZAMENTO">Cruzamento</option><option value="DA PENHA">Da Penha</option><option value="DE LOURDES">De Lourdes</option><option value="DO CABRAL">Do Cabral</option><option value="DO MOSCOSO">Do Moscoso</option><option value="DO QUADRO">Do Quadro</option><option value="ENSEADA DO SUÁ">Enseada Do Suá</option><option value="ESTRELINHA">Estrelinha</option><option value="FONTE GRANDE">Fonte Grande</option><option value="FORTE SÃO JOÃO">Forte São João</option><option value="FRADINHOS">Fradinhos</option><option value="GOIABEIRAS">Goiabeiras</option><option value="GRANDE VITÓRIA">Grande Vitória</option><option value="GURIGICA">Gurigica</option><option value="HORTO">Horto</option><option value="ILHA DAS CAIEIRAS">Ilha Das Caieiras</option><option value="ILHA DE SANTA MARIA">Ilha De Santa Maria</option><option value="ILHA DO BOI">Ilha Do Boi</option><option value="ILHA DO FRADE">Ilha Do Frade</option><option value="ILHA DO PRÍNCIPE">Ilha Do Príncipe</option><option value="ILHAS OCEÂNICAS DE TRINDADE">Ilhas Oceânicas De Trindade</option><option value="INHANGUETÁ">Inhanguetá</option><option value="ITARARÉ">Itararé</option><option value="JABOUR">Jabour</option><option value="JARDIM CAMBURI" selected>Jardim Camburi</option><option value="JARDIM DA PENHA">Jardim Da Penha</option><option value="JESUS DE NAZARETH">Jesus De Nazareth</option><option value="JOANA D´ARC">Joana D´Arc</option><option value="JUCUTUQUARA">Jucutuquara</option><option value="MARIA ORTIZ">Maria Ortiz</option><option value="MARUÍPE">Maruípe</option><option value="MATA DA PRAIA">Mata Da Praia</option><option value="MONTE BELO">Monte Belo</option><option value="MORADA DE CAMBURI">Morada De Camburi</option><option value="MÁRIO CYPRESTE">Mário Cypreste</option><option value="NAZARETH">Nazareth</option><option value="NOVA PALESTINA">Nova Palestina</option><option value="PARQUE INDUSTRIAL">Parque Industrial</option><option value="PARQUE MOSCOSO">Parque Moscoso</option><option value="PIEDADE">Piedade</option><option value="PONTAL DE CAMBURI">Pontal De Camburi</option><option value="PRAIA DO CANTO">Praia Do Canto</option><option value="PRAIA DO SUÁ">Praia Do Suá</option><option value="REDENÇÃO">Redenção</option><option value="REPÚBLICA">República</option><option value="RESISTÊNCIA">Resistência</option><option value="ROMÃO">Romão</option><option value="SANTA CECÍLIA">Santa Cecília</option><option value="SANTA CLARA">Santa Clara</option><option value="SANTA HELENA">Santa Helena</option><option value="SANTA LUÍZA">Santa Luíza</option><option value="SANTA LÚCIA">Santa Lúcia</option><option value="SANTA MARTHA">Santa Martha</option><option value="SANTA TEREZA">Santa Tereza</option><option value="SANTO ANDRÉ">Santo André</option><option value="SANTO ANTÔNIO">Santo Antônio</option><option value="SANTOS DUMONT">Santos Dumont</option><option value="SANTOS REIS">Santos Reis</option><option value="SEGURANÇA DO LAR">Segurança Do Lar</option><option value="SOLON BORGES">Solon Borges</option><option value="SÃO BENEDITO">São Benedito</option><option value="SÃO CRISTÓVÃO">São Cristóvão</option><option value="SÃO JOSÉ">São José</option><option value="SÃO PEDRO">São Pedro</option><option value="TABUAZEIRO">Tabuazeiro</option><option value="UNIVERSITÁRIO">Universitário</option><option value="VILA RUBIM">Vila Rubim</option><option value="__OTHER__">Other / not listed</option></select></label>
+      <label>Booked on<input type="date" id="lp-sched" value="2016-06-01"></label>
+      <label>Appointment on<input type="date" id="lp-appt" value="2016-06-29"></label>
+      <label>Earlier appointments<input type="number" id="lp-prior" min="0" max="100" step="1" value="0"></label>
+      <label>…of which missed<input type="number" id="lp-prior-ns" min="0" max="100" step="1" value="0"></label>
+      <fieldset class="flags"><legend>Patient flags</legend>
+        <label class="chk"><input type="checkbox" id="lp-sch" checked> Welfare (Scholarship)</label>
+        <label class="chk"><input type="checkbox" id="lp-hyp"> Hypertension</label>
+        <label class="chk"><input type="checkbox" id="lp-dia"> Diabetes</label>
+        <label class="chk"><input type="checkbox" id="lp-alc"> Alcoholism</label>
+        <label class="chk"><input type="checkbox" id="lp-dis"> Disability</label>
+      </fieldset>
+    </form>
+    <div class="live-out" aria-live="polite">
+      <div class="lo-card" id="lp-card">
+        <div class="lo-top"><span class="lo-label">No-show probability</span><span class="lo-band" id="lp-band">—</span></div>
+        <div class="lo-prob" id="lp-prob">—</div>
+        <div class="lo-meter" aria-hidden="true"><i class="m-low"></i><i class="m-med"></i><i class="m-high"></i><b id="lp-pin"></b></div>
+        <div class="lo-legend"><span>Low &lt; 0.233</span><span>Medium</span><span>High ≥ 0.323</span></div>
+        <h3>Main factors</h3>
+        <ul id="lp-factors"></ul>
+        <ul class="lo-warn" id="lp-warn"></ul>
+      </div>
+      <p class="small">Computed in your browser from the saved model's coefficients (<code>models/final_model.joblib</code>), with the same steps as <code>src/predict.py</code>. Decision support only.</p>
+    </div>
+  </div>
+</section>
 <section class="slide" aria-label="Demo">
-  <div class="kicker">8 · Live demo</div>
+  <div class="kicker">9 · Full project in Colab</div>
   <h2>From raw appointment to a ranked risk list</h2>
   <div class="cols">
     <div>
@@ -416,7 +492,7 @@ table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
   </div>
 </section>
 <section class="slide" aria-label="Responsible use">
-  <div class="kicker">9 · Responsible use and limitations</div>
+  <div class="kicker">10 · Responsible use and limitations</div>
   <h2>Helpful for reminders, never for decisions about care</h2>
   <div class="cols">
     <div class="callout yes"><h3>Intended use</h3><ul><li>Staff get a ranked list and choose whom to remind or call</li><li>Supportive help only: reminders, confirmation calls, rescheduling offers</li><li>A person always decides; the model never acts</li></ul></div>
@@ -574,6 +650,124 @@ table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
 
   render();
+})();
+</script>
+<script>
+(() => {
+  const M = {"names":["age","lead_days","prior_appointments","prior_no_shows","prior_no_show_rate","neighbourhood_ANDORINHAS","neighbourhood_ANTÔNIO HONÓRIO","neighbourhood_ARIOVALDO FAVALESSA","neighbourhood_BARRO VERMELHO","neighbourhood_BELA VISTA","neighbourhood_BENTO FERREIRA","neighbourhood_BOA VISTA","neighbourhood_BONFIM","neighbourhood_CARATOÍRA","neighbourhood_CENTRO","neighbourhood_COMDUSA","neighbourhood_CONQUISTA","neighbourhood_CONSOLAÇÃO","neighbourhood_CRUZAMENTO","neighbourhood_DA PENHA","neighbourhood_DE LOURDES","neighbourhood_DO CABRAL","neighbourhood_DO MOSCOSO","neighbourhood_DO QUADRO","neighbourhood_ENSEADA DO SUÁ","neighbourhood_ESTRELINHA","neighbourhood_FONTE GRANDE","neighbourhood_FORTE SÃO JOÃO","neighbourhood_FRADINHOS","neighbourhood_GOIABEIRAS","neighbourhood_GRANDE VITÓRIA","neighbourhood_GURIGICA","neighbourhood_HORTO","neighbourhood_ILHA DAS CAIEIRAS","neighbourhood_ILHA DE SANTA MARIA","neighbourhood_ILHA DO PRÍNCIPE","neighbourhood_INHANGUETÁ","neighbourhood_ITARARÉ","neighbourhood_JABOUR","neighbourhood_JARDIM CAMBURI","neighbourhood_JARDIM DA PENHA","neighbourhood_JESUS DE NAZARETH","neighbourhood_JOANA D´ARC","neighbourhood_JUCUTUQUARA","neighbourhood_MARIA ORTIZ","neighbourhood_MARUÍPE","neighbourhood_MATA DA PRAIA","neighbourhood_MONTE BELO","neighbourhood_MORADA DE CAMBURI","neighbourhood_MÁRIO CYPRESTE","neighbourhood_NAZARETH","neighbourhood_NOVA PALESTINA","neighbourhood_PARQUE MOSCOSO","neighbourhood_PIEDADE","neighbourhood_PONTAL DE CAMBURI","neighbourhood_PRAIA DO CANTO","neighbourhood_PRAIA DO SUÁ","neighbourhood_REDENÇÃO","neighbourhood_REPÚBLICA","neighbourhood_RESISTÊNCIA","neighbourhood_ROMÃO","neighbourhood_SANTA CECÍLIA","neighbourhood_SANTA CLARA","neighbourhood_SANTA HELENA","neighbourhood_SANTA LUÍZA","neighbourhood_SANTA LÚCIA","neighbourhood_SANTA MARTHA","neighbourhood_SANTA TEREZA","neighbourhood_SANTO ANDRÉ","neighbourhood_SANTO ANTÔNIO","neighbourhood_SANTOS DUMONT","neighbourhood_SANTOS REIS","neighbourhood_SEGURANÇA DO LAR","neighbourhood_SOLON BORGES","neighbourhood_SÃO BENEDITO","neighbourhood_SÃO CRISTÓVÃO","neighbourhood_SÃO JOSÉ","neighbourhood_SÃO PEDRO","neighbourhood_TABUAZEIRO","neighbourhood_UNIVERSITÁRIO","neighbourhood_VILA RUBIM","neighbourhood_infrequent_sklearn","appointment_weekday_Friday","appointment_weekday_Monday","appointment_weekday_Thursday","appointment_weekday_Tuesday","appointment_weekday_Wednesday","appointment_weekday_infrequent_sklearn","male","scholarship","hypertension","diabetes","alcoholism","disability","same_day"],"numeric":["age","lead_days","prior_appointments","prior_no_shows","prior_no_show_rate"],"mean":[37.04843556465076,10.116818353169261,0.7287737627228176,0.10771716301362486,0.048704970718439065],"scale":[23.072655004659396,15.171590047711373,3.039761954048596,0.4686259972540935,0.19369034225892043],"coef":[-0.20286700792824555,0.13431880973729066,-0.268529593418579,0.2635231337732483,-0.04161744776354118,0.1182595879171926,-0.07734445810414986,-0.03486605346863113,0.1411059134161963,0.1509770582584899,0.12349046657016471,-0.04956559104087805,0.09340637736890835,0.2129119460988909,0.09562884965376293,-0.31596323461949527,0.04715375407861004,-0.039081654232258935,-0.024470761944720473,0.16839175132858877,-0.32882380385021376,-0.32413125411701316,-0.05011800199104398,-0.3089002397012343,0.1333172809156285,0.06636769471578088,0.015622414432173085,-0.2023582529298609,-0.13912105547268955,-0.09732074755193716,0.06266429116340212,0.2314521188322326,0.22000385416120602,0.1258730461103975,-0.09017538432493241,0.1702650173999644,-0.0886851947484431,0.38018897422871173,-0.20621797217361829,-0.14423664266512679,-0.19695675799547732,0.26988749635445847,-0.1295234322818286,-0.1654320295484799,0.0588934707046359,0.006740426062559077,-0.20168681918220366,-0.14457181970541264,-0.08648493889513945,0.05628748479990322,-0.003541163304261396,0.057787404931167,0.17983996130303176,-0.09376136456743003,-0.09906176371872993,0.04160452898423904,0.039180757710516476,-0.02117217875731414,-0.09950366688049232,0.0016676748103226595,0.08000973826091809,0.2009295433085558,0.23084632985127215,0.012695500695748423,-0.11953486539223163,0.024913039224202353,-0.13497865952958815,-0.06542171389641879,0.00960587913073098,-0.019922866355738606,0.4282262717751335,-0.06907426917775285,-0.053456314242526046,-0.4846019546938039,0.046214611784512076,-0.022169625561798304,0.018624039469662224,0.09502065691637818,-0.11015241790750088,0.017437942885626063,-0.3284268553481081,-0.07875195647679525,-0.09901965595110994,-0.10359901354584442,-0.24556436726883094,-0.1516090216856213,-0.19838182210250016,-0.017900700187480766,0.009432379191481547,0.24024791359556474,-0.10301584795250614,0.09825300318547663,0.35800085886387395,0.11904803155633457,-2.0640664802327593],"intercept":-0.8438920007707544,"cutoffs":[0.23325593847432435,0.32325841920828335],"reference":[0.0,-0.0,0.0,0.0,-0.0,0.021003,0.002456,0.002531,0.003899,0.017308,0.007335,0.002617,0.02516,0.023362,0.030222,0.002822,0.00769,0.012559,0.012602,0.019075,0.002714,0.005116,0.003597,0.008121,0.002122,0.004954,0.006204,0.017276,0.002391,0.005719,0.009855,0.018493,0.001616,0.010372,0.016791,0.020163,0.009683,0.03257,0.023028,0.069212,0.035295,0.02585,0.012849,0.006473,0.053649,0.017168,0.005741,0.007453,0.000765,0.002951,0.00112,0.02012,0.007055,0.004254,0.000635,0.009047,0.01104,0.013679,0.007001,0.040358,0.020173,0.004061,0.004793,0.001551,0.003759,0.00405,0.027627,0.012408,0.022888,0.024288,0.011557,0.004868,0.001314,0.004287,0.012903,0.016964,0.01831,0.022177,0.02893,0.0014,0.008035,0.000517,0.160795,0.194108,0.18575,0.228575,0.230352,0.00042,0.351909,0.098347,0.197135,0.071452,0.030158,0.020313,0.349518],"infrequent":{"neighbourhood":["AEROPORTO","ILHA DO BOI","ILHA DO FRADE","ILHAS OCEÂNICAS DE TRINDADE","PARQUE INDUSTRIAL"],"appointment_weekday":["Saturday"]}};
+  const $ = id => document.getElementById(id);
+  const PRESETS = [
+    {age:19, gender:'F', nb:'JARDIM CAMBURI', sched:'2016-06-01', appt:'2016-06-29', prior:0, priorNs:0, sch:true, hyp:false, dia:false, alc:false, dis:false},
+    {age:62, gender:'M', nb:'JARDIM DA PENHA', sched:'2016-06-06', appt:'2016-06-06', prior:0, priorNs:0, sch:false, hyp:true, dia:true, alc:false, dis:false},
+    {age:15, gender:'F', nb:'ITARARÉ', sched:'2016-05-02', appt:'2016-06-20', prior:3, priorNs:2, sch:true, hyp:false, dia:false, alc:false, dis:false},
+  ];
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const YESNO = {same_day:['booked for the same day','not booked for the same day'], scholarship:['welfare (Scholarship)','no welfare'],
+    male:['male','female'], hypertension:['hypertension','no hypertension'], diabetes:['diabetes','no diabetes'],
+    alcoholism:['alcoholism','no alcoholism'], disability:['disability','no disability']};
+  const titleCase = s => s.toLowerCase().replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+
+  // Same features and encoding as src/preprocess.py + the saved ColumnTransformer
+  function features(a){
+    const sched = new Date(a.sched + 'T00:00:00Z'), appt = new Date(a.appt + 'T00:00:00Z');
+    const lead = Math.round((appt - sched) / 86400000);
+    const rate = a.prior > 0 ? a.priorNs / a.prior : 0;
+    const raw = {age:a.age, lead_days:lead, prior_appointments:a.prior, prior_no_shows:a.priorNs, prior_no_show_rate:rate,
+      male:a.gender === 'M' ? 1 : 0, scholarship:+a.sch, hypertension:+a.hyp, diabetes:+a.dia, alcoholism:+a.alc,
+      disability:+a.dis, same_day:lead === 0 ? 1 : 0};
+    const weekday = DAYS[appt.getUTCDay()];
+    const known = (field, v) => M.names.includes(field + '_' + v) ? field + '_' + v : field + '_infrequent_sklearn';
+    const onNb = known('neighbourhood', a.nb), onWd = known('appointment_weekday', weekday);
+    const x = M.names.map(n => {
+      const k = M.numeric.indexOf(n);
+      if (k >= 0) return (raw[n] - M.mean[k]) / M.scale[k];
+      if (n.startsWith('neighbourhood_')) return n === onNb ? 1 : 0;
+      if (n.startsWith('appointment_weekday_')) return n === onWd ? 1 : 0;
+      return raw[n];
+    });
+    return {x, raw, lead, weekday, nbCol:onNb};
+  }
+  function predict(a){
+    const f = features(a);
+    const z = M.intercept + f.x.reduce((s, v, i) => s + v * M.coef[i], 0);
+    const p = 1 / (1 + Math.exp(-z));
+    const band = p < M.cutoffs[0] ? 'Low' : p < M.cutoffs[1] ? 'Medium' : 'High';
+    return {p, band, factors:explain(f, a), f};
+  }
+  function describe(n, f, a){
+    if (YESNO[n]) return f.raw[n] === 1 ? YESNO[n][0] : YESNO[n][1];
+    if (n === 'age') return `age ${a.age}`;
+    if (n === 'lead_days') return `booked ${f.lead} days ahead`;
+    if (n === 'prior_appointments') return `${a.prior} earlier appointments`;
+    if (n === 'prior_no_shows') return `${a.priorNs} earlier no-shows`;
+    if (n === 'prior_no_show_rate') return `earlier no-show rate ${Math.round(f.raw.prior_no_show_rate * 100)}%`;
+    if (n.startsWith('neighbourhood_')) return n.endsWith('infrequent_sklearn') ? 'rare or unknown neighbourhood' : 'neighbourhood ' + titleCase(n.slice(14));
+    return `appointment on a ${f.weekday}`;
+  }
+  function explain(f, a){   // same rule as NoShowPredictor.explain: coefficient × (value − training average)
+    const c = f.x.map((v, i) => (v - M.reference[i]) * M.coef[i]);
+    const order = c.map((v, i) => i).sort((i, j) => Math.abs(c[j]) - Math.abs(c[i]));
+    const out = [];
+    for (const i of order) {
+      const n = M.names[i];
+      if (Math.abs(c[i]) < 0.01 || out.length === 3) break;
+      if ((n.startsWith('neighbourhood_') || n.startsWith('appointment_weekday_')) && f.x[i] === 0) continue;
+      out.push(`${describe(n, f, a)} ${c[i] > 0 ? 'raises' : 'lowers'} risk`);
+    }
+    return out;
+  }
+  window.__noShowPredict = predict;   // used by the automated check against the Python model
+
+  function read(){
+    return {age:parseFloat($('lp-age').value), gender:$('lp-gender').value, nb:$('lp-nb').value,
+      sched:$('lp-sched').value, appt:$('lp-appt').value,
+      prior:parseFloat($('lp-prior').value || '0'), priorNs:parseFloat($('lp-prior-ns').value || '0'),
+      sch:$('lp-sch').checked, hyp:$('lp-hyp').checked, dia:$('lp-dia').checked, alc:$('lp-alc').checked, dis:$('lp-dis').checked};
+  }
+  function validate(a){   // mirrors the rules in src/predict.py
+    const errors = [], warnings = [];
+    if (!Number.isInteger(a.age) || a.age < 0 || a.age > 115) errors.push('Age must be a whole number from 0 to 115.');
+    else if (a.age > 100) warnings.push(`Age ${a.age} is very rare in the training data; less reliable.`);
+    if (!a.sched || !a.appt) errors.push('Both dates are required.');
+    else {
+      const lead = Math.round((new Date(a.appt + 'T00:00:00Z') - new Date(a.sched + 'T00:00:00Z')) / 86400000);
+      if (lead < 0) errors.push('The appointment cannot be before the booking date.');
+      else if (lead > 179) warnings.push(`Booked ${lead} days ahead; training data only goes up to 179 days.`);
+      if (new Date(a.appt + 'T00:00:00Z').getUTCDay() === 0) warnings.push('Sunday: no Sunday appointments in the training data.');
+    }
+    if (![a.prior, a.priorNs].every(v => Number.isInteger(v) && v >= 0)) errors.push('Earlier appointments must be whole numbers of 0 or more.');
+    else if (a.priorNs > a.prior) errors.push('Missed appointments cannot exceed earlier appointments.');
+    if (a.nb === '__OTHER__') warnings.push('Neighbourhood not listed: treated as a rare neighbourhood.');
+    return {errors, warnings};
+  }
+  function update(){
+    const a = read(), v = validate(a), card = $('lp-card');
+    card.classList.toggle('invalid', v.errors.length > 0);
+    $('lp-warn').innerHTML = [...v.errors.map(e => `<li><b>Cannot score:</b> ${e}</li>`), ...v.warnings.map(w => `<li>${w}</li>`)].join('');
+    if (v.errors.length) {
+      $('lp-prob').textContent = '—'; $('lp-band').textContent = 'Invalid'; $('lp-band').className = 'lo-band';
+      $('lp-factors').innerHTML = ''; $('lp-pin').style.display = 'none'; return;
+    }
+    const r = predict(a);
+    $('lp-prob').textContent = (r.p * 100).toFixed(1) + '%';
+    $('lp-band').textContent = r.band + ' risk'; $('lp-band').className = 'lo-band ' + r.band;
+    $('lp-factors').innerHTML = r.factors.map(t => `<li>${t}</li>`).join('');
+    // pin position: each band segment matches its share of training appointments (50% / 30% / 20%)
+    const [c0, c1] = M.cutoffs, p = r.p;
+    const pos = p < c0 ? (p / c0) * 50 : p < c1 ? 50 + ((p - c0) / (c1 - c0)) * 30 : 80 + Math.min(1, (p - c1) / (1 - c1) * 2.5) * 20;
+    $('lp-pin').style.display = ''; $('lp-pin').style.left = `calc(${Math.min(99.5, pos)}% - 2px)`;
+  }
+  function setPreset(k){
+    const p = PRESETS[k];
+    $('lp-age').value = p.age; $('lp-gender').value = p.gender; $('lp-nb').value = p.nb;
+    $('lp-sched').value = p.sched; $('lp-appt').value = p.appt; $('lp-prior').value = p.prior; $('lp-prior-ns').value = p.priorNs;
+    $('lp-sch').checked = p.sch; $('lp-hyp').checked = p.hyp; $('lp-dia').checked = p.dia; $('lp-alc').checked = p.alc; $('lp-dis').checked = p.dis;
+    update();
+  }
+  $('lp-form').addEventListener('input', update);
+  $('lp-form').addEventListener('change', update);
+  document.querySelector('.presets').addEventListener('click', e => { const b = e.target.closest('[data-preset]'); if (b) setPreset(+b.dataset.preset); });
+  update();
 })();
 </script>
 <script>
