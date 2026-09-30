@@ -254,7 +254,7 @@ footer .refs li{margin:4px 0}
     <h1>Predicting hospital appointment no&#8209;shows at booking time</h1>
     <p class="byline">By <b>Furkat Toshmatov</b> · Supervised binary classification · Final model: logistic regression</p>
     <div class="actions">
-      <a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a>
+      <a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/00_full_project.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a>
       <a class="btn btn-secondary" href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer">View Repository</a>
     </div>
   </div>
@@ -348,15 +348,15 @@ footer .refs li{margin:4px 0}
       </section>
 
       <section class="part" id="demo"><h2><span>5</span>Demo</h2>
-        <p>The Colab demo loads the saved model, scores an appointment from an editable form, ranks a day's appointments by risk, and shows invalid inputs being rejected. Choose Runtime → Run all; no setup is needed.</p>
-        <figure><figcaption><b>Box 1.</b> Example output from the verified demo.</figcaption>
+        <p>The full-project Colab notebook runs everything end to end: it loads the data, re-runs the experiments and the test evaluation, checks fairness, then scores appointments from an editable form, ranks a day's appointments by risk, and rejects invalid inputs. Choose Runtime → Run all (5–10 minutes; set FAST = True for about 2).</p>
+        <figure><figcaption><b>Box 1.</b> Example output from the verified prediction step.</figcaption>
           <div class="box">
             <div class="box-head"><span>Example output</span><span>Verified demo</span></div>
             <dl><dt>input</dt><dd>age 19, F, welfare, booked 28 days ahead</dd><dt>prediction</dt><dd>no_show_probability 0.3509</dd><dt>main factors</dt><dd>not same-day; welfare; age 19</dd></dl>
             <div class="verdict"><span>HIGH RISK · offer a reminder call</span><b>35.1%</b></div>
           </div>
         </figure>
-        <p><a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a></p>
+        <p><a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/00_full_project.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a></p>
       </section>
 
       <section class="part" id="limitations"><h2><span>6</span>Responsible use and limitations</h2>
