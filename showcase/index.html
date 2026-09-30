@@ -416,6 +416,7 @@ footer strong{color:var(--text)}
 
 
 
+
 <section class="section alt" id="models" aria-labelledby="models-title"><div class="wrap">
   <div class="kicker">04 · Model comparison</div>
   <h2 id="models-title">Every model we tested, side by side.</h2>
@@ -580,7 +581,7 @@ footer strong{color:var(--text)}
       (showTrain ? '<span><i class="ring"></i>training score (bigger gap = more overfitting)</span>' : '') +
       (ref ? '<span><i class="dash"></i>final model</span>' : '') +
       (anyClipped ? '<span><b style="color:var(--muted)">◂</b>outside the zoomed range (value on the right; choose Full range to see it)</span>' : '');
-    $('mc-note').textContent = NOTES[state.split];
+    const note = $('mc-note'); if (note) note.textContent = NOTES[state.split];   // not every page shows the note
 
     const btn = $('mc-table-btn'); btn.textContent = state.table ? 'Hide table' : 'Show as table'; btn.setAttribute('aria-expanded', state.table);
     const wrap = $('mc-table-wrap'); wrap.hidden = !state.table;
