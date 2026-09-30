@@ -193,6 +193,82 @@ footer{padding:30px 0 40px;color:var(--muted);font-size:15px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}
 footer strong{color:var(--text)}
 
+/* model comparison (interactive) */
+.fam-baseline{--fam:#6f817e}.fam-lr{--fam:#0e7c7b}.fam-rf{--fam:#2f62c7}.fam-gb{--fam:#7446c9}
+@media (prefers-color-scheme:dark){.fam-baseline{--fam:#94aaa6}.fam-lr{--fam:#4cc3b8}.fam-rf{--fam:#7ea6ff}.fam-gb{--fam:#b99cff}}
+.mc-controls{display:grid;gap:14px;margin-bottom:18px}
+.mc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.mc-row>span{font-size:14px;font-weight:700;color:var(--muted);min-width:78px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
+.seg button,.fchip,.mc-btn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);padding:7px 12px;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--primary-dark);border-color:var(--line-strong);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.fchip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border-color:var(--line)}
+.fchip i{width:12px;height:12px;border-radius:50%;background:var(--fam)}
+.fchip[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.mc-btn{background:var(--surface);border-color:var(--line-strong);color:var(--primary-dark)}
+.mc-toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text)}
+.mc-toggle input{width:18px;height:18px;accent-color:var(--primary)}
+.mc-toggle.off{opacity:.5}
+.mc-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);position:relative}
+.mc-summary{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;margin:0 0 16px;color:var(--muted)}
+.mc-summary b{color:var(--text)}
+.mc-axis,.mc-item{display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr) 64px;gap:14px;align-items:center}
+.mc-axis{font-size:12px;color:var(--muted);font-weight:600;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.mc-ticks{position:relative;height:18px}
+.mc-ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.mc-list{list-style:none;margin:0;padding:0}
+.mc-item{padding:7px 4px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);border-radius:8px;cursor:default;outline:none}
+.mc-item:hover,.mc-item:focus-visible{background:var(--surface-2)}
+.mc-item:focus-visible{box-shadow:0 0 0 2px var(--primary)}
+.mc-name{font-size:14px;line-height:1.3;display:flex;align-items:center;gap:8px;min-width:0}
+.mc-name .sw{width:10px;height:10px;border-radius:50%;background:var(--fam);flex:none}
+.mc-name span{overflow:hidden;text-overflow:ellipsis}
+.badge{flex:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--primary);color:#fff}
+@media (prefers-color-scheme:dark){.badge{color:#062422}}
+.mc-track{position:relative;height:26px}
+.mc-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--bg-2);border-radius:2px}
+.mc-grid{position:absolute;top:0;bottom:0;width:1px;background:color-mix(in srgb,var(--line) 70%,transparent)}
+.mc-ref{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--primary);opacity:.55}
+.mc-gap{position:absolute;top:50%;height:2px;margin-top:-1px;background:var(--fam);opacity:.35;transition:left .45s ease,width .45s ease}
+.mc-dot,.mc-train{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;transition:left .45s ease}
+.mc-dot{background:var(--fam);box-shadow:0 0 0 3px var(--surface)}
+.mc-item.is-final .mc-dot{width:20px;height:20px;margin:-10px 0 0 -10px;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--fam)}
+.mc-dot.clip{opacity:.55}
+.mc-clip{position:absolute;top:50%;transform:translate(12px,-55%);font-size:15px;line-height:1;color:var(--muted);pointer-events:none}
+.mc-train{background:var(--surface);border:2.5px solid var(--fam);width:14px;height:14px;margin:-7px 0 0 -7px}
+.mc-val{font-size:15px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.mc-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:13px;color:var(--muted)}
+.mc-legend span{display:inline-flex;align-items:center;gap:6px}
+.mc-legend .dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.mc-legend .ring{width:12px;height:12px;border-radius:50%;border:2.5px solid var(--muted)}
+.mc-legend .dash{width:0;height:14px;border-left:2px dashed var(--primary)}
+.mc-tip{position:absolute;z-index:5;width:300px;max-width:calc(100% - 20px);background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 12px 36px rgba(18,48,46,.18);padding:14px 16px;font-size:13px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+.mc-tip.show{opacity:1;transform:none}
+.mc-tip h4{margin:0 0 2px;font-size:15px;line-height:1.3}
+.mc-tip .fam{font-weight:700;color:var(--fam)}
+.mc-tip p{margin:4px 0 8px;color:var(--muted)}
+.mc-tip table{width:100%;border-collapse:collapse}
+.mc-tip td{padding:3px 0;border-top:1px solid var(--line)}
+.mc-tip td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.mc-tip tr.cur td{color:var(--primary-dark)}
+.mc-table-wrap{overflow-x:auto;margin-top:16px}
+.mc-table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.mc-table th,.mc-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.mc-table th:first-child,.mc-table td:first-child{text-align:left}
+.mc-table th{font-size:13px;color:var(--muted);background:var(--surface-2);position:sticky;top:0}
+.mc-table tr.is-final td{font-weight:700}
+.mc-note{font-size:14px;color:var(--muted);margin:14px 0 0}
+@media (max-width:700px){
+  .mc-axis,.mc-item{grid-template-columns:minmax(0,1fr) 58px;row-gap:4px}
+  .mc-axis>div:first-child{display:none}
+  .mc-axis .mc-ticks{grid-column:1/2}
+  .mc-name{grid-column:1/3}
+  .mc-track{grid-column:1/2}
+  .mc-row>span{min-width:100%}
+  .mc-panel{padding:18px 14px}
+}
+@media (prefers-reduced-motion:reduce){.mc-dot,.mc-train,.mc-gap{transition:none}}
+
 /* responsive */
 @media (max-width:980px){
   .hero{grid-template-columns:1fr;gap:40px;padding-top:44px}
@@ -238,7 +314,7 @@ footer strong{color:var(--text)}
     <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg></span>
     <span><span class="brand-name">No-Show Risk</span><span class="brand-sub">AI/ML Capstone Showcase</span></span>
   </a>
-  <nav class="nav-links" aria-label="Sections"><a href="#problem">Problem</a><a href="#workflow">Workflow</a><a href="#evidence">Evidence</a><a href="#limitations">Limitations</a></nav>
+  <nav class="nav-links" aria-label="Sections"><a href="#problem">Problem</a><a href="#workflow">Workflow</a><a href="#evidence">Evidence</a><a href="#models">Models</a><a href="#limitations">Limitations</a></nav>
   <a class="btn btn-secondary btn-small" href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg><span>Repository</span></a>
 </div></header>
 
@@ -338,10 +414,38 @@ footer strong{color:var(--text)}
   </div>
 </div></section>
 
-<section class="section alt" aria-labelledby="demo-title"><div class="wrap">
+
+
+<section class="section alt" id="models" aria-labelledby="models-title"><div class="wrap">
+  <div class="kicker">04 · Model comparison</div>
+  <h2 id="models-title">Every model we tested, side by side.</h2>
+  <p class="intro">All 23 validation runs and the 4 one-time test runs, straight from the experiment log (<code>experiments/runs.csv</code>). Pick a metric, filter by model family, and hover or tap any model for its full scores and settings.</p>
+  <div class="mc-controls" aria-label="Chart controls">
+    <div class="mc-row"><span>Data</span><div class="seg" role="group" aria-label="Data split" id="mc-split"></div></div>
+    <div class="mc-row"><span>Metric</span><div class="seg" role="group" aria-label="Metric" id="mc-metric"></div></div>
+    <div class="mc-row"><span>Families</span><div class="mc-row" role="group" aria-label="Model families" id="mc-fam"></div></div>
+    <div class="mc-row"><span>View</span>
+      <div class="seg" role="group" aria-label="Sort order" id="mc-sort"></div>
+      <div class="seg" role="group" aria-label="Axis range" id="mc-zoom"></div>
+      <label class="mc-toggle" id="mc-train-wrap"><input type="checkbox" id="mc-train"> Show training score (overfitting check)</label>
+      <button class="mc-btn" type="button" id="mc-table-btn" aria-expanded="false" aria-controls="mc-table-wrap">Show as table</button>
+    </div>
+  </div>
+  <div class="mc-panel" id="mc-panel">
+    <p class="mc-summary" id="mc-summary" aria-live="polite"></p>
+    <div class="mc-axis" aria-hidden="true"><div id="mc-axis-label"></div><div class="mc-ticks" id="mc-ticks"></div><div></div></div>
+    <ul class="mc-list" id="mc-list"></ul>
+    <div class="mc-legend" id="mc-legend"></div>
+    <div class="mc-tip" id="mc-tip" role="tooltip"></div>
+    <div class="mc-table-wrap" id="mc-table-wrap" hidden></div>
+  </div>
+  <p class="mc-note" id="mc-note"></p>
+</div></section>
+
+<section class="section" aria-labelledby="demo-title"><div class="wrap">
   <div class="demo">
     <div class="demo-copy">
-      <div class="kicker">04 · Visitor journey</div>
+      <div class="kicker">05 · Visitor journey</div>
       <h2 id="demo-title">From public page to a working prediction.</h2>
       <p>The Colab demo loads the saved model, scores an appointment from an editable form, ranks a day's appointments by risk, and shows invalid inputs being rejected. Choose Runtime → Run all; no setup is needed.</p>
       <a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a>
@@ -356,8 +460,8 @@ footer strong{color:var(--text)}
   </div>
 </div></section>
 
-<section class="section" id="limitations" aria-labelledby="limits-title"><div class="wrap">
-  <div class="kicker">05 · Responsible use</div>
+<section class="section alt" id="limitations" aria-labelledby="limits-title"><div class="wrap">
+  <div class="kicker">06 · Responsible use</div>
   <h2 id="limits-title">Helpful for reminders, not for decisions about care.</h2>
   <div class="use">
     <article class="card yes"><h3><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Intended use</h3><ul><li>Staff get a ranked list and choose whom to remind or call</li><li>Supportive help only: reminders, confirmation calls, rescheduling offers</li><li>A person always decides; the model never acts</li></ul></article>
@@ -382,6 +486,136 @@ footer strong{color:var(--text)}
 
 </main>
 <footer><div class="wrap"><div><strong>Furkat Toshmatov</strong> · AI/ML Fundamentals Capstone</div><span>Built as a static showcase · <span data-year></span></span></div></footer>
+<script>
+(() => {
+  const RUNS = [{"id":"majority_class","split":"validation","family":"baseline","label":"Majority class","detail":"Always predicts the training no-show rate","final":false,"roc_auc":0.5,"pr_auc":0.1861,"precision_top20":0.1916,"recall_top20":0.2059,"brier":0.152,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"lead_time_rule","split":"validation","family":"baseline","label":"Lead-time rule (no ML)","detail":"Training no-show rate of the lead-time group","final":false,"roc_auc":0.6932,"pr_auc":0.2835,"precision_top20":0.3049,"recall_top20":0.3276,"brier":0.141,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg","split":"validation","family":"lr","label":"Logistic regression · C=1","detail":"Final model settings","final":true,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_balanced","split":"validation","family":"lr","label":"Logistic regression · class weights","detail":"class_weight = balanced","final":false,"roc_auc":0.725,"pr_auc":0.3317,"precision_top20":0.3396,"recall_top20":0.3649,"brier":0.2214,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_with_sms","split":"validation","family":"lr","label":"Logistic regression · with SMS","detail":"Comparison only: SMS is not known at booking time","final":false,"roc_auc":0.7267,"pr_auc":0.3339,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.1375,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_C0.001","split":"validation","family":"lr","label":"Logistic regression · C=0.001","detail":"Very strong regularisation","final":false,"roc_auc":0.7219,"pr_auc":0.3221,"precision_top20":0.3336,"recall_top20":0.3585,"brier":0.1387,"train_roc_auc":0.7226,"commit":"fcdbff4"},{"id":"logreg_C0.01","split":"validation","family":"lr","label":"Logistic regression · C=0.01","detail":"Regularisation strength","final":false,"roc_auc":0.726,"pr_auc":0.3318,"precision_top20":0.3373,"recall_top20":0.3625,"brier":0.1378,"train_roc_auc":0.7272,"commit":"fcdbff4"},{"id":"logreg_C0.1","split":"validation","family":"lr","label":"Logistic regression · C=0.1","detail":"Regularisation strength","final":false,"roc_auc":0.7259,"pr_auc":0.3325,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.1379,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C1.0","split":"validation","family":"lr","label":"Logistic regression · C=1 (tuning run)","detail":"Same settings as the final model","final":false,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C10.0","split":"validation","family":"lr","label":"Logistic regression · C=10","detail":"Weak regularisation","final":false,"roc_auc":0.7256,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"rf_leaf1_featsqrt","split":"validation","family":"rf","label":"Random forest · fully grown trees","detail":"min leaf 1 · √features · overfits","final":false,"roc_auc":0.6997,"pr_auc":0.2966,"precision_top20":0.3134,"recall_top20":0.3368,"brier":0.1535,"train_roc_auc":0.999,"commit":"fcdbff4"},{"id":"rf_leaf20_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 20","detail":"min leaf 20 · √features · best forest","final":false,"roc_auc":0.7263,"pr_auc":0.323,"precision_top20":0.3376,"recall_top20":0.3628,"brier":0.1376,"train_roc_auc":0.7732,"commit":"fcdbff4"},{"id":"rf_leaf100_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 100","detail":"min leaf 100 · √features","final":false,"roc_auc":0.7227,"pr_auc":0.3123,"precision_top20":0.3313,"recall_top20":0.3561,"brier":0.1378,"train_roc_auc":0.7418,"commit":"fcdbff4"},{"id":"rf_leaf20_feat0.5","split":"validation","family":"rf","label":"Random forest · min leaf 20, 50% features","detail":"min leaf 20 · 50% of features per split","final":false,"roc_auc":0.7219,"pr_auc":0.3202,"precision_top20":0.3319,"recall_top20":0.3567,"brier":0.1394,"train_roc_auc":0.8168,"commit":"fcdbff4"},{"id":"hgb_default","split":"validation","family":"gb","label":"Gradient boosting · default","detail":"scikit-learn defaults, early stopping","final":false,"roc_auc":0.7275,"pr_auc":0.3299,"precision_top20":0.3385,"recall_top20":0.3637,"brier":0.1383,"train_roc_auc":0.7766,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 20","detail":"learning rate 0.03 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7279,"pr_auc":0.3346,"precision_top20":0.3393,"recall_top20":0.3646,"brier":0.1377,"train_roc_auc":0.7554,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 200","detail":"Chosen as the comparison model","final":false,"roc_auc":0.7288,"pr_auc":0.3307,"precision_top20":0.3422,"recall_top20":0.3677,"brier":0.138,"train_roc_auc":0.7591,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 20","detail":"learning rate 0.03 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7248,"pr_auc":0.3284,"precision_top20":0.3325,"recall_top20":0.3573,"brier":0.1389,"train_roc_auc":0.8003,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 200","detail":"learning rate 0.03 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7258,"pr_auc":0.3261,"precision_top20":0.3424,"recall_top20":0.368,"brier":0.139,"train_roc_auc":0.7765,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 20","detail":"learning rate 0.1 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7277,"pr_auc":0.3341,"precision_top20":0.3353,"recall_top20":0.3604,"brier":0.1378,"train_roc_auc":0.7579,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 200","detail":"learning rate 0.1 · 15 leaves · min leaf 200","final":false,"roc_auc":0.7282,"pr_auc":0.3314,"precision_top20":0.345,"recall_top20":0.3708,"brier":0.1382,"train_roc_auc":0.7627,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 20","detail":"learning rate 0.1 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7258,"pr_auc":0.3303,"precision_top20":0.3379,"recall_top20":0.3631,"brier":0.1385,"train_roc_auc":0.7871,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 200","detail":"learning rate 0.1 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7249,"pr_auc":0.3255,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.139,"train_roc_auc":0.7717,"commit":"fcdbff4"},{"id":"final_logreg","split":"test","family":"lr","label":"Logistic regression (final model)","detail":"Pre-registered final model · refit on train + validation","final":true,"roc_auc":0.7232,"pr_auc":0.3283,"precision_top20":0.3349,"recall_top20":0.3623,"brier":0.1376,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"comparison_hgb","split":"test","family":"gb","label":"Gradient boosting (comparison)","detail":"lr 0.03 · 15 leaves · min leaf 200 · refit on train + validation","final":false,"roc_auc":0.7365,"pr_auc":0.3424,"precision_top20":0.3562,"recall_top20":0.3853,"brier":0.1356,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_majority","split":"test","family":"baseline","label":"Majority class","detail":"Refit on train + validation","final":false,"roc_auc":0.5,"pr_auc":0.1849,"precision_top20":0.1678,"recall_top20":0.1815,"brier":0.1511,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_lead_time_rule","split":"test","family":"baseline","label":"Lead-time rule (no ML)","detail":"Refit on train + validation","final":false,"roc_auc":0.6916,"pr_auc":0.2781,"precision_top20":0.2823,"recall_top20":0.3054,"brier":0.1398,"train_roc_auc":null,"commit":"87bf5a4"}];
+  const FAMS = {baseline:'Baselines', lr:'Logistic regression', rf:'Random forest', gb:'Gradient boosting'};
+  const METRICS = {
+    roc_auc:{name:'ROC-AUC', hint:'ranking quality; 0.5 = random', higher:true},
+    pr_auc:{name:'PR-AUC', hint:'ranking quality for the no-show class', higher:true},
+    recall_top20:{name:'Recall @ top 20%', hint:'share of all no-shows among the riskiest 20%', higher:true},
+    precision_top20:{name:'Precision @ top 20%', hint:'share of the riskiest 20% who are real no-shows', higher:true},
+    brier:{name:'Brier score', hint:'probability error; lower is better', higher:false},
+  };
+  const NOTES = {
+    validation:'Validation period (2016-05-30 to 06-02). Every run was trained on the training period only. Differences of about ±0.005 ROC-AUC are within noise: a paired bootstrap found no model reliably better than logistic regression.',
+    test:'Test week (2016-06-03 to 06-08), used once after the final model was chosen. Gradient boosting scored higher here (+0.013, a reliable gap); the pre-registered logistic regression was kept so the test result stays honest.'
+  };
+  const state = {split:'validation', metric:'roc_auc', fams:new Set(Object.keys(FAMS)), sort:'score', zoom:'zoom', train:false, table:false};
+  const $ = id => document.getElementById(id);
+  const fmt = v => v == null ? '—' : v.toFixed(3);
+
+  function seg(el, options, key){
+    el.innerHTML = options.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${state[key] === v}">${t}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state[key] = b.dataset.v; render(); };
+  }
+  function controls(){
+    seg($('mc-split'), [['validation','Validation · 23 runs'], ['test','Test · 4 models']], 'split');
+    seg($('mc-metric'), Object.entries(METRICS).map(([k, m]) => [k, m.name]), 'metric');
+    seg($('mc-sort'), [['score','Best first'], ['family','By family']], 'sort');
+    seg($('mc-zoom'), [['zoom','Zoomed'], ['full','Full range']], 'zoom');
+    const fam = $('mc-fam');
+    fam.innerHTML = Object.entries(FAMS).map(([k, n]) => `<button type="button" class="fchip fam-${k}" data-f="${k}" aria-pressed="${state.fams.has(k)}"><i></i>${n}</button>`).join('');
+    fam.onclick = e => { const b = e.target.closest('button'); if (!b) return; const f = b.dataset.f;
+      if (state.fams.has(f)) { if (state.fams.size > 1) state.fams.delete(f); } else state.fams.add(f); render(); };
+    $('mc-train').onchange = e => { state.train = e.target.checked; render(); };
+    $('mc-table-btn').onclick = () => { state.table = !state.table; render(); };
+  }
+
+  function niceTicks(lo, hi){
+    const span = hi - lo, raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * p).find(s => span / s <= 5);
+    const ticks = []; for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(+t.toFixed(6));
+    return ticks;
+  }
+
+  function render(){
+    controls();
+    const M = METRICS[state.metric];
+    const trainOK = state.metric === 'roc_auc' && state.split === 'validation';
+    $('mc-train-wrap').classList.toggle('off', !trainOK);
+    $('mc-train').disabled = !trainOK; $('mc-train').checked = state.train && trainOK;
+    const showTrain = state.train && trainOK;
+
+    let rows = RUNS.filter(r => r.split === state.split && state.fams.has(r.family) && r[state.metric] != null);
+    const better = (a, b) => M.higher ? b[state.metric] - a[state.metric] : a[state.metric] - b[state.metric];
+    const order = Object.keys(FAMS);
+    rows.sort(state.sort === 'score' ? better : (a, b) => order.indexOf(a.family) - order.indexOf(b.family) || better(a, b));
+
+    // Zoomed: fit the axis to the real models; baselines outside it are pinned at the edge
+    const core = rows.filter(r => r.family !== 'baseline');
+    const scaleRows = state.zoom === 'zoom' && core.length >= 2 ? core : rows;
+    const vals = scaleRows.flatMap(r => [r[state.metric], ...(showTrain && r.train_roc_auc != null ? [r.train_roc_auc] : [])]);
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.08, 0.004);
+    lo -= pad; hi += pad;
+    const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks[ticks.length - 1]);
+    const xRaw = v => ((v - lo) / (hi - lo)) * 100;
+    const x = v => Math.min(100, Math.max(0, xRaw(v)));
+    const clipped = v => xRaw(v) < 0 || xRaw(v) > 100;
+    let anyClipped = false;
+
+    const final = RUNS.find(r => r.split === state.split && r.final);
+    const best = [...rows].sort(better)[0];
+    $('mc-summary').innerHTML = `<span><b>${rows.length}</b> model${rows.length === 1 ? '' : 's'} shown</span>` +
+      (best ? `<span>Best ${M.name}: <b>${best.label}</b> (${fmt(best[state.metric])})</span>` : '') +
+      (final ? `<span>Final model: <b>${fmt(final[state.metric])}</b></span>` : '');
+    $('mc-axis-label').textContent = `${M.name} · ${M.higher ? 'higher' : 'lower'} is better`;
+    $('mc-ticks').innerHTML = ticks.map(t => `<span style="left:${x(t)}%">${t.toFixed(ticks.some(v => Math.round(v * 100) !== v * 100) ? 3 : 2)}</span>`).join('');
+
+    const grid = ticks.map(t => `<i class="mc-grid" style="left:${x(t)}%"></i>`).join('');
+    const ref = final && state.fams.has(final.family) ? `<i class="mc-ref" style="left:${x(final[state.metric])}%"></i>` : '';
+    $('mc-list').innerHTML = rows.map(r => {
+      const v = r[state.metric], t = showTrain ? r.train_roc_auc : null;
+      const cl = clipped(v); if (cl) anyClipped = true;
+      const gap = t != null ? `<i class="mc-gap" style="left:${Math.min(x(v), x(t))}%;width:${Math.abs(x(t) - x(v))}%"></i><i class="mc-train" style="left:${x(t)}%"></i>` : '';
+      return `<li class="mc-item fam-${r.family}${r.final ? ' is-final' : ''}" tabindex="0" data-id="${r.id}"
+        aria-label="${r.label}: ${M.name} ${fmt(v)}${t != null ? ', training ' + fmt(t) : ''}">
+        <div class="mc-name"><i class="sw"></i><span>${r.label}</span>${r.final ? '<em class="badge">Final</em>' : ''}</div>
+        <div class="mc-track">${grid}${ref}${gap}<i class="mc-dot${cl ? ' clip' : ''}" style="left:${x(v)}%"></i>${cl ? `<b class="mc-clip" style="left:${x(v)}%">${xRaw(v) < 0 ? '◂' : '▸'}</b>` : ''}</div>
+        <div class="mc-val">${fmt(v)}</div></li>`;
+    }).join('');
+
+    $('mc-legend').innerHTML = Object.entries(FAMS).filter(([k]) => state.fams.has(k))
+      .map(([k, n]) => `<span class="fam-${k}"><i class="dot" style="background:var(--fam)"></i>${n}</span>`).join('') +
+      (showTrain ? '<span><i class="ring"></i>training score (bigger gap = more overfitting)</span>' : '') +
+      (ref ? '<span><i class="dash"></i>final model</span>' : '') +
+      (anyClipped ? '<span><b style="color:var(--muted)">◂</b>outside the zoomed range (value on the right; choose Full range to see it)</span>' : '');
+    $('mc-note').textContent = NOTES[state.split];
+
+    const btn = $('mc-table-btn'); btn.textContent = state.table ? 'Hide table' : 'Show as table'; btn.setAttribute('aria-expanded', state.table);
+    const wrap = $('mc-table-wrap'); wrap.hidden = !state.table;
+    if (state.table) wrap.innerHTML = `<table class="mc-table"><caption class="sr-only" style="position:absolute;left:-9999px">All metrics for the models shown</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col">Family</th>${Object.values(METRICS).map(m => `<th scope="col">${m.name}</th>`).join('')}${state.split === 'validation' ? '<th scope="col">Train ROC-AUC</th>' : ''}</tr></thead>
+      <tbody>${rows.map(r => `<tr class="${r.final ? 'is-final' : ''}"><td>${r.label}${r.final ? ' (final)' : ''}</td><td>${FAMS[r.family]}</td>${Object.keys(METRICS).map(k => `<td>${fmt(r[k])}</td>`).join('')}${state.split === 'validation' ? `<td>${fmt(r.train_roc_auc)}</td>` : ''}</tr>`).join('')}</tbody></table>`;
+  }
+
+  // tooltip: hover, keyboard focus, or tap
+  const panel = $('mc-panel'), tip = $('mc-tip');
+  function showTip(item){
+    const r = RUNS.find(d => d.id === item.dataset.id && d.split === state.split); if (!r) return;
+    tip.className = `mc-tip fam-${r.family} show`;
+    tip.innerHTML = `<h4>${r.label}</h4><span class="fam">${FAMS[r.family]}</span><p>${r.detail}</p><table>` +
+      Object.entries(METRICS).map(([k, m]) => `<tr class="${k === state.metric ? 'cur' : ''}"><td>${m.name}</td><td>${fmt(r[k])}</td></tr>`).join('') +
+      (r.split === 'validation' ? `<tr><td>Train ROC-AUC</td><td>${r.train_roc_auc == null ? 'not logged' : fmt(r.train_roc_auc)}</td></tr>` : '') +
+      `<tr><td>Logged at commit</td><td>${r.commit}</td></tr></table>`;
+    const pr = panel.getBoundingClientRect(), ir = item.getBoundingClientRect();
+    let top = ir.bottom - pr.top + 6;
+    if (top + tip.offsetHeight > panel.offsetHeight) top = ir.top - pr.top - tip.offsetHeight - 6;
+    const left = Math.min(Math.max(10, ir.left - pr.left + ir.width * 0.34), panel.offsetWidth - tip.offsetWidth - 10);
+    tip.style.top = top + 'px'; tip.style.left = left + 'px';
+  }
+  const hideTip = () => tip.classList.remove('show');
+  const list = $('mc-list');
+  list.addEventListener('mouseover', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('mouseleave', hideTip);
+  list.addEventListener('focusin', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('focusout', hideTip);
+  list.addEventListener('click', e => { const it = e.target.closest('.mc-item'); if (it) { it.focus(); showTip(it); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  render();
+})();
+</script>
 <script>document.querySelector('[data-year]').textContent=new Date().getFullYear();</script>
 </body>
 </html>
