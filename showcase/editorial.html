@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Capstone report: predicting hospital appointment no-shows at booking time">
+<meta name="theme-color" content="#1f4e79">
+<title>No-Show Risk — Capstone Report</title>
+<style>
+:root{
+  --paper:#fbfaf6; --ink:#1c2226; --ink-2:#4b5559; --rule:#d9d6cc; --rule-strong:#b9b5a8;
+  --accent:#1f4e79; --accent-soft:#e8eef5; --tint:#f3f1ea;
+  --low:#2f6f3e; --medium:#8a5a00; --high:#a3322b; --high-soft:#f7e6e3;
+  /* names used by the shared model-comparison component */
+  --bg:var(--paper); --bg-2:#efece3; --surface:#ffffff; --surface-2:#f7f5ef; --line:var(--rule); --line-strong:var(--rule-strong);
+  --text:var(--ink); --muted:var(--ink-2); --primary:var(--accent); --primary-dark:#163a5c; --shadow:none; --radius:6px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#15181b; --ink:#e8e6df; --ink-2:#b3b0a6; --rule:#33383c; --rule-strong:#4a5054;
+    --accent:#8fb6e0; --accent-soft:#1f2c3a; --tint:#1c2024;
+    --low:#7cc48d; --medium:#e0b25a; --high:#f0897c; --high-soft:#3a2220;
+    --bg-2:#23282c; --surface:#1b1f22; --surface-2:#202529; --primary-dark:#b9d3ef;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.7}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{width:min(1120px,calc(100% - 40px));margin-inline:auto}
+
+/* top bar */
+.topbar{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:20}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:58px}
+.masthead{font-family:var(--serif);font-weight:700;font-size:18px;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.masthead small{font-family:var(--sans);font-weight:600;font-size:12px;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase;margin-left:10px}
+.toplinks{display:flex;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:4px;font:600 15px/1 var(--sans);text-decoration:none;border:1.5px solid var(--accent);transition:background .15s,color .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+@media (prefers-color-scheme:dark){.btn-primary{color:#10202f}}
+.btn-secondary{background:transparent;color:var(--accent)}
+.btn-secondary:hover{background:var(--accent-soft)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.btn svg.fill{fill:currentColor;stroke:none}
+
+/* title block */
+.titleblock{padding:56px 0 34px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,4.6vw,54px);line-height:1.12;letter-spacing:-.01em;margin:14px 0 16px;max-width:900px}
+.byline{font-size:16px;color:var(--ink-2);margin:0 0 24px}
+.byline b{color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* key results strip */
+.keys{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+.key{padding:22px 18px;border-right:1px solid var(--rule)}
+.key:last-child{border-right:0}
+.key strong{display:block;font-family:var(--serif);font-size:36px;line-height:1.1;color:var(--accent)}
+.key span{font-size:14px;color:var(--ink-2)}
+
+/* layout: table of contents + article */
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;padding:44px 0 20px}
+.toc{position:sticky;top:84px;align-self:start;font-size:15px}
+.toc b{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:t}
+.toc li{counter-increment:t;margin:0}
+.toc a{display:block;padding:6px 0 6px 12px;color:var(--ink-2);text-decoration:none;border-left:2px solid var(--rule)}
+.toc a::before{content:counter(t) ". ";color:var(--ink-2)}
+.toc a:hover,.toc a.active{color:var(--accent);border-left-color:var(--accent)}
+article{min-width:0;max-width:820px}
+.abstract{background:var(--tint);border:1px solid var(--rule);padding:22px 26px;margin-bottom:40px}
+.abstract h2{font-family:var(--sans);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:0 0 8px;border:0;padding:0}
+.abstract p{margin:0;font-family:var(--serif);font-size:18px;line-height:1.65}
+section.part{padding:6px 0 30px;scroll-margin-top:80px}
+section.part>h2{font-family:var(--serif);font-size:30px;line-height:1.25;margin:0 0 14px;padding-top:18px;border-top:1px solid var(--rule)}
+section.part>h2 span{color:var(--accent);margin-right:10px}
+section.part p{margin:0 0 14px}
+h3{font-family:var(--serif);font-size:21px;margin:26px 0 8px}
+.muted{color:var(--ink-2)}
+
+/* method steps */
+.method{list-style:none;margin:18px 0 0;padding:0;counter-reset:m;display:grid;gap:0;border-top:1px solid var(--rule)}
+.method li{counter-increment:m;display:grid;grid-template-columns:48px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.method li::before{content:counter(m);font-family:var(--serif);font-size:26px;line-height:1.2;color:var(--accent)}
+.method b{display:block;font-size:17px}
+.method span{color:var(--ink-2);font-size:16px}
+
+/* booktabs-style tables and figures */
+figure{margin:24px 0 30px}
+figcaption{font-size:14px;color:var(--ink-2);margin-bottom:10px}
+figcaption b{color:var(--ink);font-weight:700}
+.table-wrap{overflow-x:auto}
+table.bt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:16px;min-width:520px}
+table.bt thead th{font-weight:700;text-align:right;padding:8px 10px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}
+table.bt td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--rule)}
+table.bt tbody tr:last-child td{border-bottom:2px solid var(--ink)}
+table.bt th:first-child,table.bt td:first-child{text-align:left}
+table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
+.bars{display:grid;gap:14px;margin-top:6px}
+.bars .row{display:grid;grid-template-columns:150px 1fr 60px;gap:14px;align-items:center;font-size:15px}
+.bars .track{height:14px;background:var(--bg-2)}
+.bars .fill{height:100%}
+.bars .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.f-low{background:var(--low)}.f-med{background:var(--medium)}.f-high{background:var(--high)}
+.callout{border:1px solid var(--rule-strong);padding:18px 22px;margin:22px 0;background:var(--surface)}
+.callout h3{margin:0 0 6px;font-size:18px}
+.callout ul{margin:6px 0 0;padding-left:20px}
+.callout li{margin:4px 0}
+
+/* demo box */
+.box{border:1px solid var(--rule-strong);background:var(--surface)}
+.box-head{display:flex;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--rule);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.box dl{margin:0;padding:6px 16px 14px;display:grid;grid-template-columns:150px 1fr;gap:0}
+.box dt,.box dd{margin:0;padding:8px 0;border-bottom:1px dashed var(--rule)}
+.box dt{font-family:Consolas,"SFMono-Regular",monospace;font-size:14px;color:var(--accent)}
+.box .verdict{display:flex;justify-content:space-between;align-items:center;margin:0 16px 16px;padding:12px 16px;background:var(--high-soft);color:var(--high);font-weight:700}
+.box .verdict b{font-family:var(--serif);font-size:26px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.two .callout{margin:0}
+.yes h3{color:var(--low)}.no h3{color:var(--high)}
+
+
+footer{border-top:1px solid var(--rule);margin-top:30px;padding:26px 0 44px;font-size:14px;color:var(--ink-2)}
+footer .refs{margin:8px 0 0;padding-left:18px}
+footer .refs li{margin:4px 0}
+
+/* model comparison (interactive) */
+.fam-baseline{--fam:#6f817e}.fam-lr{--fam:#0e7c7b}.fam-rf{--fam:#2f62c7}.fam-gb{--fam:#7446c9}
+@media (prefers-color-scheme:dark){.fam-baseline{--fam:#94aaa6}.fam-lr{--fam:#4cc3b8}.fam-rf{--fam:#7ea6ff}.fam-gb{--fam:#b99cff}}
+.mc-controls{display:grid;gap:14px;margin-bottom:18px}
+.mc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.mc-row>span{font-size:14px;font-weight:700;color:var(--muted);min-width:78px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
+.seg button,.fchip,.mc-btn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);padding:7px 12px;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--primary-dark);border-color:var(--line-strong);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.fchip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border-color:var(--line)}
+.fchip i{width:12px;height:12px;border-radius:50%;background:var(--fam)}
+.fchip[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.mc-btn{background:var(--surface);border-color:var(--line-strong);color:var(--primary-dark)}
+.mc-toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text)}
+.mc-toggle input{width:18px;height:18px;accent-color:var(--primary)}
+.mc-toggle.off{opacity:.5}
+.mc-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);position:relative}
+.mc-summary{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;margin:0 0 16px;color:var(--muted)}
+.mc-summary b{color:var(--text)}
+.mc-axis,.mc-item{display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr) 64px;gap:14px;align-items:center}
+.mc-axis{font-size:12px;color:var(--muted);font-weight:600;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.mc-ticks{position:relative;height:18px}
+.mc-ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.mc-list{list-style:none;margin:0;padding:0}
+.mc-item{padding:7px 4px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);border-radius:8px;cursor:default;outline:none}
+.mc-item:hover,.mc-item:focus-visible{background:var(--surface-2)}
+.mc-item:focus-visible{box-shadow:0 0 0 2px var(--primary)}
+.mc-name{font-size:14px;line-height:1.3;display:flex;align-items:center;gap:8px;min-width:0}
+.mc-name .sw{width:10px;height:10px;border-radius:50%;background:var(--fam);flex:none}
+.mc-name span{overflow:hidden;text-overflow:ellipsis}
+.badge{flex:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--primary);color:#fff}
+@media (prefers-color-scheme:dark){.badge{color:#062422}}
+.mc-track{position:relative;height:26px}
+.mc-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--bg-2);border-radius:2px}
+.mc-grid{position:absolute;top:0;bottom:0;width:1px;background:color-mix(in srgb,var(--line) 70%,transparent)}
+.mc-ref{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--primary);opacity:.55}
+.mc-gap{position:absolute;top:50%;height:2px;margin-top:-1px;background:var(--fam);opacity:.35;transition:left .45s ease,width .45s ease}
+.mc-dot,.mc-train{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;transition:left .45s ease}
+.mc-dot{background:var(--fam);box-shadow:0 0 0 3px var(--surface)}
+.mc-item.is-final .mc-dot{width:20px;height:20px;margin:-10px 0 0 -10px;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--fam)}
+.mc-dot.clip{opacity:.55}
+.mc-clip{position:absolute;top:50%;transform:translate(12px,-55%);font-size:15px;line-height:1;color:var(--muted);pointer-events:none}
+.mc-train{background:var(--surface);border:2.5px solid var(--fam);width:14px;height:14px;margin:-7px 0 0 -7px}
+.mc-val{font-size:15px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.mc-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:13px;color:var(--muted)}
+.mc-legend span{display:inline-flex;align-items:center;gap:6px}
+.mc-legend .dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.mc-legend .ring{width:12px;height:12px;border-radius:50%;border:2.5px solid var(--muted)}
+.mc-legend .dash{width:0;height:14px;border-left:2px dashed var(--primary)}
+.mc-tip{position:absolute;z-index:5;width:300px;max-width:calc(100% - 20px);background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 12px 36px rgba(18,48,46,.18);padding:14px 16px;font-size:13px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+.mc-tip.show{opacity:1;transform:none}
+.mc-tip h4{margin:0 0 2px;font-size:15px;line-height:1.3}
+.mc-tip .fam{font-weight:700;color:var(--fam)}
+.mc-tip p{margin:4px 0 8px;color:var(--muted)}
+.mc-tip table{width:100%;border-collapse:collapse}
+.mc-tip td{padding:3px 0;border-top:1px solid var(--line)}
+.mc-tip td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.mc-tip tr.cur td{color:var(--primary-dark)}
+.mc-table-wrap{overflow-x:auto;margin-top:16px}
+.mc-table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.mc-table th,.mc-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.mc-table th:first-child,.mc-table td:first-child{text-align:left}
+.mc-table th{font-size:13px;color:var(--muted);background:var(--surface-2);position:sticky;top:0}
+.mc-table tr.is-final td{font-weight:700}
+.mc-note{font-size:14px;color:var(--muted);margin:14px 0 0}
+@media (max-width:700px){
+  .mc-axis,.mc-item{grid-template-columns:minmax(0,1fr) 58px;row-gap:4px}
+  .mc-axis>div:first-child{display:none}
+  .mc-axis .mc-ticks{grid-column:1/2}
+  .mc-name{grid-column:1/3}
+  .mc-track{grid-column:1/2}
+  .mc-row>span{min-width:100%}
+  .mc-panel{padding:18px 14px}
+}
+@media (prefers-reduced-motion:reduce){.mc-dot,.mc-train,.mc-gap{transition:none}}
+
+/* model comparison inside the article */
+#models .mc-panel{border-radius:0}
+.fam-baseline{--fam:#7a8084}.fam-lr{--fam:#1f4e79}.fam-rf{--fam:#b0602a}.fam-gb{--fam:#6b4bb8}
+@media (prefers-color-scheme:dark){.fam-baseline{--fam:#9aa1a5}.fam-lr{--fam:#8fb6e0}.fam-rf{--fam:#e59a63}.fam-gb{--fam:#b39cf0}}
+@media (min-width:701px){.mc-axis,.mc-item{grid-template-columns:minmax(0,38%) minmax(0,1fr) 60px}}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr;gap:10px}
+  .toc{display:none}
+  .keys{grid-template-columns:repeat(2,1fr)}
+  .key:nth-child(2){border-right:0}
+  .key:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{width:calc(100% - 32px)}
+  .masthead small{display:none}
+  .toplinks .btn span{display:none}
+  .toplinks .btn{padding:0 12px}
+  .actions .btn{width:100%;justify-content:center}
+  .keys{grid-template-columns:1fr 1fr}
+  .key{padding:16px 12px}
+  .key strong{font-size:28px}
+  .two{grid-template-columns:1fr}
+  .bars .row{grid-template-columns:1fr 54px;row-gap:4px}
+  .bars .row span:first-child{grid-column:1/3}
+  .box dl{grid-template-columns:1fr}
+  .box dt{border-bottom:0;padding-bottom:0}
+  .abstract{padding:18px}
+  .mc-axis,.mc-item{grid-template-columns:minmax(0,1fr) 56px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar"><div class="wrap">
+  <a class="masthead" href="#top">No-Show Risk<small>Capstone report · MED-01</small></a>
+  <div class="toplinks">
+    <a class="btn btn-secondary" href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer"><svg class="fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.55 9.55 0 0 1 12 6.84a9.5 9.5 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg><span>Repository</span></a>
+  </div>
+</div></header>
+
+<main id="top" class="wrap">
+  <div class="titleblock">
+    <div class="eyebrow">AI/ML Fundamentals Capstone · Track 1 · MedTech</div>
+    <h1>Predicting hospital appointment no&#8209;shows at booking time</h1>
+    <p class="byline">By <b>Furkat Toshmatov</b> · Supervised binary classification · Final model: logistic regression</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a>
+      <a class="btn btn-secondary" href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer">View Repository</a>
+    </div>
+  </div>
+
+  <div class="keys" aria-label="Key results">
+    <div class="key"><strong>110,527</strong><span>appointments analysed</span></div>
+    <div class="key"><strong>0.723</strong><span>test ROC-AUC (95% CI 0.715–0.732)</span></div>
+    <div class="key"><strong>41%</strong><span>of no-shows in the High band (23% of appointments)</span></div>
+    <div class="key"><strong>23</strong><span>logged experiment runs</span></div>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+      <li><a href="#problem">Problem</a></li><li><a href="#workflow">Method</a></li><li><a href="#evidence">Results</a></li>
+      <li><a href="#models">Model comparison</a></li><li><a href="#demo">Demo</a></li><li><a href="#limitations">Responsible use</a></li>
+    </ol></nav>
+
+    <article>
+      <div class="abstract"><h2>Abstract</h2>
+        <p>In the data, one in five outpatient appointments is missed without notice. This project trains a model that estimates each appointment's no-show risk at booking time, so clinic staff can focus reminders and follow-up calls on the appointments most likely to be missed. On a held-out test week, the pre-registered logistic regression reached ROC-AUC 0.723, and its High-risk band (23% of appointments) contained 41% of all no-shows. The tool is decision support for supportive reminders only.</p>
+      </div>
+
+      <section class="part" id="problem"><h2><span>1</span>Problem and users</h2>
+        <p>Unannounced no-shows waste clinic capacity and lengthen waiting times for other patients. Without a risk estimate, staff cannot tell which appointments most need a reminder, so reminders are spread evenly.</p>
+        <p><b>Users:</b> operations and scheduling staff in a private outpatient clinic network, who decide whom to remind or call. The model is decision support only; a person always decides.</p>
+      </section>
+
+      <section class="part" id="workflow"><h2><span>2</span>Method</h2>
+        <p>Only information known when the appointment is booked is used. SMS reminder status is excluded, because reminders are sent after booking.</p>
+        <ol class="method">
+          <li><div><b>Booked appointment</b><span>Age, gender, neighbourhood, welfare status, health flags, and booking and appointment dates.</span></div></li>
+          <li><div><b>Leakage-safe features</b><span>Lead time, a same-day flag, and past attendance counted only before the booking day.</span></div></li>
+          <li><div><b>Logistic regression</b><span>Chosen from 23 logged validation runs; the choice was committed before the test set was used.</span></div></li>
+          <li><div><b>Risk band for staff</b><span>A probability, a Low / Medium / High band, and the main factors; staff decide whom to contact.</span></div></li>
+        </ol>
+      </section>
+
+      <section class="part" id="evidence"><h2><span>3</span>Results</h2>
+        <p>Final results come from a held-out test week (17,676 appointments, 2016-06-03 to 2016-06-08) that was used only once.</p>
+        <figure>
+          <figcaption><b>Table 1.</b> Test-set results (ROC-AUC: 0.5 = random; recall@top20: share of all no-shows among the riskiest 20%).</figcaption>
+          <div class="table-wrap"><table class="bt">
+            <thead><tr><th>Model</th><th>ROC-AUC</th><th>PR-AUC</th><th>Recall@top20</th></tr></thead>
+            <tbody>
+              <tr><td>Majority class (baseline)</td><td>0.500</td><td>0.185</td><td>0.182</td></tr>
+              <tr><td>Lead-time rule, no ML (baseline)</td><td>0.692</td><td>0.278</td><td>0.305</td></tr>
+              <tr class="hl"><td>Logistic regression (final)</td><td>0.723</td><td>0.328</td><td>0.362</td></tr>
+              <tr><td>Gradient boosting (comparison)</td><td>0.737</td><td>0.342</td><td>0.385</td></tr>
+            </tbody></table></div>
+        </figure>
+        <figure>
+          <figcaption><b>Figure 2.</b> No-show rate by risk band on the test week (share of appointments in brackets).</figcaption>
+          <div class="bars">
+            <div class="row"><span>Low (49.7%)</span><div class="track"><div class="fill f-low" style="width:24.4%"></div></div><span class="v">8.1%</span></div>
+            <div class="row"><span>Medium (27.8%)</span><div class="track"><div class="fill f-med" style="width:75.6%"></div></div><span class="v">25.1%</span></div>
+            <div class="row"><span>High (22.6%)</span><div class="track"><div class="fill f-high" style="width:100%"></div></div><span class="v">33.2%</span></div>
+          </div>
+        </figure>
+        <div class="callout"><h3>What this shows</h3><ul>
+          <li><b>Beats both baselines:</b> 0.723 vs 0.692 (lead-time rule) and 0.500 (majority class).</li>
+          <li><b>Generalises as expected:</b> the test score matches validation (0.726); leakage is checked by automated tests.</li>
+          <li><b>Separates risk clearly:</b> High-band appointments are missed 4 times as often as Low-band ones (33.2% vs 8.1%).</li>
+          <li><b>Honest model choice:</b> gradient boosting scored higher on the test week (0.737); the pre-registered choice was kept and gradient boosting is recommended for a future version.</li>
+        </ul></div>
+      </section>
+
+      <section class="part" id="models"><h2><span>4</span>Model comparison</h2>
+        <p>All 23 validation runs and the 4 one-time test runs, straight from the experiment log (<code>experiments/runs.csv</code>). Pick a metric, filter by model family, and hover or tap any model for its full scores and settings.</p>
+        <figure><figcaption><b>Figure 3 (interactive).</b> Every model tested, by the chosen metric.</figcaption>
+<div class="mc-controls" aria-label="Chart controls">
+    <div class="mc-row"><span>Data</span><div class="seg" role="group" aria-label="Data split" id="mc-split"></div></div>
+    <div class="mc-row"><span>Metric</span><div class="seg" role="group" aria-label="Metric" id="mc-metric"></div></div>
+    <div class="mc-row"><span>Families</span><div class="mc-row" role="group" aria-label="Model families" id="mc-fam"></div></div>
+    <div class="mc-row"><span>View</span>
+      <div class="seg" role="group" aria-label="Sort order" id="mc-sort"></div>
+      <div class="seg" role="group" aria-label="Axis range" id="mc-zoom"></div>
+      <label class="mc-toggle" id="mc-train-wrap"><input type="checkbox" id="mc-train"> Show training score (overfitting check)</label>
+      <button class="mc-btn" type="button" id="mc-table-btn" aria-expanded="false" aria-controls="mc-table-wrap">Show as table</button>
+    </div>
+  </div>
+  <div class="mc-panel" id="mc-panel">
+    <p class="mc-summary" id="mc-summary" aria-live="polite"></p>
+    <div class="mc-axis" aria-hidden="true"><div id="mc-axis-label"></div><div class="mc-ticks" id="mc-ticks"></div><div></div></div>
+    <ul class="mc-list" id="mc-list"></ul>
+    <div class="mc-legend" id="mc-legend"></div>
+    <div class="mc-tip" id="mc-tip" role="tooltip"></div>
+    <div class="mc-table-wrap" id="mc-table-wrap" hidden></div>
+  </div>
+  <p class="mc-note" id="mc-note"></p>
+        </figure>
+      </section>
+
+      <section class="part" id="demo"><h2><span>5</span>Demo</h2>
+        <p>The Colab demo loads the saved model, scores an appointment from an editable form, ranks a day's appointments by risk, and shows invalid inputs being rejected. Choose Runtime → Run all; no setup is needed.</p>
+        <figure><figcaption><b>Box 1.</b> Example output from the verified demo.</figcaption>
+          <div class="box">
+            <div class="box-head"><span>Example output</span><span>Verified demo</span></div>
+            <dl><dt>input</dt><dd>age 19, F, welfare, booked 28 days ahead</dd><dt>prediction</dt><dd>no_show_probability 0.3509</dd><dt>main factors</dt><dd>not same-day; welfare; age 19</dd></dl>
+            <div class="verdict"><span>HIGH RISK · offer a reminder call</span><b>35.1%</b></div>
+          </div>
+        </figure>
+        <p><a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a></p>
+      </section>
+
+      <section class="part" id="limitations"><h2><span>6</span>Responsible use and limitations</h2>
+        <div class="two">
+          <div class="callout yes"><h3>Intended use</h3><ul><li>Staff get a ranked list and choose whom to remind or call</li><li>Supportive help only: reminders, confirmation calls, rescheduling offers</li><li>A person always decides; the model never acts</li></ul></div>
+          <div class="callout no"><h3>Never use it to</h3><ul><li>Cancel, delay, or refuse care: 2 in 3 flagged patients would have come</li><li>Overbook flagged patients' slots or penalise patients</li><li>Treat the probability as an exact chance</li></ul></div>
+        </div>
+        <div class="callout"><h3>Known limitation</h3><p style="margin:0">Moderate accuracy (ROC-AUC 0.72) from six weeks of 2016 data at one Brazilian city's public clinics. Welfare patients and children receive more false alarms and elderly no-shows are rarely flagged, so the tool is only for supportive reminders, never to cancel, delay, or refuse care.</p></div>
+      </section>
+    </article>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <div><b>Furkat Toshmatov</b> · AI/ML Fundamentals Capstone · Built as a static showcase · <span data-year></span></div>
+  <ol class="refs">
+    <li>Data: <i>Medical Appointment No Shows</i>, Joni Hoppen and Aquarela Analytics (Kaggle), CC BY-NC-SA 4.0.</li>
+    <li>Code, experiments, and reports: <a href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer">github.com/monfurkat-glitch/HealthProject</a></li>
+  </ol>
+</div></footer>
+
+<script>
+(() => {
+  const RUNS = [{"id":"majority_class","split":"validation","family":"baseline","label":"Majority class","detail":"Always predicts the training no-show rate","final":false,"roc_auc":0.5,"pr_auc":0.1861,"precision_top20":0.1916,"recall_top20":0.2059,"brier":0.152,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"lead_time_rule","split":"validation","family":"baseline","label":"Lead-time rule (no ML)","detail":"Training no-show rate of the lead-time group","final":false,"roc_auc":0.6932,"pr_auc":0.2835,"precision_top20":0.3049,"recall_top20":0.3276,"brier":0.141,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg","split":"validation","family":"lr","label":"Logistic regression · C=1","detail":"Final model settings","final":true,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_balanced","split":"validation","family":"lr","label":"Logistic regression · class weights","detail":"class_weight = balanced","final":false,"roc_auc":0.725,"pr_auc":0.3317,"precision_top20":0.3396,"recall_top20":0.3649,"brier":0.2214,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_with_sms","split":"validation","family":"lr","label":"Logistic regression · with SMS","detail":"Comparison only: SMS is not known at booking time","final":false,"roc_auc":0.7267,"pr_auc":0.3339,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.1375,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_C0.001","split":"validation","family":"lr","label":"Logistic regression · C=0.001","detail":"Very strong regularisation","final":false,"roc_auc":0.7219,"pr_auc":0.3221,"precision_top20":0.3336,"recall_top20":0.3585,"brier":0.1387,"train_roc_auc":0.7226,"commit":"fcdbff4"},{"id":"logreg_C0.01","split":"validation","family":"lr","label":"Logistic regression · C=0.01","detail":"Regularisation strength","final":false,"roc_auc":0.726,"pr_auc":0.3318,"precision_top20":0.3373,"recall_top20":0.3625,"brier":0.1378,"train_roc_auc":0.7272,"commit":"fcdbff4"},{"id":"logreg_C0.1","split":"validation","family":"lr","label":"Logistic regression · C=0.1","detail":"Regularisation strength","final":false,"roc_auc":0.7259,"pr_auc":0.3325,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.1379,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C1.0","split":"validation","family":"lr","label":"Logistic regression · C=1 (tuning run)","detail":"Same settings as the final model","final":false,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C10.0","split":"validation","family":"lr","label":"Logistic regression · C=10","detail":"Weak regularisation","final":false,"roc_auc":0.7256,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"rf_leaf1_featsqrt","split":"validation","family":"rf","label":"Random forest · fully grown trees","detail":"min leaf 1 · √features · overfits","final":false,"roc_auc":0.6997,"pr_auc":0.2966,"precision_top20":0.3134,"recall_top20":0.3368,"brier":0.1535,"train_roc_auc":0.999,"commit":"fcdbff4"},{"id":"rf_leaf20_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 20","detail":"min leaf 20 · √features · best forest","final":false,"roc_auc":0.7263,"pr_auc":0.323,"precision_top20":0.3376,"recall_top20":0.3628,"brier":0.1376,"train_roc_auc":0.7732,"commit":"fcdbff4"},{"id":"rf_leaf100_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 100","detail":"min leaf 100 · √features","final":false,"roc_auc":0.7227,"pr_auc":0.3123,"precision_top20":0.3313,"recall_top20":0.3561,"brier":0.1378,"train_roc_auc":0.7418,"commit":"fcdbff4"},{"id":"rf_leaf20_feat0.5","split":"validation","family":"rf","label":"Random forest · min leaf 20, 50% features","detail":"min leaf 20 · 50% of features per split","final":false,"roc_auc":0.7219,"pr_auc":0.3202,"precision_top20":0.3319,"recall_top20":0.3567,"brier":0.1394,"train_roc_auc":0.8168,"commit":"fcdbff4"},{"id":"hgb_default","split":"validation","family":"gb","label":"Gradient boosting · default","detail":"scikit-learn defaults, early stopping","final":false,"roc_auc":0.7275,"pr_auc":0.3299,"precision_top20":0.3385,"recall_top20":0.3637,"brier":0.1383,"train_roc_auc":0.7766,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 20","detail":"learning rate 0.03 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7279,"pr_auc":0.3346,"precision_top20":0.3393,"recall_top20":0.3646,"brier":0.1377,"train_roc_auc":0.7554,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 200","detail":"Chosen as the comparison model","final":false,"roc_auc":0.7288,"pr_auc":0.3307,"precision_top20":0.3422,"recall_top20":0.3677,"brier":0.138,"train_roc_auc":0.7591,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 20","detail":"learning rate 0.03 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7248,"pr_auc":0.3284,"precision_top20":0.3325,"recall_top20":0.3573,"brier":0.1389,"train_roc_auc":0.8003,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 200","detail":"learning rate 0.03 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7258,"pr_auc":0.3261,"precision_top20":0.3424,"recall_top20":0.368,"brier":0.139,"train_roc_auc":0.7765,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 20","detail":"learning rate 0.1 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7277,"pr_auc":0.3341,"precision_top20":0.3353,"recall_top20":0.3604,"brier":0.1378,"train_roc_auc":0.7579,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 200","detail":"learning rate 0.1 · 15 leaves · min leaf 200","final":false,"roc_auc":0.7282,"pr_auc":0.3314,"precision_top20":0.345,"recall_top20":0.3708,"brier":0.1382,"train_roc_auc":0.7627,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 20","detail":"learning rate 0.1 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7258,"pr_auc":0.3303,"precision_top20":0.3379,"recall_top20":0.3631,"brier":0.1385,"train_roc_auc":0.7871,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 200","detail":"learning rate 0.1 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7249,"pr_auc":0.3255,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.139,"train_roc_auc":0.7717,"commit":"fcdbff4"},{"id":"final_logreg","split":"test","family":"lr","label":"Logistic regression (final model)","detail":"Pre-registered final model · refit on train + validation","final":true,"roc_auc":0.7232,"pr_auc":0.3283,"precision_top20":0.3349,"recall_top20":0.3623,"brier":0.1376,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"comparison_hgb","split":"test","family":"gb","label":"Gradient boosting (comparison)","detail":"lr 0.03 · 15 leaves · min leaf 200 · refit on train + validation","final":false,"roc_auc":0.7365,"pr_auc":0.3424,"precision_top20":0.3562,"recall_top20":0.3853,"brier":0.1356,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_majority","split":"test","family":"baseline","label":"Majority class","detail":"Refit on train + validation","final":false,"roc_auc":0.5,"pr_auc":0.1849,"precision_top20":0.1678,"recall_top20":0.1815,"brier":0.1511,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_lead_time_rule","split":"test","family":"baseline","label":"Lead-time rule (no ML)","detail":"Refit on train + validation","final":false,"roc_auc":0.6916,"pr_auc":0.2781,"precision_top20":0.2823,"recall_top20":0.3054,"brier":0.1398,"train_roc_auc":null,"commit":"87bf5a4"}];
+  const FAMS = {baseline:'Baselines', lr:'Logistic regression', rf:'Random forest', gb:'Gradient boosting'};
+  const METRICS = {
+    roc_auc:{name:'ROC-AUC', hint:'ranking quality; 0.5 = random', higher:true},
+    pr_auc:{name:'PR-AUC', hint:'ranking quality for the no-show class', higher:true},
+    recall_top20:{name:'Recall @ top 20%', hint:'share of all no-shows among the riskiest 20%', higher:true},
+    precision_top20:{name:'Precision @ top 20%', hint:'share of the riskiest 20% who are real no-shows', higher:true},
+    brier:{name:'Brier score', hint:'probability error; lower is better', higher:false},
+  };
+  const NOTES = {
+    validation:'Validation period (2016-05-30 to 06-02). Every run was trained on the training period only. Differences of about ±0.005 ROC-AUC are within noise: a paired bootstrap found no model reliably better than logistic regression.',
+    test:'Test week (2016-06-03 to 06-08), used once after the final model was chosen. Gradient boosting scored higher here (+0.013, a reliable gap); the pre-registered logistic regression was kept so the test result stays honest.'
+  };
+  const state = {split:'validation', metric:'roc_auc', fams:new Set(Object.keys(FAMS)), sort:'score', zoom:'zoom', train:false, table:false};
+  const $ = id => document.getElementById(id);
+  const fmt = v => v == null ? '—' : v.toFixed(3);
+
+  function seg(el, options, key){
+    el.innerHTML = options.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${state[key] === v}">${t}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state[key] = b.dataset.v; render(); };
+  }
+  function controls(){
+    seg($('mc-split'), [['validation','Validation · 23 runs'], ['test','Test · 4 models']], 'split');
+    seg($('mc-metric'), Object.entries(METRICS).map(([k, m]) => [k, m.name]), 'metric');
+    seg($('mc-sort'), [['score','Best first'], ['family','By family']], 'sort');
+    seg($('mc-zoom'), [['zoom','Zoomed'], ['full','Full range']], 'zoom');
+    const fam = $('mc-fam');
+    fam.innerHTML = Object.entries(FAMS).map(([k, n]) => `<button type="button" class="fchip fam-${k}" data-f="${k}" aria-pressed="${state.fams.has(k)}"><i></i>${n}</button>`).join('');
+    fam.onclick = e => { const b = e.target.closest('button'); if (!b) return; const f = b.dataset.f;
+      if (state.fams.has(f)) { if (state.fams.size > 1) state.fams.delete(f); } else state.fams.add(f); render(); };
+    $('mc-train').onchange = e => { state.train = e.target.checked; render(); };
+    $('mc-table-btn').onclick = () => { state.table = !state.table; render(); };
+  }
+
+  function niceTicks(lo, hi){
+    const span = hi - lo, raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * p).find(s => span / s <= 5);
+    const ticks = []; for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(+t.toFixed(6));
+    return ticks;
+  }
+
+  function render(){
+    controls();
+    const M = METRICS[state.metric];
+    const trainOK = state.metric === 'roc_auc' && state.split === 'validation';
+    $('mc-train-wrap').classList.toggle('off', !trainOK);
+    $('mc-train').disabled = !trainOK; $('mc-train').checked = state.train && trainOK;
+    const showTrain = state.train && trainOK;
+
+    let rows = RUNS.filter(r => r.split === state.split && state.fams.has(r.family) && r[state.metric] != null);
+    const better = (a, b) => M.higher ? b[state.metric] - a[state.metric] : a[state.metric] - b[state.metric];
+    const order = Object.keys(FAMS);
+    rows.sort(state.sort === 'score' ? better : (a, b) => order.indexOf(a.family) - order.indexOf(b.family) || better(a, b));
+
+    // Zoomed: fit the axis to the real models; baselines outside it are pinned at the edge
+    const core = rows.filter(r => r.family !== 'baseline');
+    const scaleRows = state.zoom === 'zoom' && core.length >= 2 ? core : rows;
+    const vals = scaleRows.flatMap(r => [r[state.metric], ...(showTrain && r.train_roc_auc != null ? [r.train_roc_auc] : [])]);
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.08, 0.004);
+    lo -= pad; hi += pad;
+    const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks[ticks.length - 1]);
+    const xRaw = v => ((v - lo) / (hi - lo)) * 100;
+    const x = v => Math.min(100, Math.max(0, xRaw(v)));
+    const clipped = v => xRaw(v) < 0 || xRaw(v) > 100;
+    let anyClipped = false;
+
+    const final = RUNS.find(r => r.split === state.split && r.final);
+    const best = [...rows].sort(better)[0];
+    $('mc-summary').innerHTML = `<span><b>${rows.length}</b> model${rows.length === 1 ? '' : 's'} shown</span>` +
+      (best ? `<span>Best ${M.name}: <b>${best.label}</b> (${fmt(best[state.metric])})</span>` : '') +
+      (final ? `<span>Final model: <b>${fmt(final[state.metric])}</b></span>` : '');
+    $('mc-axis-label').textContent = `${M.name} · ${M.higher ? 'higher' : 'lower'} is better`;
+    $('mc-ticks').innerHTML = ticks.map(t => `<span style="left:${x(t)}%">${t.toFixed(ticks.some(v => Math.round(v * 100) !== v * 100) ? 3 : 2)}</span>`).join('');
+
+    const grid = ticks.map(t => `<i class="mc-grid" style="left:${x(t)}%"></i>`).join('');
+    const ref = final && state.fams.has(final.family) ? `<i class="mc-ref" style="left:${x(final[state.metric])}%"></i>` : '';
+    $('mc-list').innerHTML = rows.map(r => {
+      const v = r[state.metric], t = showTrain ? r.train_roc_auc : null;
+      const cl = clipped(v); if (cl) anyClipped = true;
+      const gap = t != null ? `<i class="mc-gap" style="left:${Math.min(x(v), x(t))}%;width:${Math.abs(x(t) - x(v))}%"></i><i class="mc-train" style="left:${x(t)}%"></i>` : '';
+      return `<li class="mc-item fam-${r.family}${r.final ? ' is-final' : ''}" tabindex="0" data-id="${r.id}"
+        aria-label="${r.label}: ${M.name} ${fmt(v)}${t != null ? ', training ' + fmt(t) : ''}">
+        <div class="mc-name"><i class="sw"></i><span>${r.label}</span>${r.final ? '<em class="badge">Final</em>' : ''}</div>
+        <div class="mc-track">${grid}${ref}${gap}<i class="mc-dot${cl ? ' clip' : ''}" style="left:${x(v)}%"></i>${cl ? `<b class="mc-clip" style="left:${x(v)}%">${xRaw(v) < 0 ? '◂' : '▸'}</b>` : ''}</div>
+        <div class="mc-val">${fmt(v)}</div></li>`;
+    }).join('');
+
+    $('mc-legend').innerHTML = Object.entries(FAMS).filter(([k]) => state.fams.has(k))
+      .map(([k, n]) => `<span class="fam-${k}"><i class="dot" style="background:var(--fam)"></i>${n}</span>`).join('') +
+      (showTrain ? '<span><i class="ring"></i>training score (bigger gap = more overfitting)</span>' : '') +
+      (ref ? '<span><i class="dash"></i>final model</span>' : '') +
+      (anyClipped ? '<span><b style="color:var(--muted)">◂</b>outside the zoomed range (value on the right; choose Full range to see it)</span>' : '');
+    $('mc-note').textContent = NOTES[state.split];
+
+    const btn = $('mc-table-btn'); btn.textContent = state.table ? 'Hide table' : 'Show as table'; btn.setAttribute('aria-expanded', state.table);
+    const wrap = $('mc-table-wrap'); wrap.hidden = !state.table;
+    if (state.table) wrap.innerHTML = `<table class="mc-table"><caption class="sr-only" style="position:absolute;left:-9999px">All metrics for the models shown</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col">Family</th>${Object.values(METRICS).map(m => `<th scope="col">${m.name}</th>`).join('')}${state.split === 'validation' ? '<th scope="col">Train ROC-AUC</th>' : ''}</tr></thead>
+      <tbody>${rows.map(r => `<tr class="${r.final ? 'is-final' : ''}"><td>${r.label}${r.final ? ' (final)' : ''}</td><td>${FAMS[r.family]}</td>${Object.keys(METRICS).map(k => `<td>${fmt(r[k])}</td>`).join('')}${state.split === 'validation' ? `<td>${fmt(r.train_roc_auc)}</td>` : ''}</tr>`).join('')}</tbody></table>`;
+  }
+
+  // tooltip: hover, keyboard focus, or tap
+  const panel = $('mc-panel'), tip = $('mc-tip');
+  function showTip(item){
+    const r = RUNS.find(d => d.id === item.dataset.id && d.split === state.split); if (!r) return;
+    tip.className = `mc-tip fam-${r.family} show`;
+    tip.innerHTML = `<h4>${r.label}</h4><span class="fam">${FAMS[r.family]}</span><p>${r.detail}</p><table>` +
+      Object.entries(METRICS).map(([k, m]) => `<tr class="${k === state.metric ? 'cur' : ''}"><td>${m.name}</td><td>${fmt(r[k])}</td></tr>`).join('') +
+      (r.split === 'validation' ? `<tr><td>Train ROC-AUC</td><td>${r.train_roc_auc == null ? 'not logged' : fmt(r.train_roc_auc)}</td></tr>` : '') +
+      `<tr><td>Logged at commit</td><td>${r.commit}</td></tr></table>`;
+    const pr = panel.getBoundingClientRect(), ir = item.getBoundingClientRect();
+    let top = ir.bottom - pr.top + 6;
+    if (top + tip.offsetHeight > panel.offsetHeight) top = ir.top - pr.top - tip.offsetHeight - 6;
+    const left = Math.min(Math.max(10, ir.left - pr.left + ir.width * 0.34), panel.offsetWidth - tip.offsetWidth - 10);
+    tip.style.top = top + 'px'; tip.style.left = left + 'px';
+  }
+  const hideTip = () => tip.classList.remove('show');
+  const list = $('mc-list');
+  list.addEventListener('mouseover', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('mouseleave', hideTip);
+  list.addEventListener('focusin', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('focusout', hideTip);
+  list.addEventListener('click', e => { const it = e.target.closest('.mc-item'); if (it) { it.focus(); showTip(it); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  render();
+})();
+</script>
+<script>
+document.querySelector('[data-year]').textContent = new Date().getFullYear();
+// highlight the current section in the table of contents
+const links = [...document.querySelectorAll('.toc a')];
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+}), {rootMargin: '-40% 0px -55% 0px'});
+document.querySelectorAll('section.part').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
