@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Slides: predicting hospital appointment no-shows at booking time">
+<meta name="theme-color" content="#1f4e79">
+<title>No-Show Risk — Slides</title>
+<style>
+:root{
+  --paper:#fbfaf6; --ink:#1c2226; --ink-2:#4b5559; --rule:#d9d6cc; --rule-strong:#b9b5a8;
+  --accent:#1f4e79; --accent-soft:#e8eef5; --tint:#f3f1ea; --stage:#e9e6dc;
+  --low:#2f6f3e; --medium:#8a5a00; --high:#a3322b; --high-soft:#f7e6e3;
+  --bg:var(--paper); --bg-2:#efece3; --surface:#ffffff; --surface-2:#f7f5ef; --line:var(--rule); --line-strong:var(--rule-strong);
+  --text:var(--ink); --muted:var(--ink-2); --primary:var(--accent); --primary-dark:#163a5c; --shadow:none; --radius:6px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#15181b; --ink:#e8e6df; --ink-2:#b3b0a6; --rule:#33383c; --rule-strong:#4a5054;
+    --accent:#8fb6e0; --accent-soft:#1f2c3a; --tint:#1c2024; --stage:#0d0f11;
+    --low:#7cc48d; --medium:#e0b25a; --high:#f0897c; --high-soft:#3a2220;
+    --bg-2:#23282c; --surface:#1b1f22; --surface-2:#202529; --primary-dark:#b9d3ef;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--stage)}
+body{font-family:var(--sans);color:var(--ink)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* 16:9 canvas, scaled to fit the window */
+.viewport{position:fixed;inset:0 0 56px 0;display:grid;place-items:center;overflow:hidden}
+.deck{position:relative;width:1280px;height:720px;flex:none;transform-origin:center center;background:var(--paper);box-shadow:0 10px 40px rgba(0,0,0,.18)}
+.slide{position:absolute;inset:0;padding:54px 72px 60px;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;overflow:hidden;font-size:20px;line-height:1.55}
+.slide.active{opacity:1;visibility:visible}
+.slide::after{content:attr(data-num);position:absolute;right:40px;bottom:22px;font-size:14px;color:var(--ink-2)}
+.slide::before{content:"No-Show Risk · MED-01";position:absolute;left:72px;bottom:22px;font-size:14px;color:var(--ink-2);letter-spacing:.02em}
+.kicker{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-size:66px;line-height:1.08;margin:18px 0 20px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-size:44px;line-height:1.15;margin:10px 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+h3,.h3{font-family:var(--serif);font-size:24px;margin:0 0 10px}
+p{margin:0 0 12px}
+.lede{font-size:21px}
+.small{font-size:15px;color:var(--ink-2)}
+code{font-size:.9em}
+.eyebrow{font-size:16px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.byline{font-size:22px;color:var(--ink-2);margin:0}
+
+/* title and end slides */
+.s-title,.s-end{display:flex;flex-direction:column;justify-content:center;padding-bottom:90px}
+.s-title h1{max-width:1000px}
+.title-keys{display:grid;grid-template-columns:repeat(3,1fr);margin-top:46px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.title-keys div{padding:22px 24px;border-right:1px solid var(--rule)}
+.title-keys div:last-child{border-right:0}
+.title-keys strong{display:block;font-family:var(--serif);font-size:48px;line-height:1.1;color:var(--accent)}
+.title-keys span{font-size:17px;color:var(--ink-2)}
+.s-end h1{font-size:80px;margin:10px 0 0}
+.end-links{margin:34px 0 16px;display:flex;gap:14px}
+
+/* layouts */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.cols.wide-left{grid-template-columns:1.15fr .85fr}
+.big-stat strong{display:block;font-family:var(--serif);font-size:120px;line-height:1;color:var(--high)}
+.big-stat span{display:block;font-size:22px;color:var(--ink-2);margin-top:14px;max-width:420px}
+.points{margin:0;padding-left:26px}
+.points li{margin:0 0 14px}
+figure{margin:0}
+figcaption{font-size:15px;color:var(--ink-2);margin-bottom:12px}
+figcaption b{color:var(--ink)}
+.callout{border:1px solid var(--rule-strong);background:var(--surface);padding:22px 26px}
+.callout p{font-size:19px}
+.callout ul{margin:6px 0 0;padding-left:22px;font-size:19px}
+.callout li{margin:6px 0}
+.yes h3{color:var(--low)}.no h3{color:var(--high)}
+
+/* vertical bars (lead time) */
+.vbars{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;height:360px;align-items:end;border-bottom:2px solid var(--ink);padding:0 4px}
+.vbars div{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.vbars i{display:block;width:100%;height:var(--h);background:var(--high)}
+.vbars .lowbar i{background:var(--low)}
+.vbars b{font-size:17px;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.vbars span{position:absolute;bottom:-32px;font-size:15px;color:var(--ink-2);white-space:nowrap}
+
+/* method flow */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.flow li{border-top:3px solid var(--accent);padding-top:16px}
+.flow span{font-family:var(--serif);font-size:40px;line-height:1;color:var(--accent)}
+.flow b{display:block;font-size:21px;margin:10px 0 6px}
+.flow p{font-size:17px;color:var(--ink-2);margin:0}
+.split-note{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.split-note div{background:var(--tint);border:1px solid var(--rule);padding:16px 20px}
+.split-note b{display:block;font-size:18px}
+.split-note span{font-size:16px;color:var(--ink-2)}
+
+/* tables */
+table.bt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:18px}
+table.bt th{text-align:right;padding:8px 10px;border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);font-size:16px;white-space:nowrap}
+table.bt th.l{text-align:left}
+.s-fair table.bt{font-size:20px}
+.s-fair table.bt td{padding:12px 10px}
+.s-fair .lede{margin-top:26px;font-size:22px}
+.s-honest .callout p,.s-honest .criteria li{font-size:20px}
+.s-honest .criteria{gap:20px}
+table.bt td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--rule)}
+table.bt tbody tr:last-child td{border-bottom:2px solid var(--ink)}
+table.bt th:first-child,table.bt td:first-child,table.bt td.l{text-align:left}
+table.bt tr.hl td{font-weight:700;background:var(--accent-soft)}
+.hbars{display:grid;gap:18px}
+.hbars div{display:grid;grid-template-columns:160px 1fr 70px;gap:14px;align-items:center;font-size:18px}
+.hbars i{height:18px;background:var(--bg-2);display:block}
+.hbars em{display:block;height:100%}
+.hbars b{text-align:right;font-variant-numeric:tabular-nums}
+.f-low{background:var(--low)}.f-med{background:var(--medium)}.f-high{background:var(--high)}
+
+/* criteria */
+.criteria{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.criteria li{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start;font-size:18px}
+.tag{font-style:normal;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;text-align:center;padding:5px 0;color:#fff}
+.tag.yes{background:var(--low)}.tag.part{background:var(--medium)}.tag.no{background:var(--high)}
+@media (prefers-color-scheme:dark){.tag{color:#15181b}}
+
+/* demo box */
+.box{border:1px solid var(--rule-strong);background:var(--surface)}
+.box dl{margin:0;padding:8px 20px 16px;display:grid;grid-template-columns:150px 1fr}
+.box dt,.box dd{margin:0;padding:10px 0;border-bottom:1px dashed var(--rule);font-size:18px}
+.box dt{font-family:Consolas,"SFMono-Regular",monospace;font-size:16px;color:var(--accent)}
+.box .verdict{display:flex;justify-content:space-between;align-items:center;margin:0 20px 20px;padding:14px 18px;background:var(--high-soft);color:var(--high);font-weight:700}
+.box .verdict b{font-family:var(--serif);font-size:30px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:4px;font:600 17px/1 var(--sans);text-decoration:none;border:1.5px solid var(--accent)}
+.btn-primary{background:var(--accent);color:#fff}
+@media (prefers-color-scheme:dark){.btn-primary{color:#10202f}}
+.btn-secondary{background:transparent;color:var(--accent)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* model comparison (interactive) */
+.fam-baseline{--fam:#6f817e}.fam-lr{--fam:#0e7c7b}.fam-rf{--fam:#2f62c7}.fam-gb{--fam:#7446c9}
+@media (prefers-color-scheme:dark){.fam-baseline{--fam:#94aaa6}.fam-lr{--fam:#4cc3b8}.fam-rf{--fam:#7ea6ff}.fam-gb{--fam:#b99cff}}
+.mc-controls{display:grid;gap:14px;margin-bottom:18px}
+.mc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.mc-row>span{font-size:14px;font-weight:700;color:var(--muted);min-width:78px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
+.seg button,.fchip,.mc-btn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);padding:7px 12px;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--primary-dark);border-color:var(--line-strong);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.fchip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border-color:var(--line)}
+.fchip i{width:12px;height:12px;border-radius:50%;background:var(--fam)}
+.fchip[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.mc-btn{background:var(--surface);border-color:var(--line-strong);color:var(--primary-dark)}
+.mc-toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text)}
+.mc-toggle input{width:18px;height:18px;accent-color:var(--primary)}
+.mc-toggle.off{opacity:.5}
+.mc-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);position:relative}
+.mc-summary{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;margin:0 0 16px;color:var(--muted)}
+.mc-summary b{color:var(--text)}
+.mc-axis,.mc-item{display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr) 64px;gap:14px;align-items:center}
+.mc-axis{font-size:12px;color:var(--muted);font-weight:600;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.mc-ticks{position:relative;height:18px}
+.mc-ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.mc-list{list-style:none;margin:0;padding:0}
+.mc-item{padding:7px 4px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);border-radius:8px;cursor:default;outline:none}
+.mc-item:hover,.mc-item:focus-visible{background:var(--surface-2)}
+.mc-item:focus-visible{box-shadow:0 0 0 2px var(--primary)}
+.mc-name{font-size:14px;line-height:1.3;display:flex;align-items:center;gap:8px;min-width:0}
+.mc-name .sw{width:10px;height:10px;border-radius:50%;background:var(--fam);flex:none}
+.mc-name span{overflow:hidden;text-overflow:ellipsis}
+.badge{flex:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--primary);color:#fff}
+@media (prefers-color-scheme:dark){.badge{color:#062422}}
+.mc-track{position:relative;height:26px}
+.mc-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--bg-2);border-radius:2px}
+.mc-grid{position:absolute;top:0;bottom:0;width:1px;background:color-mix(in srgb,var(--line) 70%,transparent)}
+.mc-ref{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--primary);opacity:.55}
+.mc-gap{position:absolute;top:50%;height:2px;margin-top:-1px;background:var(--fam);opacity:.35;transition:left .45s ease,width .45s ease}
+.mc-dot,.mc-train{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;transition:left .45s ease}
+.mc-dot{background:var(--fam);box-shadow:0 0 0 3px var(--surface)}
+.mc-item.is-final .mc-dot{width:20px;height:20px;margin:-10px 0 0 -10px;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--fam)}
+.mc-dot.clip{opacity:.55}
+.mc-clip{position:absolute;top:50%;transform:translate(12px,-55%);font-size:15px;line-height:1;color:var(--muted);pointer-events:none}
+.mc-train{background:var(--surface);border:2.5px solid var(--fam);width:14px;height:14px;margin:-7px 0 0 -7px}
+.mc-val{font-size:15px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.mc-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:13px;color:var(--muted)}
+.mc-legend span{display:inline-flex;align-items:center;gap:6px}
+.mc-legend .dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.mc-legend .ring{width:12px;height:12px;border-radius:50%;border:2.5px solid var(--muted)}
+.mc-legend .dash{width:0;height:14px;border-left:2px dashed var(--primary)}
+.mc-tip{position:absolute;z-index:5;width:300px;max-width:calc(100% - 20px);background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 12px 36px rgba(18,48,46,.18);padding:14px 16px;font-size:13px;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+.mc-tip.show{opacity:1;transform:none}
+.mc-tip h4{margin:0 0 2px;font-size:15px;line-height:1.3}
+.mc-tip .fam{font-weight:700;color:var(--fam)}
+.mc-tip p{margin:4px 0 8px;color:var(--muted)}
+.mc-tip table{width:100%;border-collapse:collapse}
+.mc-tip td{padding:3px 0;border-top:1px solid var(--line)}
+.mc-tip td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.mc-tip tr.cur td{color:var(--primary-dark)}
+.mc-table-wrap{overflow-x:auto;margin-top:16px}
+.mc-table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.mc-table th,.mc-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.mc-table th:first-child,.mc-table td:first-child{text-align:left}
+.mc-table th{font-size:13px;color:var(--muted);background:var(--surface-2);position:sticky;top:0}
+.mc-table tr.is-final td{font-weight:700}
+.mc-note{font-size:14px;color:var(--muted);margin:14px 0 0}
+@media (max-width:700px){
+  .mc-axis,.mc-item{grid-template-columns:minmax(0,1fr) 58px;row-gap:4px}
+  .mc-axis>div:first-child{display:none}
+  .mc-axis .mc-ticks{grid-column:1/2}
+  .mc-name{grid-column:1/3}
+  .mc-track{grid-column:1/2}
+  .mc-row>span{min-width:100%}
+  .mc-panel{padding:18px 14px}
+}
+@media (prefers-reduced-motion:reduce){.mc-dot,.mc-train,.mc-gap{transition:none}}
+
+/* interactive comparison, compacted for a slide */
+.fam-baseline{--fam:#7a8084}.fam-lr{--fam:#1f4e79}.fam-rf{--fam:#b0602a}.fam-gb{--fam:#6b4bb8}
+@media (prefers-color-scheme:dark){.fam-baseline{--fam:#9aa1a5}.fam-lr{--fam:#8fb6e0}.fam-rf{--fam:#e59a63}.fam-gb{--fam:#b39cf0}}
+.s-models{padding-top:40px}
+.s-models h2{font-size:34px;margin:6px 0 14px;padding-bottom:10px}
+.s-models .mc-controls{gap:6px;margin-bottom:10px}
+.s-models .mc-row>span{min-width:70px;font-size:13px}
+.s-models .seg button,.s-models .fchip,.s-models .mc-btn{min-height:32px;padding:4px 10px;font-size:13px}
+.s-models .mc-toggle{font-size:13px}
+.s-models .mc-panel{padding:10px 16px 8px;border-radius:0}
+.s-models .mc-summary{font-size:14px;margin-bottom:6px}
+.s-models #mc-list{max-height:250px;overflow-y:auto;overscroll-behavior:contain}
+.s-models .mc-item{padding:3px 4px;grid-template-columns:minmax(0,38%) minmax(0,1fr) 60px}
+.s-models .mc-axis{grid-template-columns:minmax(0,38%) minmax(0,1fr) 60px}
+.s-models .mc-name{font-size:13px}
+.s-models .mc-track{height:20px}
+.s-models .mc-val{font-size:14px}
+.s-models .mc-legend{margin-top:6px;font-size:12px}
+.s-models #mc-table-wrap{max-height:250px;overflow:auto;margin-top:8px}
+.s-models .mc-controls .mc-row:nth-child(1),.s-models .mc-controls .mc-row:nth-child(2){display:inline-flex;margin-right:22px}
+.s-models .mc-controls{display:block}
+.s-models .mc-controls .mc-row{margin-bottom:6px}
+
+/* navigation bar */
+.navbar{position:fixed;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--paper);border-top:1px solid var(--rule);font-size:15px;color:var(--ink-2)}
+.navbar button{font:600 15px var(--sans);min-width:44px;min-height:40px;padding:0 14px;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink);cursor:pointer;border-radius:4px}
+.navbar button:disabled{opacity:.4;cursor:default}
+.counter{min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+.progress{position:fixed;left:0;bottom:56px;height:3px;background:var(--accent);transition:width .3s ease}
+.hint{position:absolute;right:16px;font-size:13px}
+@media (max-width:700px){.hint{display:none}}
+@media (prefers-reduced-motion:reduce){.slide,.progress{transition:none}}
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport"><div class="deck" id="deck" role="region" aria-roledescription="slide deck" aria-label="No-Show Risk slides">
+<section class="slide s-title" aria-label="Title">
+  <div class="eyebrow">AI/ML Fundamentals Capstone · Track 1 · MedTech</div>
+  <h1>Predicting hospital appointment no&#8209;shows at booking time</h1>
+  <p class="byline">Furkat Toshmatov · MED-01 · Supervised binary classification</p>
+  <div class="title-keys">
+    <div><strong>1 in 5</strong><span>appointments missed without notice</span></div>
+    <div><strong>0.723</strong><span>test ROC-AUC of the final model</span></div>
+    <div><strong>41%</strong><span>of no-shows found in the High band</span></div>
+  </div>
+</section>
+<section class="slide" aria-label="Problem">
+  <div class="kicker">1 · Problem and users</div>
+  <h2>Empty slots, longer waits, reminders spread evenly</h2>
+  <div class="cols">
+    <div class="big-stat"><strong>20.2%</strong><span>of 110,527 appointments were missed without notice</span></div>
+    <div>
+      <ol class="points">
+        <li><b>The problem.</b> Unannounced no-shows waste clinic capacity and lengthen waiting times for other patients.</li>
+        <li><b>What is missing.</b> Staff cannot tell which appointments most need a reminder.</li>
+        <li><b>Who uses it.</b> Operations and scheduling staff in a private outpatient clinic network.</li>
+        <li><b>The rule.</b> Decision support only: a person always decides; the system never cancels or rebooks.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+<section class="slide" aria-label="Data">
+  <div class="kicker">2 · Data</div>
+  <h2>Booking lead time is the strongest signal</h2>
+  <div class="cols wide-left">
+    <figure>
+      <figcaption><b>Figure 1.</b> No-show rate by days between booking and appointment (all appointments with a valid booking date).</figcaption>
+      <div class="vbars">
+        <div style="--h:13.5%" class="lowbar"><b>4.6%</b><i></i><span>same day</span></div>
+        <div style="--h:66.4%"><b>22.7%</b><i></i><span>1–2</span></div>
+        <div style="--h:73.1%"><b>25.0%</b><i></i><span>3–7</span></div>
+        <div style="--h:89.2%"><b>30.5%</b><i></i><span>8–14</span></div>
+        <div style="--h:95.3%"><b>32.6%</b><i></i><span>15–30</span></div>
+        <div style="--h:100%"><b>34.2%</b><i></i><span>31–60</span></div>
+        <div style="--h:83.0%"><b>28.4%</b><i></i><span>61+</span></div>
+      </div>
+    </figure>
+    <div>
+      <p class="lede">Kaggle <i>Medical Appointment No Shows</i>: 110,527 appointments, 62,299 patients, public clinics in Vitória, Brazil (6 weeks in 2016).</p>
+      <div class="callout"><h3>A trap in the data</h3><p>Raw, patients who got an SMS reminder missed <b>more</b> appointments (27.6% vs 16.7%). SMS was only sent for bookings made 3+ days ahead. Compared at the same lead time, SMS goes with <b>fewer</b> no-shows. SMS status is also unknown at booking time, so it is excluded.</p></div>
+    </div>
+  </div>
+</section>
+<section class="slide" aria-label="Method">
+  <div class="kicker">3 · Method</div>
+  <h2>Only what is known when the appointment is booked</h2>
+  <ol class="flow">
+    <li><span>1</span><b>Booked appointment</b><p>Age, gender, neighbourhood, welfare status, health flags, booking and appointment dates.</p></li>
+    <li><span>2</span><b>Leakage-safe features</b><p>Lead time, a same-day flag, and past attendance counted only before the booking day.</p></li>
+    <li><span>3</span><b>Logistic regression</b><p>Chosen from 23 logged validation runs; committed before the test set was used.</p></li>
+    <li><span>4</span><b>Risk band for staff</b><p>Probability, Low / Medium / High band, and the main factors.</p></li>
+  </ol>
+  <div class="split-note">
+    <div><b>Time-based split</b><span>Train Apr 29 – May 25 (75,278) · Validation May 30 – Jun 2 (17,567) · Test Jun 3 – 8 (17,676)</span></div>
+    <div><b>Leakage tested</b><span>Automated tests recount history by brute force; a deliberately planted leak makes them fail.</span></div>
+  </div>
+</section>
+<section class="slide s-models" id="models" aria-label="Model comparison">
+  <div class="kicker">4 · Every model we tested</div>
+  <h2>27 logged runs, one interactive chart</h2>
+<div class="mc-controls" aria-label="Chart controls">
+    <div class="mc-row"><span>Data</span><div class="seg" role="group" aria-label="Data split" id="mc-split"></div></div>
+    <div class="mc-row"><span>Metric</span><div class="seg" role="group" aria-label="Metric" id="mc-metric"></div></div>
+    <div class="mc-row"><span>Families</span><div class="mc-row" role="group" aria-label="Model families" id="mc-fam"></div></div>
+    <div class="mc-row"><span>View</span>
+      <div class="seg" role="group" aria-label="Sort order" id="mc-sort"></div>
+      <div class="seg" role="group" aria-label="Axis range" id="mc-zoom"></div>
+      <label class="mc-toggle" id="mc-train-wrap"><input type="checkbox" id="mc-train"> Show training score (overfitting check)</label>
+      <button class="mc-btn" type="button" id="mc-table-btn" aria-expanded="false" aria-controls="mc-table-wrap">Show as table</button>
+    </div>
+  </div>
+  <div class="mc-panel" id="mc-panel">
+    <p class="mc-summary" id="mc-summary" aria-live="polite"></p>
+    <div class="mc-axis" aria-hidden="true"><div id="mc-axis-label"></div><div class="mc-ticks" id="mc-ticks"></div><div></div></div>
+    <ul class="mc-list" id="mc-list"></ul>
+    <div class="mc-legend" id="mc-legend"></div>
+    <div class="mc-tip" id="mc-tip" role="tooltip"></div>
+    <div class="mc-table-wrap" id="mc-table-wrap" hidden></div>
+  </div>
+</section>
+<section class="slide" aria-label="Results">
+  <div class="kicker">5 · Results on the untouched test week</div>
+  <h2>The final model generalises and beats both baselines</h2>
+  <div class="cols">
+    <figure>
+      <figcaption><b>Table 1.</b> Test week, 17,676 appointments, used once.</figcaption>
+      <table class="bt">
+        <thead><tr><th>Model</th><th>ROC-AUC</th><th>PR-AUC</th><th>Recall@top20</th></tr></thead>
+        <tbody>
+          <tr><td>Majority class</td><td>0.500</td><td>0.185</td><td>0.182</td></tr>
+          <tr><td>Lead-time rule (no ML)</td><td>0.692</td><td>0.278</td><td>0.305</td></tr>
+          <tr class="hl"><td>Logistic regression (final)</td><td>0.723</td><td>0.328</td><td>0.362</td></tr>
+          <tr><td>Gradient boosting (comparison)</td><td>0.737</td><td>0.342</td><td>0.385</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Final model 95% CI 0.715–0.732; validation score was 0.726.</p>
+    </figure>
+    <figure>
+      <figcaption><b>Figure 2.</b> No-show rate by risk band (share of appointments in brackets).</figcaption>
+      <div class="hbars">
+        <div><span>Low (49.7%)</span><i><em class="f-low" style="width:24.4%"></em></i><b>8.1%</b></div>
+        <div><span>Medium (27.8%)</span><i><em class="f-med" style="width:75.6%"></em></i><b>25.1%</b></div>
+        <div><span>High (22.6%)</span><i><em class="f-high" style="width:100%"></em></i><b>33.2%</b></div>
+      </div>
+      <p class="lede" style="margin-top:22px">Calling only the <b>High</b> band (23% of appointments) reaches <b>41%</b> of all no-shows: 4× the no-show rate of the Low band.</p>
+    </figure>
+  </div>
+</section>
+<section class="slide s-honest" aria-label="Honest findings">
+  <div class="kicker">6 · Honest findings</div>
+  <h2>What did not go to plan, reported as it happened</h2>
+  <div class="cols">
+    <div class="callout">
+      <h3>Gradient boosting won on the test week</h3>
+      <p><b>+0.013 ROC-AUC</b> (95% CI +0.009 to +0.018), better in 100% of bootstrap resamples, although on validation the gap was only noise.</p>
+      <p>Logistic regression was <b>kept, as pre-registered</b>: switching after seeing test scores would make the test result a biased estimate. Gradient boosting is recommended for the next version, confirmed on new data.</p>
+    </div>
+    <div>
+      <h3 class="h3">Success criteria, set before modelling</h3>
+      <ul class="criteria">
+        <li><em class="tag part">Partly</em>Beat both baselines: yes vs majority and lead-time rule; no model reliably beat logistic regression</li>
+        <li><em class="tag no">Not met</em>Beat logistic regression's top-20% recall: same reason</li>
+        <li><em class="tag yes">Met</em>No leakage, verified by automated tests</li>
+        <li><em class="tag yes">Met</em>Colab demo runs end to end from the repository</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="slide s-fair" aria-label="Fairness">
+  <div class="kicker">7 · Error analysis and fairness</div>
+  <h2>Where the model fails, and for whom</h2>
+  <figure>
+    <figcaption><b>Table 2.</b> Share of each group's no-shows that are caught, and of its attenders that are falsely flagged (High band, test week).</figcaption>
+    <table class="bt">
+      <thead><tr><th>Group</th><th>Flagged</th><th>No-shows caught</th><th>False alarms</th><th class="l">Reading</th></tr></thead>
+      <tbody>
+        <tr><td>Female / male</td><td>21.3% / 25.0%</td><td>39.6% / 42.3%</td><td>17.3% / 21.0%</td><td class="l">No material gap</td></tr>
+        <tr><td>Welfare / no welfare</td><td>42.2% / 20.4%</td><td>72.9% / 36.6%</td><td>34.3% / 16.8%</td><td class="l">Welfare flagged 2× as often</td></tr>
+        <tr><td>Age 0–12</td><td>43.2%</td><td>70.2%</td><td>37.0%</td><td class="l">Children over-flagged</td></tr>
+        <tr><td>Age 66+</td><td>4.5%</td><td>7.1%</td><td>4.1%</td><td class="l">Elderly no-shows rarely caught</td></tr>
+      </tbody>
+    </table>
+  </figure>
+  <p class="lede">Caught no-shows and false alarms look almost identical in the data (young, booked weeks ahead), which limits any model. Within a single lead-time group, ranking is only a little better than chance (ROC-AUC 0.57–0.62).</p>
+</section>
+<section class="slide" aria-label="Demo">
+  <div class="kicker">8 · Live demo</div>
+  <h2>From raw appointment to a ranked risk list</h2>
+  <div class="cols">
+    <div>
+      <p class="lede">The Colab demo loads the saved model, scores an appointment from an editable form, ranks a day's appointments by risk, and rejects invalid inputs with every problem listed. Runtime → Run all; no setup.</p>
+      <p><a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a></p>
+      <p class="small">Backup if offline: <code>python -m src.predict examples/appointment.json</code></p>
+    </div>
+    <figure>
+      <figcaption><b>Box 1.</b> Example output from the verified demo.</figcaption>
+      <div class="box">
+        <dl><dt>input</dt><dd>age 19, F, welfare, booked 28 days ahead</dd><dt>prediction</dt><dd>no_show_probability 0.3509</dd><dt>main factors</dt><dd>not same-day; welfare; age 19</dd></dl>
+        <div class="verdict"><span>HIGH RISK · offer a reminder call</span><b>35.1%</b></div>
+      </div>
+    </figure>
+  </div>
+</section>
+<section class="slide" aria-label="Responsible use">
+  <div class="kicker">9 · Responsible use and limitations</div>
+  <h2>Helpful for reminders, never for decisions about care</h2>
+  <div class="cols">
+    <div class="callout yes"><h3>Intended use</h3><ul><li>Staff get a ranked list and choose whom to remind or call</li><li>Supportive help only: reminders, confirmation calls, rescheduling offers</li><li>A person always decides; the model never acts</li></ul></div>
+    <div class="callout no"><h3>Never use it to</h3><ul><li>Cancel, delay, or refuse care: 2 in 3 flagged patients would have come</li><li>Overbook flagged patients' slots or penalise patients</li><li>Treat the probability as an exact chance</li></ul></div>
+  </div>
+  <div class="callout" style="margin-top:22px"><h3>Known limitation</h3><p>Moderate accuracy (ROC-AUC 0.72) from six weeks of 2016 data at one Brazilian city's public clinics; linear age effect; probabilities about 2.7 points too high on the test week.</p></div>
+</section>
+<section class="slide s-end" aria-label="Thank you">
+  <div class="eyebrow">Thank you</div>
+  <h1>Questions?</h1>
+  <div class="title-keys">
+    <div><strong>0.723</strong><span>test ROC-AUC</span></div>
+    <div><strong>23</strong><span>logged experiment runs</span></div>
+    <div><strong>55</strong><span>automated tests</span></div>
+  </div>
+  <p class="end-links"><a class="btn btn-primary" href="https://colab.research.google.com/github/monfurkat-glitch/HealthProject/blob/main/notebooks/02_demo.ipynb" target="_blank" rel="noreferrer">Open Live Demo <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a> <a class="btn btn-secondary" href="https://github.com/monfurkat-glitch/HealthProject" target="_blank" rel="noreferrer">View Repository</a></p>
+  <p class="small">github.com/monfurkat-glitch/HealthProject · Furkat Toshmatov · AI/ML Fundamentals Capstone</p>
+</section>
+</div></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<nav class="navbar" aria-label="Slide navigation">
+  <button type="button" id="prev" aria-label="Previous slide">←</button>
+  <span class="counter" id="counter" aria-live="polite"></span>
+  <button type="button" id="next" aria-label="Next slide">→</button>
+  <button type="button" id="fs" aria-label="Toggle fullscreen">Fullscreen</button>
+  <span class="hint">← → or Space to move · F for fullscreen</span>
+</nav>
+
+<script>
+(() => {
+  const RUNS = [{"id":"majority_class","split":"validation","family":"baseline","label":"Majority class","detail":"Always predicts the training no-show rate","final":false,"roc_auc":0.5,"pr_auc":0.1861,"precision_top20":0.1916,"recall_top20":0.2059,"brier":0.152,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"lead_time_rule","split":"validation","family":"baseline","label":"Lead-time rule (no ML)","detail":"Training no-show rate of the lead-time group","final":false,"roc_auc":0.6932,"pr_auc":0.2835,"precision_top20":0.3049,"recall_top20":0.3276,"brier":0.141,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg","split":"validation","family":"lr","label":"Logistic regression · C=1","detail":"Final model settings","final":true,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_balanced","split":"validation","family":"lr","label":"Logistic regression · class weights","detail":"class_weight = balanced","final":false,"roc_auc":0.725,"pr_auc":0.3317,"precision_top20":0.3396,"recall_top20":0.3649,"brier":0.2214,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_with_sms","split":"validation","family":"lr","label":"Logistic regression · with SMS","detail":"Comparison only: SMS is not known at booking time","final":false,"roc_auc":0.7267,"pr_auc":0.3339,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.1375,"train_roc_auc":null,"commit":"a8ec4ae"},{"id":"logreg_C0.001","split":"validation","family":"lr","label":"Logistic regression · C=0.001","detail":"Very strong regularisation","final":false,"roc_auc":0.7219,"pr_auc":0.3221,"precision_top20":0.3336,"recall_top20":0.3585,"brier":0.1387,"train_roc_auc":0.7226,"commit":"fcdbff4"},{"id":"logreg_C0.01","split":"validation","family":"lr","label":"Logistic regression · C=0.01","detail":"Regularisation strength","final":false,"roc_auc":0.726,"pr_auc":0.3318,"precision_top20":0.3373,"recall_top20":0.3625,"brier":0.1378,"train_roc_auc":0.7272,"commit":"fcdbff4"},{"id":"logreg_C0.1","split":"validation","family":"lr","label":"Logistic regression · C=0.1","detail":"Regularisation strength","final":false,"roc_auc":0.7259,"pr_auc":0.3325,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.1379,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C1.0","split":"validation","family":"lr","label":"Logistic regression · C=1 (tuning run)","detail":"Same settings as the final model","final":false,"roc_auc":0.7257,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"logreg_C10.0","split":"validation","family":"lr","label":"Logistic regression · C=10","detail":"Weak regularisation","final":false,"roc_auc":0.7256,"pr_auc":0.3324,"precision_top20":0.3399,"recall_top20":0.3652,"brier":0.138,"train_roc_auc":0.7282,"commit":"fcdbff4"},{"id":"rf_leaf1_featsqrt","split":"validation","family":"rf","label":"Random forest · fully grown trees","detail":"min leaf 1 · √features · overfits","final":false,"roc_auc":0.6997,"pr_auc":0.2966,"precision_top20":0.3134,"recall_top20":0.3368,"brier":0.1535,"train_roc_auc":0.999,"commit":"fcdbff4"},{"id":"rf_leaf20_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 20","detail":"min leaf 20 · √features · best forest","final":false,"roc_auc":0.7263,"pr_auc":0.323,"precision_top20":0.3376,"recall_top20":0.3628,"brier":0.1376,"train_roc_auc":0.7732,"commit":"fcdbff4"},{"id":"rf_leaf100_featsqrt","split":"validation","family":"rf","label":"Random forest · min leaf 100","detail":"min leaf 100 · √features","final":false,"roc_auc":0.7227,"pr_auc":0.3123,"precision_top20":0.3313,"recall_top20":0.3561,"brier":0.1378,"train_roc_auc":0.7418,"commit":"fcdbff4"},{"id":"rf_leaf20_feat0.5","split":"validation","family":"rf","label":"Random forest · min leaf 20, 50% features","detail":"min leaf 20 · 50% of features per split","final":false,"roc_auc":0.7219,"pr_auc":0.3202,"precision_top20":0.3319,"recall_top20":0.3567,"brier":0.1394,"train_roc_auc":0.8168,"commit":"fcdbff4"},{"id":"hgb_default","split":"validation","family":"gb","label":"Gradient boosting · default","detail":"scikit-learn defaults, early stopping","final":false,"roc_auc":0.7275,"pr_auc":0.3299,"precision_top20":0.3385,"recall_top20":0.3637,"brier":0.1383,"train_roc_auc":0.7766,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 20","detail":"learning rate 0.03 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7279,"pr_auc":0.3346,"precision_top20":0.3393,"recall_top20":0.3646,"brier":0.1377,"train_roc_auc":0.7554,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 15 leaves, leaf 200","detail":"Chosen as the comparison model","final":false,"roc_auc":0.7288,"pr_auc":0.3307,"precision_top20":0.3422,"recall_top20":0.3677,"brier":0.138,"train_roc_auc":0.7591,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 20","detail":"learning rate 0.03 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7248,"pr_auc":0.3284,"precision_top20":0.3325,"recall_top20":0.3573,"brier":0.1389,"train_roc_auc":0.8003,"commit":"fcdbff4"},{"id":"hgb_lr0.03_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.03, 63 leaves, leaf 200","detail":"learning rate 0.03 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7258,"pr_auc":0.3261,"precision_top20":0.3424,"recall_top20":0.368,"brier":0.139,"train_roc_auc":0.7765,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 20","detail":"learning rate 0.1 · 15 leaves · min leaf 20","final":false,"roc_auc":0.7277,"pr_auc":0.3341,"precision_top20":0.3353,"recall_top20":0.3604,"brier":0.1378,"train_roc_auc":0.7579,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves15_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 15 leaves, leaf 200","detail":"learning rate 0.1 · 15 leaves · min leaf 200","final":false,"roc_auc":0.7282,"pr_auc":0.3314,"precision_top20":0.345,"recall_top20":0.3708,"brier":0.1382,"train_roc_auc":0.7627,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf20","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 20","detail":"learning rate 0.1 · 63 leaves · min leaf 20","final":false,"roc_auc":0.7258,"pr_auc":0.3303,"precision_top20":0.3379,"recall_top20":0.3631,"brier":0.1385,"train_roc_auc":0.7871,"commit":"fcdbff4"},{"id":"hgb_lr0.1_leaves63_leaf200","split":"validation","family":"gb","label":"Gradient boosting · lr 0.1, 63 leaves, leaf 200","detail":"learning rate 0.1 · 63 leaves · min leaf 200","final":false,"roc_auc":0.7249,"pr_auc":0.3255,"precision_top20":0.341,"recall_top20":0.3665,"brier":0.139,"train_roc_auc":0.7717,"commit":"fcdbff4"},{"id":"final_logreg","split":"test","family":"lr","label":"Logistic regression (final model)","detail":"Pre-registered final model · refit on train + validation","final":true,"roc_auc":0.7232,"pr_auc":0.3283,"precision_top20":0.3349,"recall_top20":0.3623,"brier":0.1376,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"comparison_hgb","split":"test","family":"gb","label":"Gradient boosting (comparison)","detail":"lr 0.03 · 15 leaves · min leaf 200 · refit on train + validation","final":false,"roc_auc":0.7365,"pr_auc":0.3424,"precision_top20":0.3562,"recall_top20":0.3853,"brier":0.1356,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_majority","split":"test","family":"baseline","label":"Majority class","detail":"Refit on train + validation","final":false,"roc_auc":0.5,"pr_auc":0.1849,"precision_top20":0.1678,"recall_top20":0.1815,"brier":0.1511,"train_roc_auc":null,"commit":"87bf5a4"},{"id":"baseline_lead_time_rule","split":"test","family":"baseline","label":"Lead-time rule (no ML)","detail":"Refit on train + validation","final":false,"roc_auc":0.6916,"pr_auc":0.2781,"precision_top20":0.2823,"recall_top20":0.3054,"brier":0.1398,"train_roc_auc":null,"commit":"87bf5a4"}];
+  const FAMS = {baseline:'Baselines', lr:'Logistic regression', rf:'Random forest', gb:'Gradient boosting'};
+  const METRICS = {
+    roc_auc:{name:'ROC-AUC', hint:'ranking quality; 0.5 = random', higher:true},
+    pr_auc:{name:'PR-AUC', hint:'ranking quality for the no-show class', higher:true},
+    recall_top20:{name:'Recall @ top 20%', hint:'share of all no-shows among the riskiest 20%', higher:true},
+    precision_top20:{name:'Precision @ top 20%', hint:'share of the riskiest 20% who are real no-shows', higher:true},
+    brier:{name:'Brier score', hint:'probability error; lower is better', higher:false},
+  };
+  const NOTES = {
+    validation:'Validation period (2016-05-30 to 06-02). Every run was trained on the training period only. Differences of about ±0.005 ROC-AUC are within noise: a paired bootstrap found no model reliably better than logistic regression.',
+    test:'Test week (2016-06-03 to 06-08), used once after the final model was chosen. Gradient boosting scored higher here (+0.013, a reliable gap); the pre-registered logistic regression was kept so the test result stays honest.'
+  };
+  const state = {split:'validation', metric:'roc_auc', fams:new Set(Object.keys(FAMS)), sort:'score', zoom:'zoom', train:false, table:false};
+  const $ = id => document.getElementById(id);
+  const fmt = v => v == null ? '—' : v.toFixed(3);
+
+  function seg(el, options, key){
+    el.innerHTML = options.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${state[key] === v}">${t}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state[key] = b.dataset.v; render(); };
+  }
+  function controls(){
+    seg($('mc-split'), [['validation','Validation · 23 runs'], ['test','Test · 4 models']], 'split');
+    seg($('mc-metric'), Object.entries(METRICS).map(([k, m]) => [k, m.name]), 'metric');
+    seg($('mc-sort'), [['score','Best first'], ['family','By family']], 'sort');
+    seg($('mc-zoom'), [['zoom','Zoomed'], ['full','Full range']], 'zoom');
+    const fam = $('mc-fam');
+    fam.innerHTML = Object.entries(FAMS).map(([k, n]) => `<button type="button" class="fchip fam-${k}" data-f="${k}" aria-pressed="${state.fams.has(k)}"><i></i>${n}</button>`).join('');
+    fam.onclick = e => { const b = e.target.closest('button'); if (!b) return; const f = b.dataset.f;
+      if (state.fams.has(f)) { if (state.fams.size > 1) state.fams.delete(f); } else state.fams.add(f); render(); };
+    $('mc-train').onchange = e => { state.train = e.target.checked; render(); };
+    $('mc-table-btn').onclick = () => { state.table = !state.table; render(); };
+  }
+
+  function niceTicks(lo, hi){
+    const span = hi - lo, raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * p).find(s => span / s <= 5);
+    const ticks = []; for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(+t.toFixed(6));
+    return ticks;
+  }
+
+  function render(){
+    controls();
+    const M = METRICS[state.metric];
+    const trainOK = state.metric === 'roc_auc' && state.split === 'validation';
+    $('mc-train-wrap').classList.toggle('off', !trainOK);
+    $('mc-train').disabled = !trainOK; $('mc-train').checked = state.train && trainOK;
+    const showTrain = state.train && trainOK;
+
+    let rows = RUNS.filter(r => r.split === state.split && state.fams.has(r.family) && r[state.metric] != null);
+    const better = (a, b) => M.higher ? b[state.metric] - a[state.metric] : a[state.metric] - b[state.metric];
+    const order = Object.keys(FAMS);
+    rows.sort(state.sort === 'score' ? better : (a, b) => order.indexOf(a.family) - order.indexOf(b.family) || better(a, b));
+
+    // Zoomed: fit the axis to the real models; baselines outside it are pinned at the edge
+    const core = rows.filter(r => r.family !== 'baseline');
+    const scaleRows = state.zoom === 'zoom' && core.length >= 2 ? core : rows;
+    const vals = scaleRows.flatMap(r => [r[state.metric], ...(showTrain && r.train_roc_auc != null ? [r.train_roc_auc] : [])]);
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max((hi - lo) * 0.08, 0.004);
+    lo -= pad; hi += pad;
+    const ticks = niceTicks(lo, hi); lo = Math.min(lo, ticks[0]); hi = Math.max(hi, ticks[ticks.length - 1]);
+    const xRaw = v => ((v - lo) / (hi - lo)) * 100;
+    const x = v => Math.min(100, Math.max(0, xRaw(v)));
+    const clipped = v => xRaw(v) < 0 || xRaw(v) > 100;
+    let anyClipped = false;
+
+    const final = RUNS.find(r => r.split === state.split && r.final);
+    const best = [...rows].sort(better)[0];
+    $('mc-summary').innerHTML = `<span><b>${rows.length}</b> model${rows.length === 1 ? '' : 's'} shown</span>` +
+      (best ? `<span>Best ${M.name}: <b>${best.label}</b> (${fmt(best[state.metric])})</span>` : '') +
+      (final ? `<span>Final model: <b>${fmt(final[state.metric])}</b></span>` : '');
+    $('mc-axis-label').textContent = `${M.name} · ${M.higher ? 'higher' : 'lower'} is better`;
+    $('mc-ticks').innerHTML = ticks.map(t => `<span style="left:${x(t)}%">${t.toFixed(ticks.some(v => Math.round(v * 100) !== v * 100) ? 3 : 2)}</span>`).join('');
+
+    const grid = ticks.map(t => `<i class="mc-grid" style="left:${x(t)}%"></i>`).join('');
+    const ref = final && state.fams.has(final.family) ? `<i class="mc-ref" style="left:${x(final[state.metric])}%"></i>` : '';
+    $('mc-list').innerHTML = rows.map(r => {
+      const v = r[state.metric], t = showTrain ? r.train_roc_auc : null;
+      const cl = clipped(v); if (cl) anyClipped = true;
+      const gap = t != null ? `<i class="mc-gap" style="left:${Math.min(x(v), x(t))}%;width:${Math.abs(x(t) - x(v))}%"></i><i class="mc-train" style="left:${x(t)}%"></i>` : '';
+      return `<li class="mc-item fam-${r.family}${r.final ? ' is-final' : ''}" tabindex="0" data-id="${r.id}"
+        aria-label="${r.label}: ${M.name} ${fmt(v)}${t != null ? ', training ' + fmt(t) : ''}">
+        <div class="mc-name"><i class="sw"></i><span>${r.label}</span>${r.final ? '<em class="badge">Final</em>' : ''}</div>
+        <div class="mc-track">${grid}${ref}${gap}<i class="mc-dot${cl ? ' clip' : ''}" style="left:${x(v)}%"></i>${cl ? `<b class="mc-clip" style="left:${x(v)}%">${xRaw(v) < 0 ? '◂' : '▸'}</b>` : ''}</div>
+        <div class="mc-val">${fmt(v)}</div></li>`;
+    }).join('');
+
+    $('mc-legend').innerHTML = Object.entries(FAMS).filter(([k]) => state.fams.has(k))
+      .map(([k, n]) => `<span class="fam-${k}"><i class="dot" style="background:var(--fam)"></i>${n}</span>`).join('') +
+      (showTrain ? '<span><i class="ring"></i>training score (bigger gap = more overfitting)</span>' : '') +
+      (ref ? '<span><i class="dash"></i>final model</span>' : '') +
+      (anyClipped ? '<span><b style="color:var(--muted)">◂</b>outside the zoomed range (value on the right; choose Full range to see it)</span>' : '');
+    $('mc-note').textContent = NOTES[state.split];
+
+    const btn = $('mc-table-btn'); btn.textContent = state.table ? 'Hide table' : 'Show as table'; btn.setAttribute('aria-expanded', state.table);
+    const wrap = $('mc-table-wrap'); wrap.hidden = !state.table;
+    if (state.table) wrap.innerHTML = `<table class="mc-table"><caption class="sr-only" style="position:absolute;left:-9999px">All metrics for the models shown</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col">Family</th>${Object.values(METRICS).map(m => `<th scope="col">${m.name}</th>`).join('')}${state.split === 'validation' ? '<th scope="col">Train ROC-AUC</th>' : ''}</tr></thead>
+      <tbody>${rows.map(r => `<tr class="${r.final ? 'is-final' : ''}"><td>${r.label}${r.final ? ' (final)' : ''}</td><td>${FAMS[r.family]}</td>${Object.keys(METRICS).map(k => `<td>${fmt(r[k])}</td>`).join('')}${state.split === 'validation' ? `<td>${fmt(r.train_roc_auc)}</td>` : ''}</tr>`).join('')}</tbody></table>`;
+  }
+
+  // tooltip: hover, keyboard focus, or tap
+  const panel = $('mc-panel'), tip = $('mc-tip');
+  function showTip(item){
+    const r = RUNS.find(d => d.id === item.dataset.id && d.split === state.split); if (!r) return;
+    tip.className = `mc-tip fam-${r.family} show`;
+    tip.innerHTML = `<h4>${r.label}</h4><span class="fam">${FAMS[r.family]}</span><p>${r.detail}</p><table>` +
+      Object.entries(METRICS).map(([k, m]) => `<tr class="${k === state.metric ? 'cur' : ''}"><td>${m.name}</td><td>${fmt(r[k])}</td></tr>`).join('') +
+      (r.split === 'validation' ? `<tr><td>Train ROC-AUC</td><td>${r.train_roc_auc == null ? 'not logged' : fmt(r.train_roc_auc)}</td></tr>` : '') +
+      `<tr><td>Logged at commit</td><td>${r.commit}</td></tr></table>`;
+    const s = window.__deckScale || 1;
+    const pr = panel.getBoundingClientRect(), ir = item.getBoundingClientRect();
+    let top = (ir.bottom - pr.top) / s + 6;
+    if (top + tip.offsetHeight > panel.offsetHeight) top = (ir.top - pr.top) / s - tip.offsetHeight - 6;
+    const left = Math.min(Math.max(10, (ir.left - pr.left) / s + (ir.width / s) * 0.34), panel.offsetWidth - tip.offsetWidth - 10);
+    tip.style.top = top + 'px'; tip.style.left = left + 'px';
+  }
+  const hideTip = () => tip.classList.remove('show');
+  const list = $('mc-list');
+  list.addEventListener('mouseover', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('mouseleave', hideTip);
+  list.addEventListener('focusin', e => { const it = e.target.closest('.mc-item'); if (it) showTip(it); });
+  list.addEventListener('focusout', hideTip);
+  list.addEventListener('click', e => { const it = e.target.closest('.mc-item'); if (it) { it.focus(); showTip(it); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  render();
+})();
+</script>
+<script>
+(() => {
+  const deck = document.getElementById('deck'), vp = document.getElementById('viewport');
+  const slides = [...deck.querySelectorAll('.slide')];
+  slides.forEach((s, i) => s.dataset.num = `${i + 1} / ${slides.length}`);
+  let cur = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1);
+
+  function fit(){
+    const s = Math.min(vp.clientWidth / 1280, vp.clientHeight / 720);
+    deck.style.transform = `scale(${s})`;
+    window.__deckScale = s;
+  }
+  function show(i){
+    cur = Math.min(Math.max(i, 0), slides.length - 1);
+    slides.forEach((s, k) => { s.classList.toggle('active', k === cur); s.setAttribute('aria-hidden', k !== cur); s.inert = k !== cur; });
+    document.getElementById('counter').textContent = `${cur + 1} / ${slides.length}`;
+    document.getElementById('progress').style.width = `${((cur + 1) / slides.length) * 100}%`;
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === slides.length - 1;
+    try { history.replaceState(null, '', `#${cur + 1}`); } catch (err) { /* e.g. previews without a real URL */ }
+    const tip = document.getElementById('mc-tip'); if (tip) tip.classList.remove('show');
+  }
+  document.getElementById('prev').onclick = () => show(cur - 1);
+  document.getElementById('next').onclick = () => show(cur + 1);
+  const fullscreen = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+  document.getElementById('fs').onclick = fullscreen;
+
+  document.addEventListener('keydown', e => {
+    const t = e.target instanceof Element ? e.target : document.body;
+    const typing = t.matches('input, textarea, select');
+    const onControl = t.matches('button, a, [role="button"]');
+    if (typing) return;
+    if (['ArrowRight', 'PageDown'].includes(e.key) || (e.key === ' ' && !onControl)) { e.preventDefault(); show(cur + 1); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(cur - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+    else if (e.key === 'f' || e.key === 'F') fullscreen();
+  });
+  let x0 = null;
+  vp.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
+  vp.addEventListener('touchend', e => {
+    if (x0 === null || e.target.closest('#mc-list, #mc-table-wrap, .mc-controls')) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+  }, {passive: true});
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', () => show(parseInt(location.hash.slice(1), 10) - 1 || 0));
+  fit(); show(cur);
+})();
+</script>
+</body>
+</html>

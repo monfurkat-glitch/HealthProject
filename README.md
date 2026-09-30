@@ -311,7 +311,7 @@ HealthProject/
 ├── models/               saved final model with its risk-band cut-offs
 ├── notebooks/            00_full_project.ipynb (everything end to end), 01_eda.ipynb (data analysis), 02_demo.ipynb (Colab demo)
 ├── reports/              test results, error analysis, figures
-├── showcase/             index.html (health-app style) and editorial.html (journal style): static project showcase pages
+├── showcase/             index.html (health-app style), editorial.html (journal style), slides.html (HTML slide deck)
 ├── src/
 │   ├── preprocess.py     cleaning, features, leakage-safe history, split, encoder
 │   ├── train.py          baselines and experiments (logged)
